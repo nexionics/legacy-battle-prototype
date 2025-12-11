@@ -9,20 +9,61 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SignUpScreenProps {
   navigation: any;
 }
 
 export default function SignUpScreen({ navigation }: SignUpScreenProps) {
+  const { signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Missing Info', 'Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Password Mismatch', 'Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Weak Password', 'Password must be at least 6 characters');
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await signUp({ email, password });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Sign Up Failed', error);
+      return;
+    }
+
+    Alert.alert(
+      'Account Created',
+      'Please check your email to confirm your account, then log in.',
+      [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+    );
+  };
+
+  const handleSocialSignUp = (provider: string) => {
+    Alert.alert('Coming Soon', `${provider} sign up will be available in a future update.`);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -121,11 +162,18 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           </Text>
 
           <TouchableOpacity
-            style={styles.signUpButton}
-            onPress={() => navigation.navigate('OTPVerification')}
+            style={[styles.signUpButton, loading && styles.buttonDisabled]}
+            onPress={handleSignUp}
+            disabled={loading}
           >
-            <Text style={styles.signUpButtonText}>Sign Up</Text>
-            <Ionicons name="arrow-forward" size={20} color={COLORS.white} />
+            {loading ? (
+              <ActivityIndicator color={COLORS.white} />
+            ) : (
+              <>
+                <Text style={styles.signUpButtonText}>Sign Up</Text>
+                <Ionicons name="arrow-forward" size={20} color={COLORS.white} />
+              </>
+            )}
           </TouchableOpacity>
 
           <View style={styles.divider}>
@@ -134,7 +182,10 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
             <View style={styles.dividerLine} />
           </View>
 
-          <TouchableOpacity style={styles.googleButton}>
+          <TouchableOpacity 
+            style={styles.googleButton}
+            onPress={() => handleSocialSignUp('Google')}
+          >
             <Image
               source={{ uri: 'https://www.google.com/favicon.ico' }}
               style={styles.googleIcon}
@@ -302,5 +353,8 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: SIZES.font,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
 });

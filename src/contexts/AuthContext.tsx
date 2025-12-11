@@ -1,0 +1,144 @@
+// src/contexts/AuthContext.tsx
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+
+type AuthUser = {
+  id: string;
+  email?: string;
+};
+
+type AuthContextValue = {
+  user: AuthUser | null;
+  loading: boolean;
+  signUp: (params: { email: string; password: string; username?: string }) => Promise<{ error?: string }>;
+  signIn: (params: { email: string; password: string }) => Promise<{ error?: string }>;
+  signOut: () => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // 1) Initial load
+  useEffect(() => {
+    const init = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.warn('Error getting session', error);
+      } else if (data.session?.user) {
+        setUser({
+          id: data.session.user.id,
+          email: data.session.user.email ?? undefined,
+        });
+      }
+      setLoading(false);
+    };
+
+    init();
+
+    // 2) Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email ?? undefined,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Helper to ensure profile row exists
+  const ensureProfile = async (userId: string, username?: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .upsert(
+        {
+          id: userId,
+          username: username || null,
+        },
+        { onConflict: 'id' }
+      )
+      .select('id')
+      .single();
+
+    if (error) {
+      console.error('Error ensuring profile', error);
+    }
+    return { data, error };
+  };
+
+  const signUp: AuthContextValue['signUp'] = async ({ email, password, username }) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('signUp error', error);
+        return { error: error.message };
+      }
+
+      const userId = data.user?.id;
+      if (userId) {
+        await ensureProfile(userId, username);
+      }
+
+      return {};
+    } catch (e: any) {
+      console.error('signUp exception', e);
+      return { error: e.message || 'Unknown error' };
+    }
+  };
+
+  const signIn: AuthContextValue['signIn'] = async ({ email, password }) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('signIn error', error);
+        return { error: error.message };
+      }
+
+      return {};
+    } catch (e: any) {
+      console.error('signIn exception', e);
+      return { error: e.message || 'Unknown error' };
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const value: AuthContextValue = {
+    user,
+    loading,
+    signUp,
+    signIn,
+    signOut,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return ctx;
+};

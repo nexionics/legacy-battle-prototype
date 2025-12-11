@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,44 @@ import {
   SafeAreaView,
   Image,
   StatusBar,
+  TextInput,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginScreenProps {
   navigation: any;
 }
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
+  const { signIn } = useAuth();
+  const [showEmailLogin, setShowEmailLogin] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleEmailLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Missing Info', 'Please enter email and password');
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await signIn({ email, password });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Login Failed', error);
+    }
+  };
+
+  const handleSocialLogin = (provider: string) => {
+    Alert.alert('Coming Soon', `${provider} login will be available in a future update.`);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -47,35 +76,116 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
         {/* Auth Buttons */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            <Ionicons name="logo-apple" size={20} color={COLORS.text} />
-            <Text style={styles.socialButtonText}>Continue With Apple</Text>
-          </TouchableOpacity>
+          {!showEmailLogin ? (
+            <>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('Apple')}
+              >
+                <Ionicons name="logo-apple" size={20} color={COLORS.text} />
+                <Text style={styles.socialButtonText}>Continue With Apple</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialButton}>
-            <FontAwesome name="facebook" size={20} color="#1877F2" />
-            <Text style={styles.socialButtonText}>Continue With Facebook</Text>
-          </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('Facebook')}
+              >
+                <FontAwesome name="facebook" size={20} color="#1877F2" />
+                <Text style={styles.socialButtonText}>Continue With Facebook</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialButton}>
-            <Image
-              source={{ uri: 'https://www.google.com/favicon.ico' }}
-              style={styles.googleIcon}
-            />
-            <Text style={styles.socialButtonText}>Continue With Google</Text>
-          </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                onPress={() => handleSocialLogin('Google')}
+              >
+                <Image
+                  source={{ uri: 'https://www.google.com/favicon.ico' }}
+                  style={styles.googleIcon}
+                />
+                <Text style={styles.socialButtonText}>Continue With Google</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialButton}>
-            <Ionicons name="mail-outline" size={20} color={COLORS.text} />
-            <Text style={styles.socialButtonText}>Continue With Email</Text>
-          </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.socialButton}
+                onPress={() => setShowEmailLogin(true)}
+              >
+                <Ionicons name="mail-outline" size={20} color={COLORS.text} />
+                <Text style={styles.socialButtonText}>Continue With Email</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.createAccountButton}
-            onPress={() => navigation.navigate('SignUp')}
-          >
-            <Text style={styles.createAccountText}>Create Account</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.createAccountButton}
+                onPress={() => navigation.navigate('SignUp')}
+              >
+                <Text style={styles.createAccountText}>Create Account</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="mail-outline" size={20} color={COLORS.textSecondary} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    editable={!loading}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="lock-closed-outline" size={20} color={COLORS.textSecondary} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor={COLORS.textMuted}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    editable={!loading}
+                  />
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.createAccountButton, loading && styles.buttonDisabled]}
+                onPress={handleEmailLogin}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color={COLORS.white} />
+                ) : (
+                  <Text style={styles.createAccountText}>Log In</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.backToOptionsButton}
+                onPress={() => {
+                  setShowEmailLogin(false);
+                  setEmail('');
+                  setPassword('');
+                }}
+              >
+                <Text style={styles.backToOptionsText}>Back to login options</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.createAccountLink}
+                onPress={() => navigation.navigate('SignUp')}
+              >
+                <Text style={styles.createAccountLinkText}>
+                  Don't have an account? <Text style={styles.createAccountLinkBold}>Sign Up</Text>
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -184,6 +294,48 @@ const styles = StyleSheet.create({
   createAccountText: {
     color: COLORS.white,
     fontSize: SIZES.medium,
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    gap: SIZES.base,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: SIZES.radius,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+    paddingHorizontal: SIZES.padding,
+    gap: SIZES.base,
+  },
+  input: {
+    flex: 1,
+    color: COLORS.text,
+    fontSize: SIZES.medium,
+    paddingVertical: SIZES.padding,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  backToOptionsButton: {
+    alignItems: 'center',
+    paddingVertical: SIZES.base,
+  },
+  backToOptionsText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+  },
+  createAccountLink: {
+    alignItems: 'center',
+    paddingVertical: SIZES.base,
+  },
+  createAccountLinkText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+  },
+  createAccountLinkBold: {
+    color: COLORS.text,
     fontWeight: 'bold',
   },
 });
