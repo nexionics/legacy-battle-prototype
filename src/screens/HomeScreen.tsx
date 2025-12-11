@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,68 +8,90 @@ import {
   ScrollView,
   StatusBar,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
+import {
+  getUpcomingGames,
+  getRecentResults,
+  SportsEvent,
+  formatEventTime,
+  getSportIcon,
+} from '../services/sportsApi';
 
 interface HomeScreenProps {
   navigation: any;
 }
 
-const BattleCard = ({ title, subtitle, time, onJoin }: any) => (
+const UpcomingGameCard = ({ event, onJoin }: { event: SportsEvent; onJoin: () => void }) => (
   <View style={styles.battleCard}>
     <View style={styles.battleCardLeft}>
       <View style={styles.battleIcon}>
-        <Text style={styles.battleIconText}>🏈</Text>
+        <Text style={styles.battleIconText}>{getSportIcon(event.strSport)}</Text>
       </View>
       <View style={styles.battleInfo}>
-        <Text style={styles.battleTitle}>{title}</Text>
-        <Text style={styles.battleSubtitle}>{subtitle}</Text>
-        <Text style={styles.battleTime}>{time}</Text>
+        <Text style={styles.battleTitle} numberOfLines={1}>
+          {event.strHomeTeam.split(' ').pop()} vs {event.strAwayTeam.split(' ').pop()}
+        </Text>
+        <Text style={styles.battleSubtitle}>{event.strLeague}</Text>
+        <Text style={styles.battleTime}>{formatEventTime(event)}</Text>
       </View>
     </View>
     <View style={styles.battleCardRight}>
-      <View style={styles.sponsorBadge}>
-        <Text style={styles.sponsorText}>Nike</Text>
+      <View style={styles.teamLogos}>
+        {event.strHomeTeamBadge && (
+          <Image source={{ uri: event.strHomeTeamBadge }} style={styles.teamBadge} />
+        )}
+        {event.strAwayTeamBadge && (
+          <Image source={{ uri: event.strAwayTeamBadge }} style={styles.teamBadge} />
+        )}
       </View>
       <TouchableOpacity style={styles.joinButton} onPress={onJoin}>
-        <Text style={styles.joinButtonText}>Join</Text>
+        <Text style={styles.joinButtonText}>Battle</Text>
       </TouchableOpacity>
     </View>
   </View>
 );
 
-const MyBattleCard = ({ title, subtitle, opponent, endsIn, status }: any) => (
+const RecentResultCard = ({ event }: { event: SportsEvent }) => (
   <View style={styles.myBattleCard}>
     <View style={styles.myBattleHeader}>
       <View style={styles.myBattleLeft}>
         <View style={styles.battleIcon}>
-          <Text style={styles.battleIconText}>🏈</Text>
+          <Text style={styles.battleIconText}>{getSportIcon(event.strSport)}</Text>
         </View>
         <View style={styles.battleInfo}>
-          <Text style={styles.battleTitle}>{title}</Text>
-          <Text style={styles.battleSubtitle}>{subtitle}</Text>
+          <Text style={styles.battleTitle} numberOfLines={1}>
+            {event.strHomeTeam.split(' ').pop()} vs {event.strAwayTeam.split(' ').pop()}
+          </Text>
+          <Text style={styles.battleSubtitle}>{event.strLeague}</Text>
         </View>
       </View>
-      <View style={[styles.statusBadge, status === 'Active' && styles.statusActive]}>
-        <Text style={styles.statusText}>{status}</Text>
+      <View style={[styles.statusBadge, styles.statusCompleted]}>
+        <Text style={styles.statusText}>Final</Text>
       </View>
     </View>
     <View style={styles.myBattleDetails}>
-      <View style={styles.opponentInfo}>
-        <View style={styles.opponentAvatar}>
-          <Ionicons name="person" size={16} color={COLORS.textSecondary} />
-        </View>
-        <Text style={styles.opponentText}>Vs {opponent}</Text>
+      <View style={styles.scoreContainer}>
+        {event.strHomeTeamBadge && (
+          <Image source={{ uri: event.strHomeTeamBadge }} style={styles.smallBadge} />
+        )}
+        <Text style={styles.scoreText}>
+          {event.intHomeScore || '0'} - {event.intAwayScore || '0'}
+        </Text>
+        {event.strAwayTeamBadge && (
+          <Image source={{ uri: event.strAwayTeamBadge }} style={styles.smallBadge} />
+        )}
       </View>
       <View style={styles.timeInfo}>
-        <Ionicons name="time-outline" size={14} color={COLORS.textSecondary} />
-        <Text style={styles.timeText}>Ends In {endsIn}</Text>
+        <Ionicons name="location-outline" size={14} color={COLORS.textSecondary} />
+        <Text style={styles.timeText} numberOfLines={1}>{event.strVenue || 'TBD'}</Text>
       </View>
     </View>
     <View style={styles.myBattleFooter}>
       <View style={styles.statDuelBadge}>
-        <Text style={styles.statDuelText}>Stat Duel</Text>
+        <Text style={styles.statDuelText}>{event.strSport}</Text>
       </View>
       <TouchableOpacity style={styles.viewButton}>
         <Text style={styles.viewButtonText}>View</Text>
@@ -79,6 +101,30 @@ const MyBattleCard = ({ title, subtitle, opponent, endsIn, status }: any) => (
 );
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const [upcomingGames, setUpcomingGames] = useState<SportsEvent[]>([]);
+  const [recentResults, setRecentResults] = useState<SportsEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadSportsData();
+  }, []);
+
+  const loadSportsData = async () => {
+    setLoading(true);
+    try {
+      const [upcoming, recent] = await Promise.all([
+        getUpcomingGames(),
+        getRecentResults(),
+      ]);
+      setUpcomingGames(upcoming.slice(0, 5));
+      setRecentResults(recent.slice(0, 3));
+    } catch (error) {
+      console.error('Error loading sports data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -94,7 +140,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </View>
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome Back</Text>
-              <Text style={styles.usernameText}>Champion 🏆</Text>
+              <Text style={styles.usernameText}>Champion</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
@@ -107,68 +153,79 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.statsCard}>
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Total</Text>
+              <Text style={styles.statLabel}>Total XP</Text>
               <Text style={styles.statValue}>1,247 XP</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Total Bc</Text>
+              <Text style={styles.statLabel}>Battle Coins</Text>
               <Text style={styles.statValue}>2,000 BC</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.inviteBanner}>
-            <Text style={styles.inviteText}>Chinaza Smart Invited You To A Battle</Text>
+            <Text style={styles.inviteText}>Live sports data from TheSportsDB</Text>
             <Ionicons name="arrow-forward" size={16} color={COLORS.white} />
           </TouchableOpacity>
         </View>
 
-        {/* Quick Picks */}
+        {/* Upcoming Games */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Quick Picks</Text>
-            <TouchableOpacity style={styles.seeAllButton}>
-              <Text style={styles.seeAllText}>See All</Text>
-              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+            <Text style={styles.sectionTitle}>Upcoming Games</Text>
+            <TouchableOpacity style={styles.seeAllButton} onPress={loadSportsData}>
+              <Ionicons name="refresh-outline" size={14} color={COLORS.textSecondary} />
+              <Text style={styles.seeAllText}>Refresh</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <BattleCard
-              title="Mahomes Vs Burrow"
-              subtitle="QB Passing Yards Duel"
-              time="Sunday 1:00 PM"
-              onJoin={() => {}}
-            />
-          </ScrollView>
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={COLORS.primary} />
+              <Text style={styles.loadingText}>Loading live sports data...</Text>
+            </View>
+          ) : upcomingGames.length > 0 ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {upcomingGames.map((event) => (
+                <UpcomingGameCard
+                  key={event.idEvent}
+                  event={event}
+                  onJoin={() => {}}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No upcoming games found</Text>
+            </View>
+          )}
         </View>
 
         {/* Start Battle Button */}
         <TouchableOpacity style={styles.startBattleButton}>
           <Text style={styles.startBattleText}>Start Battle</Text>
-          <Text style={styles.startBattleIcon}>⚔</Text>
+          <Ionicons name="flash" size={20} color={COLORS.white} />
         </TouchableOpacity>
 
-        {/* My Battle */}
+        {/* Recent Results */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>My Battle</Text>
+            <Text style={styles.sectionTitle}>Recent Results</Text>
             <TouchableOpacity style={styles.seeAllButton}>
               <Text style={styles.seeAllText}>See All</Text>
               <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
-          <MyBattleCard
-            title="Mahomes Vs Burrow"
-            subtitle="QB Passing Yards Duel"
-            opponent="@Mike_jordan23"
-            endsIn="2h 15m"
-            status="Active"
-          />
-          <MyBattleCard
-            title="Mahomes Vs Burrow"
-            subtitle="QB Passing Yards Duel"
-            opponent="@Mike_jordan23"
-            endsIn="2h 15m"
-            status="Active"
-          />
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={COLORS.primary} />
+            </View>
+          ) : recentResults.length > 0 ? (
+            recentResults.map((event) => (
+              <RecentResultCard key={event.idEvent} event={event} />
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No recent results</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -407,6 +464,9 @@ const styles = StyleSheet.create({
   statusActive: {
     backgroundColor: COLORS.primary,
   },
+  statusCompleted: {
+    backgroundColor: '#4CAF50',
+  },
   statusText: {
     color: COLORS.white,
     fontSize: 10,
@@ -470,5 +530,50 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: SIZES.font,
     fontWeight: 'bold',
+  },
+  teamLogos: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  teamBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  smallBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+  },
+  scoreText: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    padding: SIZES.padding * 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginTop: SIZES.base,
+  },
+  emptyContainer: {
+    padding: SIZES.padding * 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+  },
+  emptyText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
   },
 });
