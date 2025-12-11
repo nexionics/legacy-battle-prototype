@@ -89,9 +89,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { error: error.message };
       }
 
-      const userId = data.user?.id;
-      if (userId) {
-        await ensureProfile(userId, username);
+      // Only create profile if we have an active session (email confirmations disabled)
+      // Otherwise, profile will be created on first sign-in
+      if (data.session?.user?.id) {
+        await ensureProfile(data.session.user.id, username);
       }
 
       return {};
@@ -111,6 +112,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('signIn error', error);
         return { error: error.message };
+      }
+
+      // Ensure profile exists on sign-in (handles users who signed up before profile creation)
+      if (data.user?.id) {
+        await ensureProfile(data.user.id);
       }
 
       return {};
