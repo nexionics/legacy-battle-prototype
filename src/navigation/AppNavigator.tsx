@@ -15,6 +15,7 @@ import {
   BattlesScreen,
   ExploreScreen,
   ProfileScreen,
+  DevDebugScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -106,11 +107,12 @@ export default function AppNavigator() {
           contentStyle: { backgroundColor: COLORS.background },
         }}
       >
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
-        <Stack.Screen name="CreateUsername" component={CreateUsernameScreen} />
-        <Stack.Screen name="MainTabs" component={MainTabs} />
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+                <Stack.Screen name="CreateUsername" component={CreateUsernameScreen} />
+                <Stack.Screen name="MainTabs" component={MainTabs} />
+                <Stack.Screen name="DevDebug" component={DevDebugScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
