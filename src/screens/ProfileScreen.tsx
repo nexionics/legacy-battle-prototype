@@ -32,7 +32,6 @@ export default function ProfileScreen() {
   const { signOut, user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -61,7 +60,6 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     if (profile) {
-      setUsername(profile.username || '');
       setDisplayName(profile.display_name || '');
     }
   }, [profile]);
@@ -98,7 +96,6 @@ export default function ProfileScreen() {
     const { error } = await supabase
       .from('profiles')
       .update({
-        username,
         display_name: displayName,
       })
       .eq('id', user.id);
@@ -111,7 +108,7 @@ export default function ProfileScreen() {
       Alert.alert('Updated', 'Your profile was updated.');
       setIsEditing(false);
       if (profile) {
-        setProfile({ ...profile, username, display_name: displayName });
+        setProfile({ ...profile, display_name: displayName });
       }
     }
   };
@@ -183,21 +180,11 @@ export default function ProfileScreen() {
                 placeholder="Enter display name"
                 placeholderTextColor={COLORS.textSecondary}
               />
-              <Text style={styles.editLabel}>Username</Text>
-              <TextInput
-                style={styles.editInput}
-                value={username}
-                onChangeText={setUsername}
-                placeholder="Enter username"
-                placeholderTextColor={COLORS.textSecondary}
-                autoCapitalize="none"
-              />
               <View style={styles.editButtons}>
                 <TouchableOpacity 
                   style={styles.cancelButton} 
                   onPress={() => {
                     setIsEditing(false);
-                    setUsername(profile?.username || '');
                     setDisplayName(profile?.display_name || '');
                   }}
                 >
@@ -219,7 +206,7 @@ export default function ProfileScreen() {
           ) : (
             <>
               <Text style={styles.username}>{profile?.display_name || 'Set Display Name'}</Text>
-              <Text style={styles.handle}>@{profile?.username || 'set_username'}</Text>
+              <Text style={styles.handle}>${profile?.username || 'loading...'}</Text>
               <TouchableOpacity 
                 style={styles.editProfileButton} 
                 onPress={() => setIsEditing(true)}
