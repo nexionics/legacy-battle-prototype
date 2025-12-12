@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,113 @@ import {
   StatusBar,
   TouchableOpacity,
   Alert,
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabaseClient';
+
+type Profile = {
+  id: string;
+  username: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+  xp: number;
+  level: string;
+  wallet_balance: number;
+  created_at: string;
+  updated_at: string;
+};
 
 export default function ProfileScreen() {
   const { signOut, user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const loadProfile = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error loading profile', error);
+      } else {
+        setProfile(data);
+      }
+
+      setLoading(false);
+    };
+
+    loadProfile();
+  }, [user]);
+
+  useEffect(() => {
+    if (profile) {
+      setUsername(profile.username || '');
+      setDisplayName(profile.display_name || '');
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('profiles-change')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${user.id}`,
+        },
+        (payload) => {
+          setProfile(payload.new as Profile);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  const saveProfile = async () => {
+    if (!user) return;
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        username,
+        display_name: displayName,
+      })
+      .eq('id', user.id);
+
+    setSaving(false);
+
+    if (error) {
+      Alert.alert('Update Failed', error.message);
+    } else {
+      Alert.alert('Updated', 'Your profile was updated.');
+      setIsEditing(false);
+      if (profile) {
+        setProfile({ ...profile, username, display_name: displayName });
+      }
+    }
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -32,6 +132,23 @@ export default function ProfileScreen() {
       ]
     );
   };
+
+  const walletBalance = Number(profile?.wallet_balance || 0).toFixed(2);
+  const xpValue = profile?.xp || 0;
+  const levelValue = profile?.level || 'Challenger';
+  const avatarInitials = (profile?.display_name || profile?.username || user?.email || 'U')
+    .substring(0, 2)
+    .toUpperCase();
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -49,27 +166,83 @@ export default function ProfileScreen() {
         <View style={styles.profileCard}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>LB</Text>
+              <Text style={styles.avatarText}>{avatarInitials}</Text>
             </View>
             <View style={styles.levelBadge}>
-              <Text style={styles.levelText}>Lvl 12</Text>
+              <Text style={styles.levelText}>{levelValue}</Text>
             </View>
           </View>
-          <Text style={styles.username}>Champion</Text>
-          <Text style={styles.handle}>@champion_battle</Text>
+          
+          {isEditing ? (
+            <View style={styles.editSection}>
+              <Text style={styles.editLabel}>Display Name</Text>
+              <TextInput
+                style={styles.editInput}
+                value={displayName}
+                onChangeText={setDisplayName}
+                placeholder="Enter display name"
+                placeholderTextColor={COLORS.textSecondary}
+              />
+              <Text style={styles.editLabel}>Username</Text>
+              <TextInput
+                style={styles.editInput}
+                value={username}
+                onChangeText={setUsername}
+                placeholder="Enter username"
+                placeholderTextColor={COLORS.textSecondary}
+                autoCapitalize="none"
+              />
+              <View style={styles.editButtons}>
+                <TouchableOpacity 
+                  style={styles.cancelButton} 
+                  onPress={() => {
+                    setIsEditing(false);
+                    setUsername(profile?.username || '');
+                    setDisplayName(profile?.display_name || '');
+                  }}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.saveButton} 
+                  onPress={saveProfile}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <>
+              <Text style={styles.username}>{profile?.display_name || 'Set Display Name'}</Text>
+              <Text style={styles.handle}>@{profile?.username || 'set_username'}</Text>
+              <TouchableOpacity 
+                style={styles.editProfileButton} 
+                onPress={() => setIsEditing(true)}
+              >
+                <Ionicons name="pencil" size={14} color={COLORS.primary} />
+                <Text style={styles.editProfileText}>Edit Profile</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>156</Text>
+              <Text style={styles.statValue}>0</Text>
               <Text style={styles.statLabel}>Battles</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>89</Text>
+              <Text style={styles.statValue}>0</Text>
               <Text style={styles.statLabel}>Wins</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>57%</Text>
+              <Text style={styles.statValue}>0%</Text>
               <Text style={styles.statLabel}>Win Rate</Text>
             </View>
           </View>
@@ -79,13 +252,13 @@ export default function ProfileScreen() {
         <View style={styles.xpCard}>
           <View style={styles.xpHeader}>
             <Text style={styles.xpTitle}>Experience Points</Text>
-            <Text style={styles.xpValue}>1,247 XP</Text>
+            <Text style={styles.xpValue}>{xpValue.toLocaleString()} XP</Text>
           </View>
           <View style={styles.xpProgressContainer}>
             <View style={styles.xpProgressBar}>
-              <View style={[styles.xpProgress, { width: '65%' }]} />
+              <View style={[styles.xpProgress, { width: `${Math.min((xpValue % 1000) / 10, 100)}%` }]} />
             </View>
-            <Text style={styles.xpProgressText}>753 XP to Level 13</Text>
+            <Text style={styles.xpProgressText}>{1000 - (xpValue % 1000)} XP to next level</Text>
           </View>
         </View>
 
@@ -97,7 +270,7 @@ export default function ProfileScreen() {
             </View>
             <View>
               <Text style={styles.coinsLabel}>Battle Coins</Text>
-              <Text style={styles.coinsValue}>2,000 BC</Text>
+              <Text style={styles.coinsValue}>{walletBalance} BC</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.addCoinsButton}>
@@ -389,5 +562,70 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: SIZES.font,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editSection: {
+    width: '100%',
+    marginBottom: SIZES.padding,
+  },
+  editLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginBottom: 4,
+    marginTop: SIZES.base,
+  },
+  editInput: {
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  editButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: SIZES.padding,
+    gap: SIZES.base,
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: COLORS.inputBackground,
+    paddingVertical: SIZES.padding,
+    borderRadius: SIZES.radius,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  saveButton: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    paddingVertical: SIZES.padding,
+    borderRadius: SIZES.radius,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  editProfileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: SIZES.padding,
+  },
+  editProfileText: {
+    color: COLORS.primary,
+    fontSize: SIZES.small,
+    fontWeight: '500',
   },
 });
