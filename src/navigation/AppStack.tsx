@@ -8,6 +8,7 @@ import { COLORS, SIZES } from '../constants/theme';
 import {
   HomeScreen,
   BattlesScreen,
+  CreateBattleScreen,
   ExploreScreen,
   ProfileScreen,
   DevDebugScreen,
@@ -102,6 +103,7 @@ export default function AppStack() {
       }}
     >
       <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen name="CreateBattle" component={CreateBattleScreen} />
       <Stack.Screen name="DevDebug" component={DevDebugScreen} />
     </Stack.Navigator>
   );
