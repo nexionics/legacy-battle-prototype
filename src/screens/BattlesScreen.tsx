@@ -192,9 +192,12 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
                     {battle.event_id ? 'Sports Event' : 'Custom Battle'}
                   </Text>
                 </View>
-                <TouchableOpacity style={styles.viewButton}>
-                  <Text style={styles.viewButtonText}>View</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.viewButton}
+                    onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
+                  >
+                    <Text style={styles.viewButtonText}>View</Text>
+                  </TouchableOpacity>
               </View>
             </View>
           ))

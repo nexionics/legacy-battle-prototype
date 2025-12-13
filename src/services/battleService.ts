@@ -9,6 +9,23 @@ export type Battle = {
   stake: number;
   status: 'open' | 'active' | 'completed' | 'canceled';
   created_at: string;
+  winner_id: string | null;
+  resolved_at: string | null;
+  final_outcome: Record<string, any> | null;
+};
+
+export type BattleParticipant = {
+  id: string;
+  battle_id?: string;
+  user_id: string;
+  pick: string | null;
+  joined_at: string;
+};
+
+export type JoinBattleParams = {
+  battleId: string;
+  userId: string;
+  pick: string;
 };
 
 export type CreateBattleParams = {
@@ -65,6 +82,72 @@ export const BattleService = {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'battles' },
+        callback
+      )
+      .subscribe();
+  },
+
+  getBattleWithParticipants: async (battleId: string) => {
+    const { data: battle, error: battleError } = await supabase
+      .from('battles')
+      .select('*')
+      .eq('id', battleId)
+      .single();
+
+    if (battleError) {
+      return { battle: null, participants: [], error: battleError };
+    }
+
+    const { data: participants, error: participantsError } = await supabase
+      .from('battle_participants')
+      .select('id, user_id, pick, joined_at')
+      .eq('battle_id', battleId)
+      .order('joined_at', { ascending: true });
+
+    return { battle, participants: participants || [], error: participantsError };
+  },
+
+  joinBattle: async ({ battleId, userId, pick }: JoinBattleParams) => {
+    const { data, error } = await supabase
+      .from('battle_participants')
+      .insert({
+        battle_id: battleId,
+        user_id: userId,
+        pick,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return { data, error };
+    }
+
+    const { data: participants, error: participantsError } = await supabase
+      .from('battle_participants')
+      .select('id')
+      .eq('battle_id', battleId);
+
+    if (!participantsError && (participants?.length || 0) >= 2) {
+      await supabase
+        .from('battles')
+        .update({ status: 'active' })
+        .eq('id', battleId);
+    }
+
+    return { data, error };
+  },
+
+  subscribeToParticipants: (battleId: string, callback: (payload: any) => void) => {
+    return supabase
+      .channel(`battle_participants:${battleId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'battle_participants',
+          filter: `battle_id=eq.${battleId}`,
+        },
         callback
       )
       .subscribe();

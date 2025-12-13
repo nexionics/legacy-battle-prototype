@@ -1,0 +1,537 @@
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  ActivityIndicator,
+  FlatList,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, SIZES } from '../constants/theme';
+import { BattleService, Battle, BattleParticipant } from '../services/battleService';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabaseClient';
+
+interface BattleDetailScreenProps {
+  navigation: any;
+  route: any;
+}
+
+export default function BattleDetailScreen({ navigation, route }: BattleDetailScreenProps) {
+  const { user } = useAuth();
+  const battleId = route.params?.battleId;
+
+  const [battle, setBattle] = useState<Battle | null>(null);
+  const [participants, setParticipants] = useState<BattleParticipant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [joining, setJoining] = useState(false);
+  const [pick, setPick] = useState('');
+
+  const loadBattle = async () => {
+    if (!battleId) return;
+
+    const { battle, participants, error } = await BattleService.getBattleWithParticipants(battleId);
+    if (error) {
+      console.error('Error loading battle', error);
+    }
+    setBattle(battle);
+    setParticipants(participants);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadBattle();
+
+    const battleChannel = BattleService.subscribeToBattles((payload) => {
+      if (payload.new?.id === battleId || payload.old?.id === battleId) {
+        loadBattle();
+      }
+    });
+
+    const participantChannel = BattleService.subscribeToParticipants(battleId, () => {
+      loadBattle();
+    });
+
+    return () => {
+      supabase.removeChannel(battleChannel);
+      supabase.removeChannel(participantChannel);
+    };
+  }, [battleId]);
+
+  const alreadyJoined = participants.some((p) => p.user_id === user?.id);
+  const isCreator = battle?.creator_id === user?.id;
+  const canJoin = battle?.status === 'open' && !alreadyJoined && !isCreator;
+
+  const handleJoin = async () => {
+    if (!pick.trim()) {
+      Alert.alert('Pick required', 'Please enter your pick to join this battle');
+      return;
+    }
+
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to join a battle');
+      return;
+    }
+
+    setJoining(true);
+    const { error } = await BattleService.joinBattle({
+      battleId,
+      userId: user.id,
+      pick: pick.trim(),
+    });
+    setJoining(false);
+
+    if (error) {
+      Alert.alert('Join failed', error.message);
+      return;
+    }
+
+    setPick('');
+    Alert.alert('Joined!', 'You have successfully joined this battle.');
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'open':
+        return '#4CAF50';
+      case 'active':
+        return COLORS.primary;
+      case 'completed':
+        return COLORS.textSecondary;
+      case 'canceled':
+        return COLORS.textSecondary;
+      default:
+        return COLORS.primary;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!battle) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Battle Not Found</Text>
+          <View style={styles.placeholder} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Battle Details</Text>
+          <View style={styles.placeholder} />
+        </View>
+
+        {/* Battle Info Card */}
+        <View style={styles.battleCard}>
+          <View style={styles.battleHeader}>
+            <View style={styles.battleIcon}>
+              <Text style={styles.battleIconText}>⚔️</Text>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(battle.status) }]}>
+              <Text style={styles.statusText}>{battle.status.toUpperCase()}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.battleTitle}>{battle.title}</Text>
+          
+          {battle.description && (
+            <Text style={styles.battleDescription}>{battle.description}</Text>
+          )}
+
+          <View style={styles.battleMeta}>
+            <View style={styles.metaItem}>
+              <Ionicons name="flash" size={16} color={COLORS.primary} />
+              <Text style={styles.metaLabel}>Stake:</Text>
+              <Text style={styles.metaValue}>{battle.stake} BC</Text>
+            </View>
+            <View style={styles.metaItem}>
+              <Ionicons name="time-outline" size={16} color={COLORS.textSecondary} />
+              <Text style={styles.metaLabel}>Created:</Text>
+              <Text style={styles.metaValue}>{formatDate(battle.created_at)}</Text>
+            </View>
+            {battle.event_id && (
+              <View style={styles.metaItem}>
+                <Ionicons name="football-outline" size={16} color={COLORS.textSecondary} />
+                <Text style={styles.metaLabel}>Event:</Text>
+                <Text style={styles.metaValue}>{battle.event_id}</Text>
+              </View>
+            )}
+          </View>
+
+          {isCreator && (
+            <View style={styles.creatorBadge}>
+              <Ionicons name="star" size={14} color={COLORS.primary} />
+              <Text style={styles.creatorText}>You created this battle</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Participants Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            Participants ({participants.length})
+          </Text>
+          
+          {participants.length === 0 ? (
+            <View style={styles.emptyParticipants}>
+              <Ionicons name="people-outline" size={32} color={COLORS.textSecondary} />
+              <Text style={styles.emptyText}>No participants yet</Text>
+              <Text style={styles.emptySubtext}>Be the first to join!</Text>
+            </View>
+          ) : (
+            <View style={styles.participantsList}>
+              {participants.map((participant, index) => (
+                <View key={participant.id} style={styles.participantCard}>
+                  <View style={styles.participantLeft}>
+                    <View style={styles.participantAvatar}>
+                      <Ionicons name="person" size={20} color={COLORS.textSecondary} />
+                    </View>
+                    <View style={styles.participantInfo}>
+                      <Text style={styles.participantName}>
+                        {participant.user_id === user?.id ? 'You' : `Player ${index + 1}`}
+                      </Text>
+                      <Text style={styles.participantJoined}>
+                        Joined {formatDate(participant.joined_at)}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.pickBadge}>
+                    <Text style={styles.pickLabel}>Pick:</Text>
+                    <Text style={styles.pickValue}>{participant.pick || '-'}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Join Section */}
+        {canJoin && (
+          <View style={styles.joinSection}>
+            <Text style={styles.sectionTitle}>Join This Battle</Text>
+            <View style={styles.joinCard}>
+              <Text style={styles.joinLabel}>Enter your pick:</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="e.g., Chiefs, Over 45.5, Player A"
+                placeholderTextColor={COLORS.textSecondary}
+                value={pick}
+                onChangeText={setPick}
+                maxLength={100}
+              />
+              <TouchableOpacity
+                style={[styles.joinButton, joining && styles.joinButtonDisabled]}
+                onPress={handleJoin}
+                disabled={joining}
+              >
+                {joining ? (
+                  <ActivityIndicator color={COLORS.white} />
+                ) : (
+                  <>
+                    <Ionicons name="enter-outline" size={20} color={COLORS.white} />
+                    <Text style={styles.joinButtonText}>Join Battle</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {alreadyJoined && !isCreator && (
+          <View style={styles.joinedBadge}>
+            <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
+            <Text style={styles.joinedText}>You have joined this battle</Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: SIZES.padding,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: SIZES.padding,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.card,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+  },
+  placeholder: {
+    width: 40,
+  },
+  battleCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding,
+  },
+  battleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SIZES.padding,
+  },
+  battleIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: COLORS.inputBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  battleIconText: {
+    fontSize: 24,
+  },
+  statusBadge: {
+    paddingHorizontal: SIZES.base,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  statusText: {
+    color: COLORS.white,
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  battleTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+    marginBottom: SIZES.base,
+  },
+  battleDescription: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    marginBottom: SIZES.padding,
+    lineHeight: 22,
+  },
+  battleMeta: {
+    gap: SIZES.base,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  metaLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  metaValue: {
+    color: COLORS.text,
+    fontSize: SIZES.small,
+    fontWeight: '600',
+  },
+  creatorBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+    marginTop: SIZES.padding,
+    paddingTop: SIZES.padding,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.inputBorder,
+  },
+  creatorText: {
+    color: COLORS.primary,
+    fontSize: SIZES.small,
+    fontWeight: '600',
+  },
+  section: {
+    marginBottom: SIZES.padding,
+  },
+  sectionTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    marginBottom: SIZES.padding,
+  },
+  emptyParticipants: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding * 2,
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    marginTop: SIZES.base,
+  },
+  emptySubtext: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginTop: 4,
+  },
+  participantsList: {
+    gap: SIZES.base,
+  },
+  participantCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  participantLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  participantAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.inputBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  participantInfo: {},
+  participantName: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+  participantJoined: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  pickBadge: {
+    backgroundColor: COLORS.inputBackground,
+    paddingHorizontal: SIZES.base,
+    paddingVertical: 4,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  pickLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  pickValue: {
+    color: COLORS.text,
+    fontSize: SIZES.small,
+    fontWeight: 'bold',
+  },
+  joinSection: {
+    marginBottom: SIZES.padding * 2,
+  },
+  joinCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+  },
+  joinLabel: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+    marginBottom: SIZES.base,
+  },
+  input: {
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+    marginBottom: SIZES.padding,
+  },
+  joinButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary,
+    paddingVertical: SIZES.padding,
+    borderRadius: SIZES.radius,
+    gap: SIZES.base,
+  },
+  joinButtonDisabled: {
+    opacity: 0.7,
+  },
+  joinButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  joinedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SIZES.base,
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding * 2,
+  },
+  joinedText: {
+    color: '#4CAF50',
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+});
