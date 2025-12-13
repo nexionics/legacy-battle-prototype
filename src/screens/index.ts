@@ -6,6 +6,7 @@ export { default as HomeScreen } from './HomeScreen';
 export { default as BattlesScreen } from './BattlesScreen';
 export { default as CreateBattleScreen } from './CreateBattleScreen';
 export { default as BattleDetailScreen } from './BattleDetailScreen';
+export { default as AllResultsScreen } from './AllResultsScreen';
 export { default as ExploreScreen } from './ExploreScreen';
 export { default as ProfileScreen } from './ProfileScreen';
 export { default as DevDebugScreen } from './DevDebugScreen';

@@ -191,3 +191,50 @@ export function getSportIcon(sport: string): string {
       return '🏆';
   }
 }
+
+// Get results for a specific sport (last 7 days)
+export async function getResultsBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'): Promise<SportsEvent[]> {
+  try {
+    let events: SportsEvent[] = [];
+    
+    if (sport === 'ALL') {
+      // Fetch from all major leagues
+      const [nfl, nba, mlb, nhl] = await Promise.all([
+        getPreviousLeagueEvents(LEAGUE_IDS.NFL),
+        getPreviousLeagueEvents(LEAGUE_IDS.NBA),
+        getPreviousLeagueEvents(LEAGUE_IDS.MLB),
+        getPreviousLeagueEvents(LEAGUE_IDS.NHL),
+      ]);
+      events = [...nfl, ...nba, ...mlb, ...nhl];
+    } else {
+      events = await getPreviousLeagueEvents(LEAGUE_IDS[sport]);
+    }
+    
+    // Filter to last 7 days and sort by date (most recent first)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const filteredEvents = events.filter(event => {
+      const eventDate = new Date(event.strTimestamp || event.dateEvent);
+      return eventDate >= sevenDaysAgo;
+    });
+    
+    filteredEvents.sort((a, b) => 
+      new Date(b.strTimestamp || b.dateEvent).getTime() - new Date(a.strTimestamp || a.dateEvent).getTime()
+    );
+    
+    return filteredEvents;
+  } catch (error) {
+    console.error('Error fetching results by sport:', error);
+    return [];
+  }
+}
+
+// Available sports for filtering
+export const AVAILABLE_SPORTS = [
+  { id: 'ALL', name: 'All Sports', icon: '🏆' },
+  { id: 'NFL', name: 'NFL', icon: '🏈' },
+  { id: 'NBA', name: 'NBA', icon: '🏀' },
+  { id: 'MLB', name: 'MLB', icon: '⚾' },
+  { id: 'NHL', name: 'NHL', icon: '🏒' },
+] as const;

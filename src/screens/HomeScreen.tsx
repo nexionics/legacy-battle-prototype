@@ -117,7 +117,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         getRecentResults(),
       ]);
       setUpcomingGames(upcoming.slice(0, 5));
-      setRecentResults(recent.slice(0, 3));
+      setRecentResults(recent.slice(0, 5));
     } catch (error) {
       console.error('Error loading sports data:', error);
     } finally {
@@ -208,7 +208,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recent Results</Text>
-            <TouchableOpacity style={styles.seeAllButton}>
+            <TouchableOpacity 
+              style={styles.seeAllButton}
+              onPress={() => navigation.navigate('AllResults')}
+            >
               <Text style={styles.seeAllText}>See All</Text>
               <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
             </TouchableOpacity>

@@ -10,6 +10,7 @@ import {
   BattlesScreen,
   CreateBattleScreen,
   BattleDetailScreen,
+  AllResultsScreen,
   ExploreScreen,
   ProfileScreen,
   DevDebugScreen,
@@ -106,6 +107,7 @@ export default function AppStack() {
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="CreateBattle" component={CreateBattleScreen} />
       <Stack.Screen name="BattleDetail" component={BattleDetailScreen} />
+      <Stack.Screen name="AllResults" component={AllResultsScreen} />
       <Stack.Screen name="DevDebug" component={DevDebugScreen} />
     </Stack.Navigator>
   );
