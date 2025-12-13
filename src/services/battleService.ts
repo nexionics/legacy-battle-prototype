@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabaseClient';
+import { getResultByEventId } from './sportsApi';
 
 export type Battle = {
   id: string;
@@ -151,5 +152,57 @@ export const BattleService = {
         callback
       )
       .subscribe();
+  },
+
+  resolveBattle: async (battleId: string) => {
+    const { battle, participants, error: loadError } =
+      await BattleService.getBattleWithParticipants(battleId);
+
+    if (loadError || !battle) {
+      return { error: loadError || { message: 'Battle not found' }, winnerId: null };
+    }
+
+    if (!battle.event_id) {
+      return { error: { message: 'This battle has no linked event.' }, winnerId: null };
+    }
+
+    const { data: result, error: apiError } = await getResultByEventId(battle.event_id);
+
+    if (apiError || !result) {
+      return { error: apiError || { message: 'Could not fetch game result' }, winnerId: null };
+    }
+
+    const home = Number(result.intHomeScore || 0);
+    const away = Number(result.intAwayScore || 0);
+    const winnerTeam =
+      home > away ? result.strHomeTeam :
+      away > home ? result.strAwayTeam :
+      'TIE';
+
+    let winnerId: string | null = null;
+
+    if (winnerTeam !== 'TIE') {
+      const winningParticipant = participants.find(p => p.pick === winnerTeam);
+      if (winningParticipant) {
+        winnerId = winningParticipant.user_id;
+      }
+    }
+
+    const { error: updateError } = await supabase
+      .from('battles')
+      .update({
+        status: 'completed',
+        winner_id: winnerId,
+        final_outcome: {
+          home_team: result.strHomeTeam,
+          away_team: result.strAwayTeam,
+          home_score: home,
+          away_score: away,
+        },
+        resolved_at: new Date().toISOString(),
+      })
+      .eq('id', battleId);
+
+    return { error: updateError, winnerId };
   },
 };

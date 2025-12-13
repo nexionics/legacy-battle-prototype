@@ -10,13 +10,13 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-  FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
 import { BattleService, Battle, BattleParticipant } from '../services/battleService';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { getResultByEventId, SportsEvent } from '../services/sportsApi';
 
 interface BattleDetailScreenProps {
   navigation: any;
@@ -32,6 +32,8 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState(false);
   const [pick, setPick] = useState('');
+  const [gameScore, setGameScore] = useState<SportsEvent | null>(null);
+  const [resolving, setResolving] = useState(false);
 
   const loadBattle = async () => {
     if (!battleId) return;
@@ -64,6 +66,23 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
     };
   }, [battleId]);
 
+  useEffect(() => {
+    if (!battle?.event_id) return;
+
+    const fetchScore = async () => {
+      const { data } = await getResultByEventId(battle.event_id!);
+      if (data) {
+        setGameScore(data);
+      }
+    };
+
+    fetchScore();
+
+    const interval = setInterval(fetchScore, 60000);
+
+    return () => clearInterval(interval);
+  }, [battle?.event_id]);
+
   const alreadyJoined = participants.some((p) => p.user_id === user?.id);
   const isCreator = battle?.creator_id === user?.id;
   const canJoin = battle?.status === 'open' && !alreadyJoined && !isCreator;
@@ -94,6 +113,35 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
 
     setPick('');
     Alert.alert('Joined!', 'You have successfully joined this battle.');
+  };
+
+  const handleResolve = async () => {
+    if (!battleId) return;
+
+    setResolving(true);
+    const { error, winnerId } = await BattleService.resolveBattle(battleId);
+    setResolving(false);
+
+    if (error) {
+      Alert.alert('Error', error.message || 'Failed to resolve battle');
+      return;
+    }
+
+    if (winnerId) {
+      Alert.alert('Battle Resolved', 'Winner determined!');
+    } else {
+      Alert.alert('Battle Resolved', 'No winner (tie or unmatched picks).');
+    }
+  };
+
+  const matchEnded = gameScore && gameScore.intHomeScore !== null && gameScore.intAwayScore !== null;
+  const canResolve = battle?.status === 'active' && matchEnded && (isCreator || alreadyJoined);
+
+  const getWinnerName = (winnerId: string | null) => {
+    if (!winnerId) return 'No winner';
+    const winner = participants.find(p => p.user_id === winnerId);
+    if (winner?.user_id === user?.id) return 'You';
+    return `Player (${winnerId.slice(0, 8)}...)`;
   };
 
   const getStatusColor = (status: string) => {
@@ -206,6 +254,65 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
             </View>
           )}
         </View>
+
+        {/* Live Score Section */}
+        {gameScore && (
+          <View style={styles.scoreCard}>
+            <Text style={styles.scoreSectionTitle}>
+              {battle.status === 'completed' ? 'Final Score' : 'Live Score'}
+            </Text>
+            <View style={styles.scoreDisplay}>
+              <View style={styles.teamScore}>
+                <Text style={styles.teamName}>{gameScore.strHomeTeam}</Text>
+                <Text style={styles.scoreValue}>{gameScore.intHomeScore ?? '-'}</Text>
+              </View>
+              <Text style={styles.scoreDivider}>vs</Text>
+              <View style={styles.teamScore}>
+                <Text style={styles.teamName}>{gameScore.strAwayTeam}</Text>
+                <Text style={styles.scoreValue}>{gameScore.intAwayScore ?? '-'}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Winner Display for Completed Battles */}
+        {battle.status === 'completed' && (
+          <View style={styles.winnerCard}>
+            <Ionicons name="trophy" size={32} color="#FFD700" />
+            <Text style={styles.winnerTitle}>Battle Resolved</Text>
+            <Text style={styles.winnerName}>
+              Winner: {getWinnerName(battle.winner_id)}
+            </Text>
+            {battle.final_outcome && (
+              <View style={styles.outcomeDetails}>
+                <Text style={styles.outcomeText}>
+                  {battle.final_outcome.home_team}: {battle.final_outcome.home_score}
+                </Text>
+                <Text style={styles.outcomeText}>
+                  {battle.final_outcome.away_team}: {battle.final_outcome.away_score}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Resolve Battle Button */}
+        {canResolve && (
+          <TouchableOpacity
+            style={[styles.resolveButton, resolving && styles.resolveButtonDisabled]}
+            onPress={handleResolve}
+            disabled={resolving}
+          >
+            {resolving ? (
+              <ActivityIndicator color={COLORS.white} />
+            ) : (
+              <>
+                <Ionicons name="checkmark-done" size={20} color={COLORS.white} />
+                <Text style={styles.resolveButtonText}>Resolve Battle</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
 
         {/* Participants Section */}
         <View style={styles.section}>
@@ -533,5 +640,91 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontSize: SIZES.font,
     fontWeight: '600',
+  },
+  scoreCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding,
+  },
+  scoreSectionTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: SIZES.padding,
+  },
+  scoreDisplay: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  teamScore: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  teamName: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    textAlign: 'center',
+    marginBottom: SIZES.base,
+  },
+  scoreValue: {
+    color: COLORS.text,
+    fontSize: SIZES.extraLarge || 28,
+    fontWeight: 'bold',
+  },
+  scoreDivider: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    marginHorizontal: SIZES.base,
+  },
+  winnerCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding * 1.5,
+    marginBottom: SIZES.padding,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+  },
+  winnerTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+    marginTop: SIZES.base,
+  },
+  winnerName: {
+    color: '#FFD700',
+    fontSize: SIZES.font,
+    fontWeight: '600',
+    marginTop: SIZES.base,
+  },
+  outcomeDetails: {
+    marginTop: SIZES.padding,
+    alignItems: 'center',
+  },
+  outcomeText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginTop: 4,
+  },
+  resolveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#4CAF50',
+    paddingVertical: SIZES.padding,
+    borderRadius: SIZES.radius,
+    gap: SIZES.base,
+    marginBottom: SIZES.padding,
+  },
+  resolveButtonDisabled: {
+    opacity: 0.7,
+  },
+  resolveButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
   },
 });

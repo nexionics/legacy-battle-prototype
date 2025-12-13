@@ -268,6 +268,18 @@ export async function getUpcomingBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 
   }
 }
 
+// Get event result by event ID (for battle resolution)
+export async function getResultByEventId(eventId: string): Promise<{ data: SportsEvent | null; error: Error | null }> {
+  try {
+    const response = await fetch(`${BASE_URL}/lookupevent.php?id=${eventId}`);
+    const data = await response.json();
+    return { data: data.events?.[0] || null, error: null };
+  } catch (error) {
+    console.error('Error fetching event by ID:', error);
+    return { data: null, error: error as Error };
+  }
+}
+
 // Available sports for filtering
 export const AVAILABLE_SPORTS = [
   { id: 'ALL', name: 'All Sports', icon: '🏆' },
