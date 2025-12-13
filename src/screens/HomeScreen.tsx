@@ -171,10 +171,19 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Upcoming Games</Text>
-            <TouchableOpacity style={styles.seeAllButton} onPress={loadSportsData}>
-              <Ionicons name="refresh-outline" size={14} color={COLORS.textSecondary} />
-              <Text style={styles.seeAllText}>Refresh</Text>
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              <TouchableOpacity style={styles.seeAllButton} onPress={loadSportsData}>
+                <Ionicons name="refresh-outline" size={14} color={COLORS.textSecondary} />
+                <Text style={styles.seeAllText}>Refresh</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.seeAllButton}
+                onPress={() => navigation.navigate('AllUpcomingGames')}
+              >
+                <Text style={styles.seeAllText}>View All</Text>
+                <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+              </TouchableOpacity>
+            </View>
           </View>
           {loading ? (
             <View style={styles.loadingContainer}>
@@ -345,6 +354,11 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: SIZES.large,
     fontWeight: 'bold',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.padding,
   },
   seeAllButton: {
     flexDirection: 'row',

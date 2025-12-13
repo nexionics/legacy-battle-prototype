@@ -230,6 +230,44 @@ export async function getResultsBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | '
   }
 }
 
+// Get upcoming games for a specific sport (next 7 days)
+export async function getUpcomingBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'): Promise<SportsEvent[]> {
+  try {
+    let events: SportsEvent[] = [];
+    
+    if (sport === 'ALL') {
+      const [nfl, nba, mlb, nhl] = await Promise.all([
+        getNextLeagueEvents(LEAGUE_IDS.NFL),
+        getNextLeagueEvents(LEAGUE_IDS.NBA),
+        getNextLeagueEvents(LEAGUE_IDS.MLB),
+        getNextLeagueEvents(LEAGUE_IDS.NHL),
+      ]);
+      events = [...nfl, ...nba, ...mlb, ...nhl];
+    } else {
+      events = await getNextLeagueEvents(LEAGUE_IDS[sport]);
+    }
+    
+    // Filter to next 7 days and sort by date (soonest first)
+    const now = new Date();
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+    
+    const filteredEvents = events.filter(event => {
+      const eventDate = new Date(event.strTimestamp || event.dateEvent);
+      return eventDate >= now && eventDate <= sevenDaysFromNow;
+    });
+    
+    filteredEvents.sort((a, b) => 
+      new Date(a.strTimestamp || a.dateEvent).getTime() - new Date(b.strTimestamp || b.dateEvent).getTime()
+    );
+    
+    return filteredEvents;
+  } catch (error) {
+    console.error('Error fetching upcoming games by sport:', error);
+    return [];
+  }
+}
+
 // Available sports for filtering
 export const AVAILABLE_SPORTS = [
   { id: 'ALL', name: 'All Sports', icon: '🏆' },
