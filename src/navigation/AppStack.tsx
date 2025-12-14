@@ -74,10 +74,11 @@ function MainTabs({ navigation }: any) {
           },
         }}
         options={{
-          tabBarLabel: '',
+          tabBarLabel: 'Battle Now',
+          tabBarLabelStyle: styles.battleNowLabel,
           tabBarIcon: () => (
-            <View style={styles.battleNowIcon}>
-              <Text style={styles.battleNowText}>LB</Text>
+            <View style={styles.battleNowIconContainer}>
+              <Ionicons name="flash" size={24} color={COLORS.white} />
             </View>
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
@@ -159,17 +160,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 8,
   },
-  battleNowIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.white,
+  battleNowIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  battleNowText: {
-    color: COLORS.primary,
-    fontSize: 14,
-    fontWeight: 'bold',
+  battleNowLabel: {
+    color: COLORS.white,
+    fontSize: 10,
+    fontWeight: '600',
+    marginTop: 4,
   },
 });
