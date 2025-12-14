@@ -18,13 +18,17 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface CreateBattleScreenProps {
   navigation: any;
+  route: any;
 }
 
-export default function CreateBattleScreen({ navigation }: CreateBattleScreenProps) {
+export default function CreateBattleScreen({ navigation, route }: CreateBattleScreenProps) {
   const { user } = useAuth();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [eventId, setEventId] = useState('');
+  
+  const { prefillTitle, prefillEventId, prefillDescription } = route?.params || {};
+  
+  const [title, setTitle] = useState(prefillTitle || '');
+  const [description, setDescription] = useState(prefillDescription || '');
+  const [eventId, setEventId] = useState(prefillEventId || '');
   const [stake, setStake] = useState('0');
   const [loading, setLoading] = useState(false);
 
