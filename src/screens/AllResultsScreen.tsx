@@ -26,7 +26,7 @@ interface AllResultsScreenProps {
 
 type SportFilter = 'ALL' | 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL';
 
-const ResultCard = ({ event, onBattle }: { event: SportsEvent; onBattle: () => void }) => {
+const ResultCard = ({ event }: { event: SportsEvent }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -78,10 +78,9 @@ const ResultCard = ({ event, onBattle }: { event: SportsEvent; onBattle: () => v
           <Ionicons name="calendar-outline" size={12} color={COLORS.textSecondary} />
           <Text style={styles.dateText}>{formatDate(event.strTimestamp || event.dateEvent)}</Text>
         </View>
-        <TouchableOpacity style={styles.battleButton} onPress={onBattle}>
-          <Ionicons name="flash" size={16} color={COLORS.white} />
-          <Text style={styles.battleButtonText}>Battle</Text>
-        </TouchableOpacity>
+        <View style={styles.sportBadge}>
+          <Text style={styles.sportBadgeText}>{event.strSport}</Text>
+        </View>
       </View>
     </View>
   );
@@ -118,14 +117,6 @@ export default function AllResultsScreen({ navigation }: AllResultsScreenProps) 
   const onRefresh = () => {
     setRefreshing(true);
     loadResults();
-  };
-
-  const handleBattle = (event: SportsEvent) => {
-    navigation.navigate('CreateBattle', {
-      prefillTitle: `${event.strHomeTeam} vs ${event.strAwayTeam}`,
-      prefillEventId: event.idEvent,
-      prefillDescription: `${event.strLeague} - Final: ${event.intHomeScore} - ${event.intAwayScore}`,
-    });
   };
 
   return (
@@ -188,11 +179,7 @@ export default function AllResultsScreen({ navigation }: AllResultsScreenProps) 
           </View>
         ) : results.length > 0 ? (
           results.map((event) => (
-            <ResultCard 
-              key={event.idEvent} 
-              event={event} 
-              onBattle={() => handleBattle(event)}
-            />
+            <ResultCard key={event.idEvent} event={event} />
           ))
         ) : (
           <View style={styles.emptyContainer}>
@@ -414,19 +401,5 @@ const styles = StyleSheet.create({
   sportBadgeText: {
     color: COLORS.textSecondary,
     fontSize: 10,
-  },
-  battleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: SIZES.padding,
-    paddingVertical: SIZES.base,
-    borderRadius: SIZES.radius,
-    gap: 4,
-  },
-  battleButtonText: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
-    fontWeight: 'bold',
   },
 });

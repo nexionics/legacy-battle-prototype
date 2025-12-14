@@ -23,6 +23,7 @@ import {
 
 interface AllUpcomingGamesScreenProps {
   navigation: any;
+  route: any;
 }
 
 type SportFilter = 'ALL' | 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL';
@@ -86,11 +87,13 @@ const UpcomingGameCard = ({ event, onBattle }: { event: SportsEvent; onBattle: (
   );
 };
 
-export default function AllUpcomingGamesScreen({ navigation }: AllUpcomingGamesScreenProps) {
+export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomingGamesScreenProps) {
+  const { initialSport } = route?.params || {};
+  
   const [games, setGames] = useState<SportsEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedSport, setSelectedSport] = useState<SportFilter>('ALL');
+  const [selectedSport, setSelectedSport] = useState<SportFilter>(initialSport || 'ALL');
 
   const loadGames = async (sport: SportFilter = selectedSport) => {
     setLoading(true);

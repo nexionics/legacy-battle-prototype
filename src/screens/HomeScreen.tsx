@@ -208,7 +208,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         </View>
 
         {/* Start Battle Button */}
-        <TouchableOpacity style={styles.startBattleButton}>
+        <TouchableOpacity 
+          style={styles.startBattleButton}
+          onPress={() => navigation.navigate('StartBattle')}
+        >
           <Text style={styles.startBattleText}>Start Battle</Text>
           <Ionicons name="flash" size={20} color={COLORS.white} />
         </TouchableOpacity>

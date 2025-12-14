@@ -12,6 +12,7 @@ import {
   BattleDetailScreen,
   AllResultsScreen,
   AllUpcomingGamesScreen,
+  StartBattleScreen,
   ExploreScreen,
   ProfileScreen,
   DevDebugScreen,
@@ -110,6 +111,7 @@ export default function AppStack() {
       <Stack.Screen name="BattleDetail" component={BattleDetailScreen} />
       <Stack.Screen name="AllResults" component={AllResultsScreen} />
       <Stack.Screen name="AllUpcomingGames" component={AllUpcomingGamesScreen} />
+      <Stack.Screen name="StartBattle" component={StartBattleScreen} />
       <Stack.Screen name="DevDebug" component={DevDebugScreen} />
     </Stack.Navigator>
   );

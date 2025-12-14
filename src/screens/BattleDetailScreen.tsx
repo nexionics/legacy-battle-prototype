@@ -358,19 +358,50 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
           <View style={styles.joinSection}>
             <Text style={styles.sectionTitle}>Join This Battle</Text>
             <View style={styles.joinCard}>
-              <Text style={styles.joinLabel}>Enter your pick:</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="e.g., Chiefs, Over 45.5, Player A"
-                placeholderTextColor={COLORS.textSecondary}
-                value={pick}
-                onChangeText={setPick}
-                maxLength={100}
-              />
+              {gameScore ? (
+                <>
+                  <Text style={styles.joinLabel}>Pick the winner:</Text>
+                  <View style={styles.teamPickContainer}>
+                    <TouchableOpacity
+                      style={[
+                        styles.teamPickButton,
+                        pick === gameScore.strHomeTeam && styles.teamPickButtonSelected,
+                      ]}
+                      onPress={() => setPick(gameScore.strHomeTeam)}
+                    >
+                      <Text style={[
+                        styles.teamPickText,
+                        pick === gameScore.strHomeTeam && styles.teamPickTextSelected,
+                      ]}>
+                        {gameScore.strHomeTeam}
+                      </Text>
+                      <Text style={styles.teamPickLabel}>Home</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.vsText}>vs</Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.teamPickButton,
+                        pick === gameScore.strAwayTeam && styles.teamPickButtonSelected,
+                      ]}
+                      onPress={() => setPick(gameScore.strAwayTeam)}
+                    >
+                      <Text style={[
+                        styles.teamPickText,
+                        pick === gameScore.strAwayTeam && styles.teamPickTextSelected,
+                      ]}>
+                        {gameScore.strAwayTeam}
+                      </Text>
+                      <Text style={styles.teamPickLabel}>Away</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.loadingPickText}>Loading game info...</Text>
+              )}
               <TouchableOpacity
-                style={[styles.joinButton, joining && styles.joinButtonDisabled]}
+                style={[styles.joinButton, (joining || !pick) && styles.joinButtonDisabled]}
                 onPress={handleJoin}
-                disabled={joining}
+                disabled={joining || !pick}
               >
                 {joining ? (
                   <ActivityIndicator color={COLORS.white} />
@@ -598,6 +629,51 @@ const styles = StyleSheet.create({
     fontSize: SIZES.font,
     fontWeight: '600',
     marginBottom: SIZES.base,
+  },
+  teamPickContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: SIZES.padding,
+    gap: SIZES.base,
+  },
+  teamPickButton: {
+    flex: 1,
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.inputBorder,
+  },
+  teamPickButtonSelected: {
+    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+  },
+  teamPickText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  teamPickTextSelected: {
+    color: COLORS.primary,
+  },
+  teamPickLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginTop: 4,
+  },
+  vsText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  loadingPickText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    textAlign: 'center',
+    marginBottom: SIZES.padding,
   },
   input: {
     backgroundColor: COLORS.inputBackground,
