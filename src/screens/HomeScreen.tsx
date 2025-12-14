@@ -182,18 +182,18 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         </View>
 
         {/* Quick Picks */}
-        {quickPicks.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Quick Picks</Text>
-              <TouchableOpacity 
-                style={styles.seeAllButton}
-                onPress={() => navigation.navigate('Battles')}
-              >
-                <Text style={styles.seeAllText}>View All</Text>
-                <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Quick Picks</Text>
+            <TouchableOpacity 
+              style={styles.seeAllButton}
+              onPress={() => navigation.navigate('Battles')}
+            >
+              <Text style={styles.seeAllText}>View All</Text>
+              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          {quickPicks.length > 0 ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {quickPicks.map((battle) => (
                 <TouchableOpacity
@@ -222,23 +222,27 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                 </TouchableOpacity>
               ))}
             </ScrollView>
-          </View>
-        )}
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No open battles to join yet</Text>
+            </View>
+          )}
+        </View>
 
         {/* My Battles */}
-        {myBattles.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>My Battles</Text>
-              <TouchableOpacity 
-                style={styles.seeAllButton}
-                onPress={() => navigation.navigate('Battles')}
-              >
-                <Text style={styles.seeAllText}>View All</Text>
-                <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
-              </TouchableOpacity>
-            </View>
-            {myBattles.map((battle) => (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>My Battles</Text>
+            <TouchableOpacity 
+              style={styles.seeAllButton}
+              onPress={() => navigation.navigate('Battles')}
+            >
+              <Text style={styles.seeAllText}>View All</Text>
+              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          {myBattles.length > 0 ? (
+            myBattles.map((battle) => (
               <TouchableOpacity
                 key={battle.id}
                 style={styles.myBattleItem}
@@ -262,9 +266,13 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                   </Text>
                 </View>
               </TouchableOpacity>
-            ))}
-          </View>
-        )}
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No active battles yet</Text>
+            </View>
+          )}
+        </View>
 
         {/* Upcoming Games */}
         <View style={styles.section}>

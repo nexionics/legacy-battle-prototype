@@ -93,7 +93,6 @@ export const BattleService = {
       .select('*, battle_participants(*)')
       .eq('status', 'open')
       .neq('creator_id', userId)
-      .not('event_id', 'is', null)
       .order('created_at', { ascending: false })
       .limit(limit);
   },
