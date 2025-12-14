@@ -126,6 +126,8 @@ export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomin
     navigation.navigate('CreateBattle', {
       prefillTitle: `${event.strHomeTeam} vs ${event.strAwayTeam}`,
       prefillEventId: event.idEvent,
+      homeTeam: event.strHomeTeam,
+      awayTeam: event.strAwayTeam,
     });
   };
 
