@@ -77,6 +77,27 @@ export const BattleService = {
       .order('created_at', { ascending: false });
   },
 
+  getMyAcceptedBattles: async (userId: string, limit = 5) => {
+    return await supabase
+      .from('battles')
+      .select('*, battle_participants(*)')
+      .eq('creator_id', userId)
+      .in('status', ['active', 'completed'])
+      .order('created_at', { ascending: false })
+      .limit(limit);
+  },
+
+  getQuickPickBattles: async (userId: string, limit = 5) => {
+    return await supabase
+      .from('battles')
+      .select('*, battle_participants(*)')
+      .eq('status', 'open')
+      .neq('creator_id', userId)
+      .not('event_id', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+  },
+
   subscribeToBattles: (callback: (payload: any) => void) => {
     return supabase
       .channel('public:battles')

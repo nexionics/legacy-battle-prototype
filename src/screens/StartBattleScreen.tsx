@@ -15,7 +15,7 @@ interface StartBattleScreenProps {
   navigation: any;
 }
 
-type SportType = 'NFL' | 'NBA' | 'MLB' | 'NHL';
+type SportType = 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'SKILLS';
 
 interface Sport {
   id: SportType;
@@ -37,6 +37,7 @@ const SPORTS: Sport[] = [
   { id: 'NBA', name: 'Basketball', icon: '🏀', color: '#C9082A' },
   { id: 'MLB', name: 'Baseball', icon: '⚾', color: '#002D72' },
   { id: 'NHL', name: 'Hockey', icon: '🏒', color: '#000000' },
+  { id: 'SKILLS', name: 'Skills Battle', icon: '⚡', color: '#E53935' },
 ];
 
 const BATTLE_CATEGORIES: BattleCategory[] = [
@@ -59,13 +60,6 @@ const BATTLE_CATEGORIES: BattleCategory[] = [
     name: 'Stats Battle',
     description: 'Compare player statistics',
     icon: 'bar-chart',
-    enabled: false,
-  },
-  {
-    id: 'SKILLS_BATTLE',
-    name: 'Skills Battle',
-    description: 'Challenge specific player skills',
-    icon: 'flash',
     enabled: false,
   },
 ];
@@ -103,7 +97,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {selectedSport ? 'Select Battle Type' : 'Select a Sport'}
+          {selectedSport === 'SKILLS' ? 'Skills Battle' : selectedSport ? 'Select Battle Type' : 'Select a Sport'}
         </Text>
         <View style={styles.placeholder} />
       </View>
@@ -121,9 +115,47 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                   <Text style={styles.sportIcon}>{sport.icon}</Text>
                 </View>
                 <Text style={styles.sportName}>{sport.name}</Text>
-                <Text style={styles.sportId}>{sport.id}</Text>
+                <Text style={styles.sportId}>{sport.id === 'SKILLS' ? '' : sport.id}</Text>
               </TouchableOpacity>
             ))}
+          </View>
+        ) : selectedSport === 'SKILLS' ? (
+          <View style={styles.skillsContainer}>
+            <View style={styles.skillsCard}>
+              <View style={styles.skillsBadge}>
+                <Ionicons name="videocam" size={14} color={COLORS.primary} />
+                <Text style={styles.skillsBadgeText}>Neutral Attester Verifies</Text>
+              </View>
+              
+              <View style={styles.skillsHeader}>
+                <View style={styles.skillsIconContainer}>
+                  <Text style={styles.skillsIcon}>⚡</Text>
+                </View>
+                <View style={styles.skillsInfo}>
+                  <Text style={styles.skillsTitle}>Skill Battle</Text>
+                  <Text style={styles.skillsSubtitle}>Showcase Your Skills With Proof</Text>
+                </View>
+              </View>
+              
+              <View style={styles.skillsFeatures}>
+                <View style={styles.skillsFeature}>
+                  <Ionicons name="videocam-outline" size={16} color={COLORS.textSecondary} />
+                  <Text style={styles.skillsFeatureText}>Video Evidence Needed</Text>
+                </View>
+                <View style={styles.skillsFeature}>
+                  <Ionicons name="people-outline" size={16} color={COLORS.textSecondary} />
+                  <Text style={styles.skillsFeatureText}>3 Neutral Attesters</Text>
+                </View>
+              </View>
+            </View>
+            
+            <View style={styles.comingSoonCard}>
+              <Ionicons name="construct-outline" size={48} color={COLORS.primary} />
+              <Text style={styles.comingSoonTitle}>Coming Soon</Text>
+              <Text style={styles.comingSoonText}>
+                Skills Battles will let you challenge friends with video proof of your skills. Neutral attesters will verify the winner.
+              </Text>
+            </View>
           </View>
         ) : (
           <View style={styles.categoriesContainer}>
@@ -309,5 +341,92 @@ const styles = StyleSheet.create({
   categoryDescription: {
     color: COLORS.textSecondary,
     fontSize: SIZES.small,
+  },
+  skillsContainer: {
+    paddingTop: SIZES.padding,
+  },
+  skillsCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    marginBottom: SIZES.padding,
+  },
+  skillsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+    paddingHorizontal: SIZES.base,
+    paddingVertical: 4,
+    borderRadius: SIZES.radius,
+    alignSelf: 'flex-start',
+    gap: 4,
+    marginBottom: SIZES.padding,
+  },
+  skillsBadgeText: {
+    color: COLORS.primary,
+    fontSize: SIZES.small,
+    fontWeight: '600',
+  },
+  skillsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.padding,
+    marginBottom: SIZES.padding,
+  },
+  skillsIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  skillsIcon: {
+    fontSize: 24,
+  },
+  skillsInfo: {
+    flex: 1,
+  },
+  skillsTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+  },
+  skillsSubtitle: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  skillsFeatures: {
+    gap: SIZES.base,
+  },
+  skillsFeature: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  skillsFeatureText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+  },
+  comingSoonCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding * 2,
+    alignItems: 'center',
+  },
+  comingSoonTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+    marginTop: SIZES.padding,
+    marginBottom: SIZES.base,
+  },
+  comingSoonText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });

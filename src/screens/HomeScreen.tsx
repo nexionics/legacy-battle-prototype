@@ -19,6 +19,8 @@ import {
   formatEventTime,
   getSportIcon,
 } from '../services/sportsApi';
+import { BattleService, Battle } from '../services/battleService';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HomeScreenProps {
   navigation: any;
@@ -101,15 +103,18 @@ const RecentResultCard = ({ event }: { event: SportsEvent }) => (
 );
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { user } = useAuth();
   const [upcomingGames, setUpcomingGames] = useState<SportsEvent[]>([]);
   const [recentResults, setRecentResults] = useState<SportsEvent[]>([]);
+  const [quickPicks, setQuickPicks] = useState<Battle[]>([]);
+  const [myBattles, setMyBattles] = useState<Battle[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadSportsData();
-  }, []);
+    loadAllData();
+  }, [user]);
 
-  const loadSportsData = async () => {
+  const loadAllData = async () => {
     setLoading(true);
     try {
       const [upcoming, recent] = await Promise.all([
@@ -118,8 +123,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       ]);
       setUpcomingGames(upcoming.slice(0, 5));
       setRecentResults(recent.slice(0, 5));
+
+      if (user?.id) {
+        const [quickPicksResult, myBattlesResult] = await Promise.all([
+          BattleService.getQuickPickBattles(user.id, 5),
+          BattleService.getMyAcceptedBattles(user.id, 5),
+        ]);
+        if (quickPicksResult.data) setQuickPicks(quickPicksResult.data);
+        if (myBattlesResult.data) setMyBattles(myBattlesResult.data);
+      }
     } catch (error) {
-      console.error('Error loading sports data:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -167,12 +181,97 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           </TouchableOpacity>
         </View>
 
+        {/* Quick Picks */}
+        {quickPicks.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Quick Picks</Text>
+              <TouchableOpacity 
+                style={styles.seeAllButton}
+                onPress={() => navigation.navigate('Battles')}
+              >
+                <Text style={styles.seeAllText}>View All</Text>
+                <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {quickPicks.map((battle) => (
+                <TouchableOpacity
+                  key={battle.id}
+                  style={styles.quickPickCard}
+                  onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
+                >
+                  <View style={styles.quickPickHeader}>
+                    <View style={styles.quickPickIcon}>
+                      <Ionicons name="flash" size={20} color={COLORS.primary} />
+                    </View>
+                    <View style={[styles.statusBadge, styles.statusOpen]}>
+                      <Text style={styles.statusText}>Open</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.quickPickTitle} numberOfLines={2}>{battle.title}</Text>
+                  <View style={styles.quickPickFooter}>
+                    <Text style={styles.quickPickStake}>{battle.stake} BC</Text>
+                    <TouchableOpacity 
+                      style={styles.quickPickJoin}
+                      onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
+                    >
+                      <Text style={styles.quickPickJoinText}>Join</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* My Battles */}
+        {myBattles.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>My Battles</Text>
+              <TouchableOpacity 
+                style={styles.seeAllButton}
+                onPress={() => navigation.navigate('Battles')}
+              >
+                <Text style={styles.seeAllText}>View All</Text>
+                <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            {myBattles.map((battle) => (
+              <TouchableOpacity
+                key={battle.id}
+                style={styles.myBattleItem}
+                onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
+              >
+                <View style={styles.myBattleItemLeft}>
+                  <View style={styles.battleIcon}>
+                    <Ionicons name="trophy" size={20} color={COLORS.primary} />
+                  </View>
+                  <View style={styles.myBattleItemInfo}>
+                    <Text style={styles.myBattleItemTitle} numberOfLines={1}>{battle.title}</Text>
+                    <Text style={styles.myBattleItemStake}>{battle.stake} BC</Text>
+                  </View>
+                </View>
+                <View style={[
+                  styles.statusBadge, 
+                  battle.status === 'active' ? styles.statusActive : styles.statusCompleted
+                ]}>
+                  <Text style={styles.statusText}>
+                    {battle.status === 'active' ? 'Active' : 'Completed'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
         {/* Upcoming Games */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Upcoming Games</Text>
             <View style={styles.headerButtons}>
-              <TouchableOpacity style={styles.seeAllButton} onPress={loadSportsData}>
+              <TouchableOpacity style={styles.seeAllButton} onPress={loadAllData}>
                 <Ionicons name="refresh-outline" size={14} color={COLORS.textSecondary} />
                 <Text style={styles.seeAllText}>Refresh</Text>
               </TouchableOpacity>
@@ -487,6 +586,9 @@ const styles = StyleSheet.create({
   statusCompleted: {
     backgroundColor: '#4CAF50',
   },
+  statusOpen: {
+    backgroundColor: '#2196F3',
+  },
   statusText: {
     color: COLORS.white,
     fontSize: 10,
@@ -595,5 +697,83 @@ const styles = StyleSheet.create({
   emptyText: {
     color: COLORS.textSecondary,
     fontSize: SIZES.font,
+  },
+  quickPickCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginRight: SIZES.base,
+    width: 180,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  quickPickHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SIZES.base,
+  },
+  quickPickIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quickPickTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    marginBottom: SIZES.base,
+    minHeight: 40,
+  },
+  quickPickFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  quickPickStake: {
+    color: COLORS.primary,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  quickPickJoin: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SIZES.padding,
+    paddingVertical: SIZES.base / 2,
+    borderRadius: SIZES.radius,
+  },
+  quickPickJoinText: {
+    color: COLORS.white,
+    fontSize: SIZES.small,
+    fontWeight: 'bold',
+  },
+  myBattleItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.base,
+  },
+  myBattleItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+    flex: 1,
+  },
+  myBattleItemInfo: {
+    flex: 1,
+  },
+  myBattleItemTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  myBattleItemStake: {
+    color: COLORS.primary,
+    fontSize: SIZES.small,
   },
 });
