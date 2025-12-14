@@ -9,6 +9,7 @@ export { default as BattleDetailScreen } from './BattleDetailScreen';
 export { default as AllResultsScreen } from './AllResultsScreen';
 export { default as AllUpcomingGamesScreen } from './AllUpcomingGamesScreen';
 export { default as StartBattleScreen } from './StartBattleScreen';
+export { default as BattleTypeScreen } from './BattleTypeScreen';
 export { default as ExploreScreen } from './ExploreScreen';
 export { default as ProfileScreen } from './ProfileScreen';
 export { default as DevDebugScreen } from './DevDebugScreen';

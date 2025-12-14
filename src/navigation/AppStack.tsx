@@ -13,6 +13,7 @@ import {
   AllResultsScreen,
   AllUpcomingGamesScreen,
   StartBattleScreen,
+  BattleTypeScreen,
   ExploreScreen,
   ProfileScreen,
   DevDebugScreen,
@@ -34,7 +35,7 @@ function CustomTabBarButton({ children, onPress }: any) {
   );
 }
 
-function MainTabs() {
+function MainTabs({ navigation }: any) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -66,6 +67,12 @@ function MainTabs() {
       <Tab.Screen
         name="BattleNow"
         component={HomeScreen}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('BattleType');
+          },
+        }}
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (
@@ -112,6 +119,7 @@ export default function AppStack() {
       <Stack.Screen name="AllResults" component={AllResultsScreen} />
       <Stack.Screen name="AllUpcomingGames" component={AllUpcomingGamesScreen} />
       <Stack.Screen name="StartBattle" component={StartBattleScreen} />
+      <Stack.Screen name="BattleType" component={BattleTypeScreen} />
       <Stack.Screen name="DevDebug" component={DevDebugScreen} />
     </Stack.Navigator>
   );

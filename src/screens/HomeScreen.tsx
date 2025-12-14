@@ -309,9 +309,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* Start Battle Button */}
         <TouchableOpacity 
           style={styles.startBattleButton}
-          onPress={() => navigation.navigate('StartBattle')}
+          onPress={() => navigation.navigate('BattleType')}
         >
-          <Text style={styles.startBattleText}>Start Battle</Text>
+          <Text style={styles.startBattleText}>Start Battle Now</Text>
           <Ionicons name="flash" size={20} color={COLORS.white} />
         </TouchableOpacity>
 

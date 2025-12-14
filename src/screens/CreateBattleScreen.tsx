@@ -10,6 +10,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
@@ -21,20 +22,78 @@ interface CreateBattleScreenProps {
   route: any;
 }
 
+type OutcomeType = 'WIN' | 'LOSE';
+
+interface DropdownOption {
+  label: string;
+  value: string;
+}
+
 export default function CreateBattleScreen({ navigation, route }: CreateBattleScreenProps) {
   const { user } = useAuth();
   
-  const { prefillTitle, prefillEventId, prefillDescription } = route?.params || {};
+  const { 
+    prefillTitle, 
+    prefillEventId, 
+    prefillDescription,
+    homeTeam,
+    awayTeam,
+  } = route?.params || {};
   
   const [title, setTitle] = useState(prefillTitle || '');
-  const [description, setDescription] = useState(prefillDescription || '');
   const [eventId, setEventId] = useState(prefillEventId || '');
   const [stake, setStake] = useState('0');
   const [loading, setLoading] = useState(false);
+  
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  const [selectedOutcome, setSelectedOutcome] = useState<OutcomeType | null>(null);
+  const [showTeamPicker, setShowTeamPicker] = useState(false);
+  const [showOutcomePicker, setShowOutcomePicker] = useState(false);
+
+  const teamOptions: DropdownOption[] = homeTeam && awayTeam ? [
+    { label: homeTeam, value: 'home' },
+    { label: awayTeam, value: 'away' },
+  ] : [];
+
+  const outcomeOptions: DropdownOption[] = [
+    { label: 'Will Win', value: 'WIN' },
+    { label: 'Will Lose', value: 'LOSE' },
+  ];
+
+  const getSelectedTeamLabel = () => {
+    if (!selectedTeam) return 'Select Team';
+    const option = teamOptions.find(o => o.value === selectedTeam);
+    return option?.label || 'Select Team';
+  };
+
+  const getSelectedOutcomeLabel = () => {
+    if (!selectedOutcome) return 'Select Outcome';
+    const option = outcomeOptions.find(o => o.value === selectedOutcome);
+    return option?.label || 'Select Outcome';
+  };
+
+  const generateBattleDescription = () => {
+    if (selectedTeam && selectedOutcome && teamOptions.length > 0) {
+      const teamName = teamOptions.find(o => o.value === selectedTeam)?.label;
+      const outcome = selectedOutcome === 'WIN' ? 'will win' : 'will lose';
+      return `I predict ${teamName} ${outcome}`;
+    }
+    return '';
+  };
 
   const onCreate = async () => {
     if (!title.trim()) {
       Alert.alert('Error', 'Please enter a battle title');
+      return;
+    }
+
+    if (teamOptions.length > 0 && !selectedTeam) {
+      Alert.alert('Error', 'Please select a team');
+      return;
+    }
+
+    if (teamOptions.length > 0 && !selectedOutcome) {
+      Alert.alert('Error', 'Please select an outcome');
       return;
     }
 
@@ -45,10 +104,12 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
 
     setLoading(true);
 
+    const description = generateBattleDescription();
+
     const { data, error } = await BattleService.createBattle({
       creatorId: user.id,
       title: title.trim(),
-      description: description.trim() || undefined,
+      description: description || undefined,
       eventId: eventId.trim() || undefined,
       stake: parseInt(stake) || 0,
     });
@@ -62,6 +123,49 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
 
     navigation.goBack();
   };
+
+  const DropdownModal = ({ 
+    visible, 
+    onClose, 
+    options, 
+    onSelect, 
+    title: modalTitle 
+  }: { 
+    visible: boolean; 
+    onClose: () => void; 
+    options: DropdownOption[]; 
+    onSelect: (value: string) => void;
+    title: string;
+  }) => (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity 
+        style={styles.modalOverlay} 
+        activeOpacity={1} 
+        onPress={onClose}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>{modalTitle}</Text>
+          {options.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.modalOption}
+              onPress={() => {
+                onSelect(option.value);
+                onClose();
+              }}
+            >
+              <Text style={styles.modalOptionText}>{option.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,32 +199,63 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
             />
           </View>
 
-          {/* Description */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Description</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Add more details about this battle..."
-              placeholderTextColor={COLORS.textSecondary}
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              maxLength={500}
-            />
-          </View>
+          {/* Battle Setup - Team and Outcome Dropdowns */}
+          {teamOptions.length > 0 && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Battle Setup</Text>
+              <Text style={styles.setupHint}>Select your prediction for this game</Text>
+              
+              <View style={styles.dropdownRow}>
+                <TouchableOpacity 
+                  style={styles.dropdown}
+                  onPress={() => setShowTeamPicker(true)}
+                >
+                  <Text style={[
+                    styles.dropdownText,
+                    !selectedTeam && styles.dropdownPlaceholder
+                  ]}>
+                    {getSelectedTeamLabel()}
+                  </Text>
+                  <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
 
-          {/* Event ID (optional) */}
+                <TouchableOpacity 
+                  style={styles.dropdown}
+                  onPress={() => setShowOutcomePicker(true)}
+                >
+                  <Text style={[
+                    styles.dropdownText,
+                    !selectedOutcome && styles.dropdownPlaceholder
+                  ]}>
+                    {getSelectedOutcomeLabel()}
+                  </Text>
+                  <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+                </TouchableOpacity>
+              </View>
+
+              {selectedTeam && selectedOutcome && (
+                <View style={styles.predictionPreview}>
+                  <Ionicons name="checkmark-circle" size={16} color={COLORS.primary} />
+                  <Text style={styles.predictionText}>{generateBattleDescription()}</Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Event ID */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Game/Event ID (optional)</Text>
+            <Text style={styles.label}>Game/Event ID</Text>
             <TextInput
-              style={styles.input}
-              placeholder="Sports event ID (for future integration)"
+              style={[styles.input, eventId && styles.inputDisabled]}
+              placeholder="Sports event ID"
               placeholderTextColor={COLORS.textSecondary}
               value={eventId}
               onChangeText={setEventId}
+              editable={!prefillEventId}
             />
-            <Text style={styles.hint}>Leave blank for custom battles</Text>
+            {eventId && (
+              <Text style={styles.hint}>Linked to live game data</Text>
+            )}
           </View>
 
           {/* Stake */}
@@ -154,6 +289,22 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
           )}
         </TouchableOpacity>
       </ScrollView>
+
+      <DropdownModal
+        visible={showTeamPicker}
+        onClose={() => setShowTeamPicker(false)}
+        options={teamOptions}
+        onSelect={(value) => setSelectedTeam(value)}
+        title="Select Team"
+      />
+
+      <DropdownModal
+        visible={showOutcomePicker}
+        onClose={() => setShowOutcomePicker(false)}
+        options={outcomeOptions}
+        onSelect={(value) => setSelectedOutcome(value as OutcomeType)}
+        title="Select Outcome"
+      />
     </SafeAreaView>
   );
 }
@@ -219,6 +370,50 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small,
     marginTop: SIZES.base / 2,
   },
+  setupHint: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginBottom: SIZES.padding,
+  },
+  inputDisabled: {
+    opacity: 0.7,
+  },
+  dropdownRow: {
+    flexDirection: 'row',
+    gap: SIZES.base,
+  },
+  dropdown: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.inputBackground,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  dropdownText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+  },
+  dropdownPlaceholder: {
+    color: COLORS.textSecondary,
+  },
+  predictionPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+    marginTop: SIZES.padding,
+    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+    padding: SIZES.padding,
+    borderRadius: SIZES.radius,
+  },
+  predictionText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    flex: 1,
+  },
   createButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -237,5 +432,35 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: SIZES.font,
     fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    width: '80%',
+    maxWidth: 300,
+  },
+  modalTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+    marginBottom: SIZES.padding,
+    textAlign: 'center',
+  },
+  modalOption: {
+    paddingVertical: SIZES.padding,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
+  },
+  modalOptionText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    textAlign: 'center',
   },
 });
