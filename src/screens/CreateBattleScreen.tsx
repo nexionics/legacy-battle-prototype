@@ -50,9 +50,22 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
   const [showTeamPicker, setShowTeamPicker] = useState(false);
   const [showOutcomePicker, setShowOutcomePicker] = useState(false);
 
-  const teamOptions: DropdownOption[] = homeTeam && awayTeam ? [
-    { label: homeTeam, value: 'home' },
-    { label: awayTeam, value: 'away' },
+  const deriveTeamsFromTitle = (titleStr: string | undefined) => {
+    if (!titleStr) return { home: undefined, away: undefined };
+    const parts = titleStr.split(' vs ');
+    if (parts.length === 2) {
+      return { home: parts[0].trim(), away: parts[1].trim() };
+    }
+    return { home: undefined, away: undefined };
+  };
+
+  const { home: derivedHome, away: derivedAway } = deriveTeamsFromTitle(prefillTitle);
+  const finalHomeTeam = homeTeam || derivedHome;
+  const finalAwayTeam = awayTeam || derivedAway;
+
+  const teamOptions: DropdownOption[] = finalHomeTeam && finalAwayTeam ? [
+    { label: finalHomeTeam, value: 'home' },
+    { label: finalAwayTeam, value: 'away' },
   ] : [];
 
   const outcomeOptions: DropdownOption[] = [

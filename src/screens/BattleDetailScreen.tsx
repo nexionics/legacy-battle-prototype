@@ -87,6 +87,19 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const isCreator = battle?.creator_id === user?.id;
   const canJoin = battle?.status === 'open' && !alreadyJoined && !isCreator;
 
+  const deriveTeamsFromTitle = (titleStr: string | undefined) => {
+    if (!titleStr) return { home: undefined, away: undefined };
+    const parts = titleStr.split(' vs ');
+    if (parts.length === 2) {
+      return { home: parts[0].trim(), away: parts[1].trim() };
+    }
+    return { home: undefined, away: undefined };
+  };
+
+  const { home: derivedHomeTeam, away: derivedAwayTeam } = deriveTeamsFromTitle(battle?.title);
+  const homeTeamName = gameScore?.strHomeTeam || derivedHomeTeam;
+  const awayTeamName = gameScore?.strAwayTeam || derivedAwayTeam;
+
   const handleJoin = async () => {
     if (!pick.trim()) {
       Alert.alert('Pick required', 'Please enter your pick to join this battle');
@@ -358,22 +371,22 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
           <View style={styles.joinSection}>
             <Text style={styles.sectionTitle}>Join This Battle</Text>
             <View style={styles.joinCard}>
-              {gameScore ? (
+              {homeTeamName && awayTeamName ? (
                 <>
                   <Text style={styles.joinLabel}>Pick the winner:</Text>
                   <View style={styles.teamPickContainer}>
                     <TouchableOpacity
                       style={[
                         styles.teamPickButton,
-                        pick === gameScore.strHomeTeam && styles.teamPickButtonSelected,
+                        pick === homeTeamName && styles.teamPickButtonSelected,
                       ]}
-                      onPress={() => setPick(gameScore.strHomeTeam)}
+                      onPress={() => setPick(homeTeamName)}
                     >
                       <Text style={[
                         styles.teamPickText,
-                        pick === gameScore.strHomeTeam && styles.teamPickTextSelected,
+                        pick === homeTeamName && styles.teamPickTextSelected,
                       ]}>
-                        {gameScore.strHomeTeam}
+                        {homeTeamName}
                       </Text>
                       <Text style={styles.teamPickLabel}>Home</Text>
                     </TouchableOpacity>
@@ -381,22 +394,22 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
                     <TouchableOpacity
                       style={[
                         styles.teamPickButton,
-                        pick === gameScore.strAwayTeam && styles.teamPickButtonSelected,
+                        pick === awayTeamName && styles.teamPickButtonSelected,
                       ]}
-                      onPress={() => setPick(gameScore.strAwayTeam)}
+                      onPress={() => setPick(awayTeamName)}
                     >
                       <Text style={[
                         styles.teamPickText,
-                        pick === gameScore.strAwayTeam && styles.teamPickTextSelected,
+                        pick === awayTeamName && styles.teamPickTextSelected,
                       ]}>
-                        {gameScore.strAwayTeam}
+                        {awayTeamName}
                       </Text>
                       <Text style={styles.teamPickLabel}>Away</Text>
                     </TouchableOpacity>
                   </View>
                 </>
               ) : (
-                <Text style={styles.loadingPickText}>Loading game info...</Text>
+                <Text style={styles.loadingPickText}>Unable to determine teams for this battle</Text>
               )}
               <TouchableOpacity
                 style={[styles.joinButton, (joining || !pick) && styles.joinButtonDisabled]}
