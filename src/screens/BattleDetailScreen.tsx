@@ -100,6 +100,26 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const homeTeamName = gameScore?.strHomeTeam || derivedHomeTeam;
   const awayTeamName = gameScore?.strAwayTeam || derivedAwayTeam;
 
+  const creatorParticipant = participants.find(p => p.user_id === battle?.creator_id);
+  const creatorWinningTeam = creatorParticipant?.pick;
+
+  let joinerWinningTeam: string | null = null;
+  if (homeTeamName && awayTeamName && creatorWinningTeam) {
+    if (creatorWinningTeam === homeTeamName) {
+      joinerWinningTeam = awayTeamName;
+    } else if (creatorWinningTeam === awayTeamName) {
+      joinerWinningTeam = homeTeamName;
+    }
+  }
+
+  const isHeadToHeadBattle = !!creatorParticipant && !!joinerWinningTeam;
+
+  useEffect(() => {
+    if (canJoin && joinerWinningTeam) {
+      setPick(joinerWinningTeam);
+    }
+  }, [canJoin, joinerWinningTeam]);
+
   const handleJoin = async () => {
     if (!pick.trim()) {
       Alert.alert('Pick required', 'Please enter your pick to join this battle');
@@ -371,7 +391,24 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
           <View style={styles.joinSection}>
             <Text style={styles.sectionTitle}>Join This Battle</Text>
             <View style={styles.joinCard}>
-              {homeTeamName && awayTeamName ? (
+              {isHeadToHeadBattle ? (
+                <>
+                  <View style={styles.challengeInfo}>
+                    <Text style={styles.challengeLabel}>Creator's prediction:</Text>
+                    <View style={styles.predictionBox}>
+                      <Ionicons name="person" size={16} color={COLORS.primary} />
+                      <Text style={styles.predictionTeam}>{creatorWinningTeam} will win</Text>
+                    </View>
+                  </View>
+                  <View style={styles.challengeInfo}>
+                    <Text style={styles.challengeLabel}>Your side (if you accept):</Text>
+                    <View style={[styles.predictionBox, styles.yourPredictionBox]}>
+                      <Ionicons name="flash" size={16} color="#4CAF50" />
+                      <Text style={[styles.predictionTeam, styles.yourPredictionTeam]}>{joinerWinningTeam} will win</Text>
+                    </View>
+                  </View>
+                </>
+              ) : homeTeamName && awayTeamName ? (
                 <>
                   <Text style={styles.joinLabel}>Pick the winner:</Text>
                   <View style={styles.teamPickContainer}>
@@ -421,7 +458,7 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
                 ) : (
                   <>
                     <Ionicons name="enter-outline" size={20} color={COLORS.white} />
-                    <Text style={styles.joinButtonText}>Join Battle</Text>
+                    <Text style={styles.joinButtonText}>{isHeadToHeadBattle ? 'Accept Challenge' : 'Join Battle'}</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -815,5 +852,35 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: SIZES.font,
     fontWeight: 'bold',
+  },
+  challengeInfo: {
+    marginBottom: SIZES.padding,
+  },
+  challengeLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginBottom: SIZES.base,
+  },
+  predictionBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+    backgroundColor: COLORS.inputBackground,
+    padding: SIZES.padding,
+    borderRadius: SIZES.radius,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  predictionTeam: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+  yourPredictionBox: {
+    borderColor: '#4CAF50',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+  },
+  yourPredictionTeam: {
+    color: '#4CAF50',
   },
 });

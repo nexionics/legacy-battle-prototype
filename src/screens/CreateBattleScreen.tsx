@@ -94,6 +94,17 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
     return '';
   };
 
+  const getCreatorWinningTeam = () => {
+    if (!selectedTeam || !selectedOutcome || !finalHomeTeam || !finalAwayTeam) return undefined;
+    const pickedHome = selectedTeam === 'home';
+    const willWin = selectedOutcome === 'WIN';
+    if (pickedHome && willWin) return finalHomeTeam;
+    if (pickedHome && !willWin) return finalAwayTeam;
+    if (!pickedHome && willWin) return finalAwayTeam;
+    if (!pickedHome && !willWin) return finalHomeTeam;
+    return undefined;
+  };
+
   const onCreate = async () => {
     if (!title.trim()) {
       Alert.alert('Error', 'Please enter a battle title');
@@ -118,6 +129,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
     setLoading(true);
 
     const description = generateBattleDescription();
+    const creatorPickTeam = getCreatorWinningTeam();
 
     const { data, error } = await BattleService.createBattle({
       creatorId: user.id,
@@ -125,6 +137,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
       description: description || undefined,
       eventId: eventId.trim() || undefined,
       stake: parseInt(stake) || 0,
+      creatorPick: creatorPickTeam,
     });
 
     setLoading(false);
