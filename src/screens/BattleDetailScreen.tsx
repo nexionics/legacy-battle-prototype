@@ -121,8 +121,13 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   }, [canJoin, joinerWinningTeam]);
 
   const handleJoin = async () => {
-    if (!pick.trim()) {
-      Alert.alert('Pick required', 'Please enter your pick to join this battle');
+    const effectivePick =
+      isHeadToHeadBattle && joinerWinningTeam
+        ? joinerWinningTeam
+        : pick.trim();
+
+    if (!effectivePick) {
+      Alert.alert('Pick required', 'Please select a team to join this battle');
       return;
     }
 
@@ -135,7 +140,7 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
     const { error } = await BattleService.joinBattle({
       battleId,
       userId: user.id,
-      pick: pick.trim(),
+      pick: effectivePick,
     });
     setJoining(false);
 
@@ -449,9 +454,13 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
                 <Text style={styles.loadingPickText}>Unable to determine teams for this battle</Text>
               )}
               <TouchableOpacity
-                style={[styles.joinButton, (joining || !pick) && styles.joinButtonDisabled]}
+                style={[
+                  styles.joinButton,
+                  (joining || (!pick && !(isHeadToHeadBattle && joinerWinningTeam))) &&
+                    styles.joinButtonDisabled,
+                ]}
                 onPress={handleJoin}
-                disabled={joining || !pick}
+                disabled={joining || (!pick && !(isHeadToHeadBattle && joinerWinningTeam))}
               >
                 {joining ? (
                   <ActivityIndicator color={COLORS.white} />
