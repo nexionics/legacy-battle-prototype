@@ -57,13 +57,17 @@ export const BattleService = {
     }
 
     if (creatorPick) {
-      await supabase
+      const { error: participantError } = await supabase
         .from('battle_participants')
         .insert({
           battle_id: battle.id,
           user_id: creatorId,
           pick: creatorPick,
         });
+
+      if (participantError) {
+        console.error('Error inserting creator participant:', participantError);
+      }
     }
 
     return { data: battle, error };

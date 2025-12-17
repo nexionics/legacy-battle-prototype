@@ -103,16 +103,17 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const creatorParticipant = participants.find(p => p.user_id === battle?.creator_id);
   const creatorWinningTeam = creatorParticipant?.pick;
 
-  let joinerWinningTeam: string | null = null;
-  if (homeTeamName && awayTeamName && creatorWinningTeam) {
-    if (creatorWinningTeam === homeTeamName) {
-      joinerWinningTeam = awayTeamName;
-    } else if (creatorWinningTeam === awayTeamName) {
-      joinerWinningTeam = homeTeamName;
-    }
-  }
+  const isHeadToHeadBattle = !!creatorParticipant && !!homeTeamName && !!awayTeamName;
 
-  const isHeadToHeadBattle = !!creatorParticipant && !!joinerWinningTeam;
+  const getJoinerWinningTeam = () => {
+    if (!homeTeamName || !awayTeamName || !creatorWinningTeam) return null;
+    if (creatorWinningTeam === homeTeamName) return awayTeamName;
+    if (creatorWinningTeam === awayTeamName) return homeTeamName;
+    return null;
+  };
+
+  const joinerWinningTeam = getJoinerWinningTeam();
+  const isHeadToHeadReady = isHeadToHeadBattle && !!joinerWinningTeam;
 
   useEffect(() => {
     if (canJoin && joinerWinningTeam) {
@@ -121,10 +122,11 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   }, [canJoin, joinerWinningTeam]);
 
   const handleJoin = async () => {
-    const effectivePick =
-      isHeadToHeadBattle && joinerWinningTeam
-        ? joinerWinningTeam
-        : pick.trim();
+    let effectivePick = pick.trim();
+
+    if (isHeadToHeadReady && joinerWinningTeam) {
+      effectivePick = joinerWinningTeam;
+    }
 
     if (!effectivePick) {
       Alert.alert('Pick required', 'Please select a team to join this battle');
@@ -396,7 +398,7 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
           <View style={styles.joinSection}>
             <Text style={styles.sectionTitle}>Join This Battle</Text>
             <View style={styles.joinCard}>
-              {isHeadToHeadBattle ? (
+              {isHeadToHeadReady ? (
                 <>
                   <View style={styles.challengeInfo}>
                     <Text style={styles.challengeLabel}>Creator's prediction:</Text>
@@ -456,11 +458,11 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
               <TouchableOpacity
                 style={[
                   styles.joinButton,
-                  (joining || (!pick && !(isHeadToHeadBattle && joinerWinningTeam))) &&
+                  (joining || (!pick && !isHeadToHeadReady)) &&
                     styles.joinButtonDisabled,
                 ]}
                 onPress={handleJoin}
-                disabled={joining || (!pick && !(isHeadToHeadBattle && joinerWinningTeam))}
+                disabled={joining || (!pick && !isHeadToHeadReady)}
               >
                 {joining ? (
                   <ActivityIndicator color={COLORS.white} />
