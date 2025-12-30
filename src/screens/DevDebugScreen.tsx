@@ -1,7 +1,8 @@
 // src/screens/DevDebugScreen.tsx
 // Temporary screen to verify Supabase connectivity
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabaseClient';
 import { COLORS, SIZES } from '../constants/theme';
 
