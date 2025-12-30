@@ -18,6 +18,7 @@ import {
   ProfileScreen,
   DevDebugScreen,
   FriendsScreen,
+  BattleVisibilityScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -71,7 +72,7 @@ function MainTabs({ navigation }: any) {
         listeners={{
           tabPress: (e) => {
             e.preventDefault();
-            navigation.navigate('BattleType');
+            navigation.navigate('BattleVisibility');
           },
         }}
         options={{
@@ -122,9 +123,10 @@ export default function AppStack() {
       <Stack.Screen name="AllUpcomingGames" component={AllUpcomingGamesScreen} />
       <Stack.Screen name="StartBattle" component={StartBattleScreen} />
       <Stack.Screen name="BattleType" component={BattleTypeScreen} />
-          <Stack.Screen name="DevDebug" component={DevDebugScreen} />
-          <Stack.Screen name="Friends" component={FriendsScreen} />
-        </Stack.Navigator>
+      <Stack.Screen name="DevDebug" component={DevDebugScreen} />
+      <Stack.Screen name="Friends" component={FriendsScreen} />
+      <Stack.Screen name="BattleVisibility" component={BattleVisibilityScreen} />
+    </Stack.Navigator>
   );
 }
 
