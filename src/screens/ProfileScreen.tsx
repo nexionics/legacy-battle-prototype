@@ -10,6 +10,7 @@ import {
   Alert,
   TextInput,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
@@ -28,6 +29,12 @@ type Profile = {
   updated_at: string;
 };
 
+type BattleStats = {
+  wins: number;
+  losses: number;
+  challenges: number;
+};
+
 export default function ProfileScreen() {
   const { signOut, user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -35,6 +42,7 @@ export default function ProfileScreen() {
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [battleStats, setBattleStats] = useState<BattleStats>({ wins: 0, losses: 0, challenges: 0 });
 
   useEffect(() => {
     if (!user) return;
@@ -55,7 +63,23 @@ export default function ProfileScreen() {
       setLoading(false);
     };
 
+    const loadBattleStats = async () => {
+      const { data: participations } = await supabase
+        .from('battle_participants')
+        .select('battle_id, is_winner, battles!inner(status)')
+        .eq('user_id', user.id);
+
+      if (participations) {
+        const completed = participations.filter((p: any) => p.battles?.status === 'resolved');
+        const wins = completed.filter((p: any) => p.is_winner === true).length;
+        const losses = completed.filter((p: any) => p.is_winner === false).length;
+        const challenges = participations.length;
+        setBattleStats({ wins, losses, challenges });
+      }
+    };
+
     loadProfile();
+    loadBattleStats();
   }, [user]);
 
   useEffect(() => {
@@ -137,6 +161,17 @@ export default function ProfileScreen() {
     .substring(0, 2)
     .toUpperCase();
 
+  const getLevelInfo = (xp: number) => {
+    if (xp >= 3000) return { level: 'Legend', nextLevel: 'Legend', progress: 100, nextXp: 3000 };
+    if (xp >= 2000) return { level: 'Champion', nextLevel: 'Legend', progress: ((xp - 2000) / 1000) * 100, nextXp: 3000 };
+    if (xp >= 1000) return { level: 'Veteran', nextLevel: 'Champion', progress: ((xp - 1000) / 1000) * 100, nextXp: 2000 };
+    if (xp >= 500) return { level: 'Challenger', nextLevel: 'Veteran', progress: ((xp - 500) / 500) * 100, nextXp: 1000 };
+    return { level: 'Rookie', nextLevel: 'Challenger', progress: (xp / 500) * 100, nextXp: 500 };
+  };
+
+  const levelInfo = getLevelInfo(xpValue);
+  const levelNumber = xpValue >= 3000 ? 15 : xpValue >= 2000 ? 12 : xpValue >= 1000 ? 8 : xpValue >= 500 ? 4 : 1;
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -153,146 +188,112 @@ export default function ProfileScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
-          <TouchableOpacity style={styles.settingsButton}>
-            <Ionicons name="settings-outline" size={24} color={COLORS.text} />
+          <TouchableOpacity style={styles.backButton}>
+            <Ionicons name="arrow-back" size={20} color={COLORS.white} />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Profile</Text>
+            <Ionicons name="person-outline" size={18} color={COLORS.primary} />
+          </View>
+          <TouchableOpacity style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={20} color={COLORS.white} />
           </TouchableOpacity>
         </View>
 
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
+        {/* Profile Section */}
+        <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{avatarInitials}</Text>
             </View>
-            <View style={styles.levelBadge}>
-              <Text style={styles.levelText}>{levelValue}</Text>
-            </View>
           </View>
           
-          {isEditing ? (
-            <View style={styles.editSection}>
-              <Text style={styles.editLabel}>Display Name</Text>
-              <TextInput
-                style={styles.editInput}
-                value={displayName}
-                onChangeText={setDisplayName}
-                placeholder="Enter display name"
-                placeholderTextColor={COLORS.textSecondary}
-              />
-              <View style={styles.editButtons}>
-                <TouchableOpacity 
-                  style={styles.cancelButton} 
-                  onPress={() => {
-                    setIsEditing(false);
-                    setDisplayName(profile?.display_name || '');
-                  }}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.saveButton} 
-                  onPress={saveProfile}
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <ActivityIndicator size="small" color={COLORS.white} />
-                  ) : (
-                    <Text style={styles.saveButtonText}>Save</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <>
-              <Text style={styles.username}>{profile?.display_name || 'Set Display Name'}</Text>
-              <Text style={styles.handle}>${profile?.username || 'loading...'}</Text>
-              <TouchableOpacity 
-                style={styles.editProfileButton} 
-                onPress={() => setIsEditing(true)}
-              >
-                <Ionicons name="pencil" size={14} color={COLORS.primary} />
-                <Text style={styles.editProfileText}>Edit Profile</Text>
-              </TouchableOpacity>
-            </>
-          )}
+          <Text style={styles.username}>{profile?.display_name || profile?.username || 'User'}</Text>
+          <Text style={styles.email}>{user?.email}</Text>
           
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Battles</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Wins</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>0%</Text>
-              <Text style={styles.statLabel}>Win Rate</Text>
-            </View>
+          {/* Level Badge */}
+          <View style={styles.levelBadgeContainer}>
+            <Text style={styles.trophyIcon}>🏆</Text>
+            <Text style={styles.levelBadgeText}>
+              {levelInfo.level} Level {levelNumber}
+            </Text>
+            <Text style={styles.levelXpText}>  {xpValue.toLocaleString()} XP</Text>
           </View>
         </View>
 
-        {/* XP Card */}
-        <View style={styles.xpCard}>
-          <View style={styles.xpHeader}>
-            <Text style={styles.xpTitle}>Experience Points</Text>
-            <Text style={styles.xpValue}>{xpValue.toLocaleString()} XP</Text>
+        {/* Stats Row */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statBox, styles.statBoxGreen]}>
+            <Text style={[styles.statValue, styles.statValueGreen]}>{battleStats.wins}</Text>
+            <Text style={styles.statLabel}>Wins</Text>
           </View>
-          <View style={styles.xpProgressContainer}>
-            <View style={styles.xpProgressBar}>
-              <View style={[styles.xpProgress, { width: `${Math.min((xpValue % 1000) / 10, 100)}%` }]} />
-            </View>
-            <Text style={styles.xpProgressText}>{1000 - (xpValue % 1000)} XP to next level</Text>
+          <View style={[styles.statBox, styles.statBoxRed]}>
+            <Text style={[styles.statValue, styles.statValueRed]}>{battleStats.losses}</Text>
+            <Text style={styles.statLabel}>Losses</Text>
+          </View>
+          <View style={[styles.statBox, styles.statBoxBlue]}>
+            <Text style={[styles.statValue, styles.statValueBlue]}>{battleStats.challenges}</Text>
+            <Text style={styles.statLabel}>Challenges</Text>
+          </View>
+          <View style={[styles.statBox, styles.statBoxGray]}>
+            <Text style={styles.statValue}>{Number(walletBalance).toLocaleString()}</Text>
+            <Text style={styles.statLabel}>BC Coins</Text>
           </View>
         </View>
 
-        {/* Battle Coins Card */}
-        <View style={styles.coinsCard}>
-          <View style={styles.coinsLeft}>
-            <View style={styles.coinIcon}>
-              <Text style={styles.coinIconText}>🪙</Text>
-            </View>
-            <View>
-              <Text style={styles.coinsLabel}>Battle Coins</Text>
-              <Text style={styles.coinsValue}>{walletBalance} BC</Text>
+        {/* Legacy Rank Card */}
+        <View style={styles.rankCard}>
+          <View style={styles.rankHeader}>
+            <Text style={styles.rankTitle}>Legacy Rank</Text>
+            <Text style={styles.rankLevel}>{levelInfo.level}</Text>
+          </View>
+          <View style={styles.rankProgressContainer}>
+            <View style={styles.rankProgressBar}>
+              <View style={[styles.rankProgress, { width: `${levelInfo.progress}%` }]} />
             </View>
           </View>
-          <TouchableOpacity style={styles.addCoinsButton}>
-            <Ionicons name="add" size={20} color={COLORS.white} />
-            <Text style={styles.addCoinsText}>Add</Text>
+          <View style={styles.rankFooter}>
+            <Text style={styles.rankXpText}>{xpValue.toLocaleString()} XP</Text>
+            <Text style={styles.rankNextText}>{levelInfo.nextLevel}: {levelInfo.nextXp.toLocaleString()} XP</Text>
+          </View>
+          
+          {/* Battle Invitation */}
+          <TouchableOpacity style={styles.invitationBanner}>
+            <Text style={styles.invitationText}>You Have Pending Battle Invites</Text>
+            <Ionicons name="arrow-forward" size={18} color={COLORS.text} />
           </TouchableOpacity>
         </View>
 
-        {/* Menu Items */}
-        <View style={styles.menuSection}>
-          {[
-            { icon: 'trophy-outline', label: 'Achievements', badge: '12' },
-            { icon: 'stats-chart-outline', label: 'Statistics' },
-            { icon: 'people-outline', label: 'Friends', badge: '5' },
-            { icon: 'wallet-outline', label: 'Wallet' },
-            { icon: 'notifications-outline', label: 'Notifications' },
-            { icon: 'help-circle-outline', label: 'Help & Support' },
-          ].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.menuItem}>
-              <View style={styles.menuLeft}>
-                <View style={styles.menuIcon}>
-                  <Ionicons name={item.icon as any} size={20} color={COLORS.text} />
-                </View>
-                <Text style={styles.menuLabel}>{item.label}</Text>
-              </View>
-              <View style={styles.menuRight}>
-                {item.badge && (
-                  <View style={styles.menuBadge}>
-                    <Text style={styles.menuBadgeText}>{item.badge}</Text>
-                  </View>
-                )}
-                <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
-              </View>
+        {/* Total BC Card */}
+        <View style={styles.bcCard}>
+          <View style={styles.bcLeft}>
+            <Text style={styles.bcLabel}>Total Bc</Text>
+            <Text style={styles.bcValue}>{Number(walletBalance).toLocaleString()} BC</Text>
+          </View>
+          <View style={styles.bcRight}>
+            <TouchableOpacity>
+              <Ionicons name="eye-outline" size={20} color={COLORS.textSecondary} />
             </TouchableOpacity>
-          ))}
+            <TouchableOpacity style={styles.viewMoreButton}>
+              <Text style={styles.viewMoreText}>View More</Text>
+              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Social Network Section */}
+        <View style={styles.socialCard}>
+          <View style={styles.socialHeader}>
+            <View style={styles.socialLeft}>
+              <Ionicons name="people-outline" size={20} color={COLORS.text} />
+              <Text style={styles.socialTitle}>Social Network</Text>
+            </View>
+            <TouchableOpacity style={styles.moreDetailsButton}>
+              <Text style={styles.moreDetailsText}>More Details</Text>
+              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.socialSubtitle}>Your Social Ties, Challenges, Colleagues</Text>
         </View>
 
         {/* Logout Button */}
@@ -314,61 +315,63 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: SIZES.padding,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: SIZES.padding,
   },
-  headerTitle: {
-    color: COLORS.text,
-    fontSize: SIZES.extraLarge,
-    fontWeight: 'bold',
-  },
-  settingsButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.card,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileCard: {
-    backgroundColor: COLORS.card,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding * 1.5,
-    alignItems: 'center',
-    marginBottom: SIZES.padding,
-  },
-  avatarContainer: {
-    position: 'relative',
-    marginBottom: SIZES.base,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatarText: {
-    color: COLORS.white,
-    fontSize: 28,
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  headerTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
     fontWeight: 'bold',
   },
-  levelBadge: {
-    position: 'absolute',
-    bottom: 0,
-    right: -10,
-    backgroundColor: COLORS.success,
-    paddingHorizontal: SIZES.base,
-    paddingVertical: 2,
-    borderRadius: SIZES.radius,
+  notificationButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  levelText: {
-    color: COLORS.white,
-    fontSize: 10,
+  profileSection: {
+    alignItems: 'center',
+    marginBottom: SIZES.padding,
+  },
+  avatarContainer: {
+    marginBottom: SIZES.base,
+  },
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: COLORS.card,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: COLORS.inputBorder,
+  },
+  avatarText: {
+    color: COLORS.text,
+    fontSize: 32,
     fontWeight: 'bold',
   },
   username: {
@@ -377,73 +380,138 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  handle: {
+  email: {
     color: COLORS.textSecondary,
     fontSize: SIZES.font,
-    marginBottom: SIZES.padding,
+    marginBottom: SIZES.base,
+  },
+  levelBadgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    paddingHorizontal: SIZES.padding,
+    paddingVertical: SIZES.base,
+    borderRadius: 20,
+  },
+  trophyIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  levelBadgeText: {
+    color: COLORS.success,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+  levelXpText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
   },
   statsRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    marginBottom: SIZES.padding,
+    gap: SIZES.base,
   },
-  statItem: {
+  statBox: {
+    flex: 1,
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
     alignItems: 'center',
+    borderWidth: 1,
+  },
+  statBoxGreen: {
+    borderColor: '#22c55e',
+  },
+  statBoxRed: {
+    borderColor: COLORS.primary,
+  },
+  statBoxBlue: {
+    borderColor: '#3b82f6',
+  },
+  statBoxGray: {
+    borderColor: COLORS.inputBorder,
   },
   statValue: {
     color: COLORS.text,
     fontSize: SIZES.large,
     fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  statValueGreen: {
+    color: '#22c55e',
+  },
+  statValueRed: {
+    color: COLORS.primary,
+  },
+  statValueBlue: {
+    color: '#3b82f6',
   },
   statLabel: {
     color: COLORS.textSecondary,
-    fontSize: SIZES.small,
+    fontSize: 10,
   },
-  statDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: COLORS.inputBorder,
-  },
-  xpCard: {
-    backgroundColor: COLORS.card,
+  rankCard: {
+    backgroundColor: COLORS.primary,
     borderRadius: SIZES.radius,
     padding: SIZES.padding,
     marginBottom: SIZES.padding,
   },
-  xpHeader: {
+  rankHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: SIZES.base,
   },
-  xpTitle: {
-    color: COLORS.text,
-    fontSize: SIZES.font,
-    fontWeight: '500',
-  },
-  xpValue: {
-    color: COLORS.primary,
+  rankTitle: {
+    color: COLORS.white,
     fontSize: SIZES.font,
     fontWeight: 'bold',
   },
-  xpProgressContainer: {},
-  xpProgressBar: {
+  rankLevel: {
+    color: COLORS.white,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+  },
+  rankProgressContainer: {
+    marginBottom: SIZES.base,
+  },
+  rankProgressBar: {
     height: 8,
-    backgroundColor: COLORS.inputBackground,
+    backgroundColor: 'rgba(255,255,255,0.3)',
     borderRadius: 4,
-    marginBottom: SIZES.base,
   },
-  xpProgress: {
+  rankProgress: {
     height: '100%',
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
     borderRadius: 4,
   },
-  xpProgressText: {
-    color: COLORS.textSecondary,
+  rankFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: SIZES.padding,
+  },
+  rankXpText: {
+    color: COLORS.white,
     fontSize: SIZES.small,
   },
-  coinsCard: {
+  rankNextText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: SIZES.small,
+  },
+  invitationBanner: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+  },
+  invitationText: {
+    color: COLORS.white,
+    fontSize: SIZES.font,
+  },
+  bcCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -452,90 +520,65 @@ const styles = StyleSheet.create({
     padding: SIZES.padding,
     marginBottom: SIZES.padding,
   },
-  coinsLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SIZES.base,
-  },
-  coinIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.inputBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  coinIconText: {
-    fontSize: 20,
-  },
-  coinsLabel: {
+  bcLeft: {},
+  bcLabel: {
     color: COLORS.textSecondary,
     fontSize: SIZES.small,
+    marginBottom: 4,
   },
-  coinsValue: {
+  bcValue: {
     color: COLORS.text,
-    fontSize: SIZES.large,
+    fontSize: 24,
     fontWeight: 'bold',
   },
-  addCoinsButton: {
+  bcRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: SIZES.padding,
-    paddingVertical: SIZES.base,
-    borderRadius: SIZES.radius,
+    gap: SIZES.padding,
+  },
+  viewMoreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 4,
   },
-  addCoinsText: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
-    fontWeight: 'bold',
+  viewMoreText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
   },
-  menuSection: {
+  socialCard: {
     backgroundColor: COLORS.card,
     borderRadius: SIZES.radius,
+    padding: SIZES.padding,
     marginBottom: SIZES.padding,
   },
-  menuItem: {
+  socialHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SIZES.padding,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.inputBorder,
+    marginBottom: 4,
   },
-  menuLeft: {
+  socialLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: SIZES.base,
   },
-  menuIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.inputBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuLabel: {
+  socialTitle: {
     color: COLORS.text,
     fontSize: SIZES.font,
+    fontWeight: 'bold',
   },
-  menuRight: {
+  moreDetailsButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SIZES.base,
+    gap: 4,
   },
-  menuBadge: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: SIZES.base,
-    paddingVertical: 2,
-    borderRadius: SIZES.radius,
+  moreDetailsText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
   },
-  menuBadgeText: {
-    color: COLORS.white,
-    fontSize: 10,
-    fontWeight: 'bold',
+  socialSubtitle: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
   },
   logoutButton: {
     flexDirection: 'row',
@@ -549,70 +592,5 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: SIZES.font,
     fontWeight: 'bold',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editSection: {
-    width: '100%',
-    marginBottom: SIZES.padding,
-  },
-  editLabel: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.small,
-    marginBottom: 4,
-    marginTop: SIZES.base,
-  },
-  editInput: {
-    backgroundColor: COLORS.inputBackground,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
-    color: COLORS.text,
-    fontSize: SIZES.font,
-    borderWidth: 1,
-    borderColor: COLORS.inputBorder,
-  },
-  editButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: SIZES.padding,
-    gap: SIZES.base,
-  },
-  cancelButton: {
-    flex: 1,
-    backgroundColor: COLORS.inputBackground,
-    paddingVertical: SIZES.padding,
-    borderRadius: SIZES.radius,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    color: COLORS.text,
-    fontSize: SIZES.font,
-    fontWeight: 'bold',
-  },
-  saveButton: {
-    flex: 1,
-    backgroundColor: COLORS.primary,
-    paddingVertical: SIZES.padding,
-    borderRadius: SIZES.radius,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
-    fontWeight: 'bold',
-  },
-  editProfileButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: SIZES.padding,
-  },
-  editProfileText: {
-    color: COLORS.primary,
-    fontSize: SIZES.small,
-    fontWeight: '500',
   },
 });
