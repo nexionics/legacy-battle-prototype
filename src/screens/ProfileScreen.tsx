@@ -35,7 +35,7 @@ type BattleStats = {
   challenges: number;
 };
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const { signOut, user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -281,19 +281,79 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Social Network Section */}
-        <View style={styles.socialCard}>
-          <View style={styles.socialHeader}>
-            <View style={styles.socialLeft}>
-              <Ionicons name="people-outline" size={20} color={COLORS.text} />
-              <Text style={styles.socialTitle}>Social Network</Text>
+        {/* Menu Items */}
+        <View style={styles.menuSection}>
+          {/* Achievements */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="trophy-outline" size={22} color={COLORS.text} />
             </View>
-            <TouchableOpacity style={styles.moreDetailsButton}>
-              <Text style={styles.moreDetailsText}>More Details</Text>
-              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.socialSubtitle}>Your Social Ties, Challenges, Colleagues</Text>
+            <Text style={styles.menuItemText}>Achievements</Text>
+            <View style={styles.menuRight}>
+              <View style={styles.menuBadge}>
+                <Text style={styles.menuBadgeText}>12</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Statistics */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="stats-chart-outline" size={22} color={COLORS.text} />
+            </View>
+            <Text style={styles.menuItemText}>Statistics</Text>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Friends */}
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Friends')}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="people-outline" size={22} color={COLORS.text} />
+            </View>
+            <Text style={styles.menuItemText}>Friends</Text>
+            <View style={styles.menuRight}>
+              <View style={styles.menuBadge}>
+                <Text style={styles.menuBadgeText}>5</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Wallet */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="wallet-outline" size={22} color={COLORS.text} />
+            </View>
+            <Text style={styles.menuItemText}>Wallet</Text>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Notifications */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="notifications-outline" size={22} color={COLORS.text} />
+            </View>
+            <Text style={styles.menuItemText}>Notifications</Text>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Help & Support */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name="help-circle-outline" size={22} color={COLORS.text} />
+            </View>
+            <Text style={styles.menuItemText}>Help & Support</Text>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
@@ -579,6 +639,53 @@ const styles = StyleSheet.create({
   socialSubtitle: {
     color: COLORS.textSecondary,
     fontSize: SIZES.small,
+  },
+  menuSection: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    marginBottom: SIZES.padding,
+    overflow: 'hidden',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SIZES.padding,
+    paddingHorizontal: SIZES.padding,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
+  },
+  menuIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: SIZES.padding,
+  },
+  menuItemText: {
+    flex: 1,
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '500',
+  },
+  menuRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  menuBadge: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    minWidth: 28,
+    alignItems: 'center',
+  },
+  menuBadgeText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   logoutButton: {
     flexDirection: 'row',

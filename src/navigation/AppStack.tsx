@@ -17,6 +17,7 @@ import {
   ExploreScreen,
   ProfileScreen,
   DevDebugScreen,
+  FriendsScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -121,8 +122,9 @@ export default function AppStack() {
       <Stack.Screen name="AllUpcomingGames" component={AllUpcomingGamesScreen} />
       <Stack.Screen name="StartBattle" component={StartBattleScreen} />
       <Stack.Screen name="BattleType" component={BattleTypeScreen} />
-      <Stack.Screen name="DevDebug" component={DevDebugScreen} />
-    </Stack.Navigator>
+          <Stack.Screen name="DevDebug" component={DevDebugScreen} />
+          <Stack.Screen name="Friends" component={FriendsScreen} />
+        </Stack.Navigator>
   );
 }
 
