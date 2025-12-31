@@ -2,10 +2,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
-import BattleNowCurvedLabel from '../components/BattleNowCurvedLabel';
 import {
   HomeScreen,
   BattlesScreen,
@@ -37,14 +36,11 @@ function CustomTabBarButton({ onPress }: any) {
       style={styles.customTabButton}
       onPress={onPress}
     >
-      <View style={styles.customTabButtonInner}>
-        {/* Crossed swords/arms icon */}
-        <View style={styles.crossedIconContainer}>
-          <View style={[styles.crossedArm, styles.crossedArmLeft]} />
-          <View style={[styles.crossedArm, styles.crossedArmRight]} />
-        </View>
-      </View>
-      <BattleNowCurvedLabel />
+      <Image
+        source={require('../../assets/battle-now-button.png')}
+        style={styles.battleNowImage}
+        resizeMode="contain"
+      />
     </TouchableOpacity>
   );
 }
@@ -161,40 +157,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  customTabButtonInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: COLORS.primary,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 8,
-  },
-  crossedIconContainer: {
-    width: 28,
-    height: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  crossedArm: {
-    position: 'absolute',
-    width: 4,
-    height: 24,
-    backgroundColor: COLORS.white,
-    borderRadius: 2,
-  },
-  crossedArmLeft: {
-    transform: [{ rotate: '45deg' }],
-  },
-  crossedArmRight: {
-    transform: [{ rotate: '-45deg' }],
+  battleNowImage: {
+    width: 70,
+    height: 70,
   },
 });
