@@ -303,7 +303,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                 <UpcomingGameCard
                   key={event.idEvent}
                   event={event}
-                  onJoin={() => {}}
+                  onJoin={() => {
+                    navigation.navigate('BattleVisibility', {
+                      prefillTitle: `${event.strHomeTeam} vs ${event.strAwayTeam}`,
+                      prefillEventId: event.idEvent,
+                      homeTeam: event.strHomeTeam,
+                      awayTeam: event.strAwayTeam,
+                    });
+                  }}
                 />
               ))}
             </ScrollView>
