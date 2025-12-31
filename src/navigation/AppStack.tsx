@@ -19,6 +19,7 @@ import {
   DevDebugScreen,
   FriendsScreen,
   BattleVisibilityScreen,
+  AddFriendScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -130,6 +131,7 @@ export default function AppStack() {
       <Stack.Screen name="DevDebug" component={DevDebugScreen} />
       <Stack.Screen name="Friends" component={FriendsScreen} />
       <Stack.Screen name="BattleVisibility" component={BattleVisibilityScreen} />
+      <Stack.Screen name="AddFriend" component={AddFriendScreen} />
     </Stack.Navigator>
   );
 }

@@ -79,7 +79,7 @@ export default function FriendsScreen({ navigation }: any) {
           <Text style={styles.headerTitle}>Friends</Text>
           <Ionicons name="people-outline" size={18} color={COLORS.primary} />
         </View>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddFriend')}>
           <Ionicons name="person-add-outline" size={20} color={COLORS.white} />
         </TouchableOpacity>
       </View>

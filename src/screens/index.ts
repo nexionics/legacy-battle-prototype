@@ -15,3 +15,4 @@ export { default as ProfileScreen } from './ProfileScreen';
 export { default as DevDebugScreen } from './DevDebugScreen';
 export { default as FriendsScreen } from './FriendsScreen';
 export { default as BattleVisibilityScreen } from './BattleVisibilityScreen';
+export { default as AddFriendScreen } from './AddFriendScreen';
