@@ -19,11 +19,10 @@ type FilterTab = 'Trending' | 'Ending Soon' | 'New' | 'High Activity';
 type Battle = {
   id: string;
   title: string;
-  battle_type: string;
-  entry_fee: number;
   status: string;
   created_at: string;
-  event_start_time: string | null;
+  stake: number;
+  event_id: string | null;
   participant_count?: number;
 };
 
@@ -46,17 +45,16 @@ export default function ExploreScreen() {
         .select(`
           id,
           title,
-          battle_type,
-          entry_fee,
           status,
           created_at,
-          event_start_time,
+          stake,
+          event_id,
           battle_participants(count)
         `)
         .eq('status', 'open');
 
       if (activeTab === 'Ending Soon') {
-        query = query.order('event_start_time', { ascending: true });
+        query = query.order('created_at', { ascending: true });
       } else if (activeTab === 'New') {
         query = query.order('created_at', { ascending: false });
       } else {
@@ -192,11 +190,11 @@ export default function ExploreScreen() {
                 </View>
                 <View style={styles.tagOutline}>
                   <Ionicons name="football-outline" size={12} color={COLORS.textSecondary} />
-                  <Text style={styles.tagOutlineText}>{battle.battle_type || 'Game Pick'}</Text>
+                  <Text style={styles.tagOutlineText}>Game Pick</Text>
                 </View>
                 <View style={styles.entryFee}>
                   <Text style={styles.entryFeeIcon}>🪙</Text>
-                  <Text style={styles.entryFeeText}>{battle.entry_fee || 50} Bc Entry</Text>
+                  <Text style={styles.entryFeeText}>{battle.stake || 50} Bc Entry</Text>
                 </View>
               </View>
               
@@ -217,7 +215,7 @@ export default function ExploreScreen() {
               <View style={styles.battleFooter}>
                 <View style={styles.battleInfo}>
                   <Ionicons name="time-outline" size={14} color={COLORS.textSecondary} />
-                  <Text style={styles.battleInfoText}>Ends In {formatTimeRemaining(battle.event_start_time)}</Text>
+                  <Text style={styles.battleInfoText}>Created {new Date(battle.created_at).toLocaleDateString()}</Text>
                 </View>
                 {activeTab === 'Trending' && (
                   <View style={styles.battleInfo}>
