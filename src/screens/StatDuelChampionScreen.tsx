@@ -18,13 +18,27 @@ interface StatDuelChampionScreenProps {
   route: any;
 }
 
+// Mock players with position codes for filtering
 const MOCK_PLAYERS = [
-  { id: '1', name: 'Patrick Mahomes', team: 'Kansas City Chiefs', position: 'Quarterback' },
-  { id: '2', name: 'Josh Allen', team: 'Buffalo Bills', position: 'Quarterback' },
-  { id: '3', name: 'Travis Kelce', team: 'Kansas City Chiefs', position: 'Tight End' },
-  { id: '4', name: 'Stefon Diggs', team: 'Buffalo Bills', position: 'Wide Receiver' },
-  { id: '5', name: 'Isiah Pacheco', team: 'Kansas City Chiefs', position: 'Running Back' },
-  { id: '6', name: 'James Cook', team: 'Buffalo Bills', position: 'Running Back' },
+  { id: '1', name: 'Patrick Mahomes', team: 'Kansas City Chiefs', position: 'Quarterback', positionCode: 'QB', sport: 'NFL' },
+  { id: '2', name: 'Josh Allen', team: 'Buffalo Bills', position: 'Quarterback', positionCode: 'QB', sport: 'NFL' },
+  { id: '3', name: 'Travis Kelce', team: 'Kansas City Chiefs', position: 'Tight End', positionCode: 'TE', sport: 'NFL' },
+  { id: '4', name: 'Stefon Diggs', team: 'Buffalo Bills', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
+  { id: '5', name: 'Isiah Pacheco', team: 'Kansas City Chiefs', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '6', name: 'James Cook', team: 'Buffalo Bills', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '7', name: 'Tyreek Hill', team: 'Miami Dolphins', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
+  { id: '8', name: 'Davante Adams', team: 'Las Vegas Raiders', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
+  { id: '9', name: 'Derrick Henry', team: 'Tennessee Titans', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '10', name: 'Saquon Barkley', team: 'New York Giants', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '11', name: 'LeBron James', team: 'Los Angeles Lakers', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+  { id: '12', name: 'Stephen Curry', team: 'Golden State Warriors', position: 'Point Guard', positionCode: 'PG', sport: 'NBA' },
+  { id: '13', name: 'Kevin Durant', team: 'Phoenix Suns', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+  { id: '14', name: 'Jayson Tatum', team: 'Boston Celtics', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+];
+
+const DIRECTION_OPTIONS = [
+  { id: 'MOST', name: 'Most' },
+  { id: 'LEAST', name: 'Least' },
 ];
 
 const STAT_CATEGORIES = [
@@ -45,23 +59,36 @@ const STAKE_OPTIONS = [
 ];
 
 export default function StatDuelChampionScreen({ navigation, route }: StatDuelChampionScreenProps) {
-  const { visibility, battleMode, sport, game } = route?.params || {};
+  const { visibility, battleMode, sport, game, position, positionName } = route?.params || {};
+  
+  // Determine if this is Standard-like mode (needs direction selection)
+  const isStandardMode = battleMode === 'STANDARD' || battleMode === 'BOTH_PICKS';
+  const isFantasyMode = battleMode === 'FANTASY';
   
   const [selectedPlayer, setSelectedPlayer] = useState<typeof MOCK_PLAYERS[0] | null>(null);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
   const [selectedStake, setSelectedStake] = useState<string>('50');
+  const [selectedDirection, setSelectedDirection] = useState<string>(isFantasyMode ? 'MOST' : '');
   
   const [showPlayerModal, setShowPlayerModal] = useState(false);
   const [showStatModal, setShowStatModal] = useState(false);
   const [showStakeModal, setShowStakeModal] = useState(false);
+  const [showDirectionModal, setShowDirectionModal] = useState(false);
   const [playerSearch, setPlayerSearch] = useState('');
 
-  const filteredPlayers = MOCK_PLAYERS.filter(p => 
-    p.name.toLowerCase().includes(playerSearch.toLowerCase()) ||
-    p.team.toLowerCase().includes(playerSearch.toLowerCase())
-  );
+  // Filter players by position and sport, then by search
+  const filteredPlayers = MOCK_PLAYERS.filter(p => {
+    // Filter by sport if provided
+    if (sport && p.sport !== sport) return false;
+    // Filter by position if provided
+    if (position && p.positionCode !== position) return false;
+    // Filter by search
+    return p.name.toLowerCase().includes(playerSearch.toLowerCase()) ||
+           p.team.toLowerCase().includes(playerSearch.toLowerCase());
+  });
 
   const selectedStatData = STAT_CATEGORIES.find(s => s.id === selectedStat);
+  const selectedDirectionData = DIRECTION_OPTIONS.find(d => d.id === selectedDirection);
 
   const handleContinue = () => {
     navigation.navigate('StatDuelOpponent', {
@@ -69,13 +96,20 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
       battleMode,
       sport,
       game,
+      position,
+      positionName,
       player: selectedPlayer,
       statCategory: selectedStatData,
       stake: selectedStake,
+      direction: selectedDirection,
+      directionName: selectedDirectionData?.name,
     });
   };
 
-  const canContinue = selectedPlayer && selectedStat && selectedStake;
+  // Validation: Standard needs direction, Fantasy defaults to MOST
+  const canContinue = isStandardMode 
+    ? (selectedPlayer && selectedStat && selectedStake && selectedDirection)
+    : (selectedPlayer && selectedStat && selectedStake);
 
   const getStatDescription = () => {
     if (!selectedStatData || !selectedPlayer) return '';
@@ -144,6 +178,21 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
             <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
           </TouchableOpacity>
         </View>
+
+        {/* Direction Selection - Only for Standard mode */}
+        {isStandardMode && (
+          <View style={styles.dropdownContainer}>
+            <Text style={styles.dropdownLabel}>
+              Choose Direction * <Ionicons name="information-circle-outline" size={14} color={COLORS.textSecondary} />
+            </Text>
+            <TouchableOpacity style={styles.dropdown} onPress={() => setShowDirectionModal(true)}>
+              <Text style={[styles.dropdownText, !selectedDirection && styles.dropdownPlaceholder]}>
+                {selectedDirectionData?.name || 'Select direction (Most/Least)'}
+              </Text>
+              <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Stake Selection */}
         <View style={styles.dropdownContainer}>
@@ -304,6 +353,39 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
               >
                 <Text style={styles.modalOptionText}>{stake.name}</Text>
                 {selectedStake === stake.id && (
+                  <Ionicons name="checkmark" size={20} color={COLORS.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Direction Modal - Only for Standard mode */}
+      <Modal visible={showDirectionModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Direction</Text>
+              <TouchableOpacity onPress={() => setShowDirectionModal(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.directionHelpText}>
+              Choose whether your player should have the MOST or LEAST in the selected stat category.
+              Your opponent will automatically get the opposite direction.
+            </Text>
+            {DIRECTION_OPTIONS.map((direction) => (
+              <TouchableOpacity
+                key={direction.id}
+                style={styles.modalOption}
+                onPress={() => {
+                  setSelectedDirection(direction.id);
+                  setShowDirectionModal(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>{direction.name}</Text>
+                {selectedDirection === direction.id && (
                   <Ionicons name="checkmark" size={20} color={COLORS.primary} />
                 )}
               </TouchableOpacity>
@@ -526,6 +608,13 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: SIZES.large,
     fontWeight: 'bold',
+  },
+  directionHelpText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    lineHeight: 18,
+    marginBottom: SIZES.padding,
+    paddingHorizontal: SIZES.base,
   },
   searchContainer: {
     flexDirection: 'row',

@@ -25,47 +25,89 @@ const SPORTS = [
 ];
 
 const MOCK_GAMES = [
-  { id: '1', name: 'Chiefs vs Bills, Week 5', sport: 'NFL' },
-  { id: '2', name: 'Cowboys vs Eagles, Week 5', sport: 'NFL' },
-  { id: '3', name: 'Lakers vs Celtics', sport: 'NBA' },
-  { id: '4', name: 'Warriors vs Suns', sport: 'NBA' },
+  { id: '1', name: 'Chiefs vs Bills, Week 5', sport: 'NFL', homeTeam: 'Chiefs', awayTeam: 'Bills' },
+  { id: '2', name: 'Cowboys vs Eagles, Week 5', sport: 'NFL', homeTeam: 'Cowboys', awayTeam: 'Eagles' },
+  { id: '3', name: 'Lakers vs Celtics', sport: 'NBA', homeTeam: 'Lakers', awayTeam: 'Celtics' },
+  { id: '4', name: 'Warriors vs Suns', sport: 'NBA', homeTeam: 'Warriors', awayTeam: 'Suns' },
 ];
 
-const BATTLE_TYPES = [
-  { id: 'private', name: 'Private' },
-  { id: 'public', name: 'Public' },
-];
+// Positions by sport
+const POSITIONS_BY_SPORT: Record<string, { id: string; name: string }[]> = {
+  NFL: [
+    { id: 'QB', name: 'Quarterback (QB)' },
+    { id: 'RB', name: 'Running Back (RB)' },
+    { id: 'WR', name: 'Wide Receiver (WR)' },
+    { id: 'TE', name: 'Tight End (TE)' },
+    { id: 'K', name: 'Kicker (K)' },
+    { id: 'DEF', name: 'Defense (DEF)' },
+  ],
+  NBA: [
+    { id: 'PG', name: 'Point Guard (PG)' },
+    { id: 'SG', name: 'Shooting Guard (SG)' },
+    { id: 'SF', name: 'Small Forward (SF)' },
+    { id: 'PF', name: 'Power Forward (PF)' },
+    { id: 'C', name: 'Center (C)' },
+  ],
+  MLB: [
+    { id: 'P', name: 'Pitcher (P)' },
+    { id: 'C', name: 'Catcher (C)' },
+    { id: '1B', name: 'First Base (1B)' },
+    { id: '2B', name: 'Second Base (2B)' },
+    { id: 'SS', name: 'Shortstop (SS)' },
+    { id: '3B', name: 'Third Base (3B)' },
+    { id: 'OF', name: 'Outfield (OF)' },
+  ],
+  NHL: [
+    { id: 'C', name: 'Center (C)' },
+    { id: 'LW', name: 'Left Wing (LW)' },
+    { id: 'RW', name: 'Right Wing (RW)' },
+    { id: 'D', name: 'Defenseman (D)' },
+    { id: 'G', name: 'Goalie (G)' },
+  ],
+};
 
 export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDetailsScreenProps) {
   const { visibility, battleMode } = route?.params || {};
   
+  // Determine if this is Standard-like mode (needs event selection)
+  const isStandardMode = battleMode === 'STANDARD' || battleMode === 'BOTH_PICKS';
+  const isFantasyMode = battleMode === 'FANTASY';
+  
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-  const [selectedBattleType, setSelectedBattleType] = useState<string>(visibility || 'private');
+  const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<string>('Auto');
   const [endTime, setEndTime] = useState<string>('Auto');
   
   const [showSportModal, setShowSportModal] = useState(false);
   const [showGameModal, setShowGameModal] = useState(false);
-  const [showBattleTypeModal, setShowBattleTypeModal] = useState(false);
+  const [showPositionModal, setShowPositionModal] = useState(false);
 
   const filteredGames = selectedSport 
     ? MOCK_GAMES.filter(g => g.sport === selectedSport)
     : MOCK_GAMES;
 
+  const availablePositions = selectedSport ? POSITIONS_BY_SPORT[selectedSport] || [] : [];
+
   const selectedSportData = SPORTS.find(s => s.id === selectedSport);
   const selectedGameData = MOCK_GAMES.find(g => g.id === selectedGame);
+  const selectedPositionData = availablePositions.find(p => p.id === selectedPosition);
 
   const handleContinue = () => {
     navigation.navigate('StatDuelChampion', {
-      visibility: selectedBattleType,
+      visibility,
       battleMode,
       sport: selectedSport,
-      game: selectedGameData,
+      game: isStandardMode ? selectedGameData : null,
+      position: selectedPosition,
+      positionName: selectedPositionData?.name,
     });
   };
 
-  const canContinue = selectedSport && selectedGame;
+  // Validation: Standard needs sport + event + position, Fantasy needs sport + position
+  const canContinue = isStandardMode 
+    ? (selectedSport && selectedGame && selectedPosition)
+    : (selectedSport && selectedPosition);
 
   const DropdownButton = ({ 
     label, 
@@ -127,30 +169,47 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
 
         <View style={styles.titleSection}>
           <Text style={styles.sectionTitle}>Create Battle</Text>
-          <Text style={styles.sectionSubtitle}>Add Battle Details To Create Battle</Text>
+          <Text style={styles.sectionSubtitle}>
+            {isFantasyMode 
+              ? 'Select Sport And Position For Fantasy Battle'
+              : 'Select Event And Position For Standard Battle'
+            }
+          </Text>
         </View>
 
+        {/* Mode indicator */}
+        <View style={styles.modeIndicator}>
+          <Text style={styles.modeIndicatorText}>
+            Mode: {battleMode === 'STANDARD' ? 'Standard' : battleMode === 'FANTASY' ? 'Fantasy' : 'Both Picks'}
+          </Text>
+        </View>
+
+        {/* Choose Sport - Always shown */}
         <DropdownButton
           label="Choose Sport"
           value={selectedSportData ? `${selectedSportData.icon} ${selectedSportData.name}` : null}
-          placeholder="Select Game"
+          placeholder="Select Sport"
           onPress={() => setShowSportModal(true)}
           required
         />
 
-        <DropdownButton
-          label="Choose Event"
-          value={selectedGameData?.name || null}
-          placeholder="Select Event"
-          onPress={() => setShowGameModal(true)}
-          required
-        />
+        {/* Choose Event - Only for Standard mode */}
+        {isStandardMode && (
+          <DropdownButton
+            label="Choose Event"
+            value={selectedGameData?.name || null}
+            placeholder="Select Event"
+            onPress={() => setShowGameModal(true)}
+            required
+          />
+        )}
 
+        {/* Choose Position - Always shown */}
         <DropdownButton
-          label="Battle Type"
-          value={selectedBattleType === 'private' ? 'Private' : 'Public'}
-          placeholder="Select Type"
-          onPress={() => setShowBattleTypeModal(true)}
+          label="Choose Position"
+          value={selectedPositionData?.name || null}
+          placeholder="Select Position"
+          onPress={() => setShowPositionModal(true)}
           required
         />
 
@@ -177,8 +236,24 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
 
         <View style={styles.lockTimeContainer}>
           <Ionicons name="lock-closed" size={16} color={COLORS.primary} />
-          <Text style={styles.lockTimeText}>Lock Time: Locks At Kickoff (8:00 PM)</Text>
+          <Text style={styles.lockTimeText}>
+            {isStandardMode 
+              ? 'Lock Time: Locks At Game Kickoff'
+              : 'Lock Time: Locks At Earliest Kickoff This Week'
+            }
+          </Text>
         </View>
+
+        {/* Fantasy mode info */}
+        {isFantasyMode && (
+          <View style={styles.infoBox}>
+            <Ionicons name="information-circle-outline" size={20} color={COLORS.primary} />
+            <Text style={styles.infoBoxText}>
+              In Fantasy Mode, you can pick any player from the selected sport and position. 
+              Your opponent can also pick any player of the same sport and position.
+            </Text>
+          </View>
+        )}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -211,6 +286,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                 onPress={() => {
                   setSelectedSport(sport.id);
                   setSelectedGame(null);
+                  setSelectedPosition(null);
                   setShowSportModal(false);
                 }}
               >
@@ -258,31 +334,35 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         </View>
       </Modal>
 
-      {/* Battle Type Modal */}
-      <Modal visible={showBattleTypeModal} transparent animationType="slide">
+      {/* Position Selection Modal */}
+      <Modal visible={showPositionModal} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Battle Type</Text>
-              <TouchableOpacity onPress={() => setShowBattleTypeModal(false)}>
+              <Text style={styles.modalTitle}>Select Position</Text>
+              <TouchableOpacity onPress={() => setShowPositionModal(false)}>
                 <Ionicons name="close" size={24} color={COLORS.text} />
               </TouchableOpacity>
             </View>
-            {BATTLE_TYPES.map((type) => (
-              <TouchableOpacity
-                key={type.id}
-                style={styles.modalOption}
-                onPress={() => {
-                  setSelectedBattleType(type.id);
-                  setShowBattleTypeModal(false);
-                }}
-              >
-                <Text style={styles.modalOptionText}>{type.name}</Text>
-                {selectedBattleType === type.id && (
-                  <Ionicons name="checkmark" size={20} color={COLORS.primary} />
-                )}
-              </TouchableOpacity>
-            ))}
+            {availablePositions.length > 0 ? (
+              availablePositions.map((position) => (
+                <TouchableOpacity
+                  key={position.id}
+                  style={styles.modalOption}
+                  onPress={() => {
+                    setSelectedPosition(position.id);
+                    setShowPositionModal(false);
+                  }}
+                >
+                  <Text style={styles.modalOptionText}>{position.name}</Text>
+                  {selectedPosition === position.id && (
+                    <Ionicons name="checkmark" size={20} color={COLORS.primary} />
+                  )}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noOptionsText}>Select a sport first</Text>
+            )}
           </View>
         </View>
       </Modal>
@@ -381,6 +461,19 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: SIZES.font,
   },
+  modeIndicator: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.base,
+    marginBottom: SIZES.padding,
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.primary,
+  },
+  modeIndicatorText: {
+    color: COLORS.text,
+    fontSize: SIZES.small,
+    fontWeight: '600',
+  },
   dropdownContainer: {
     marginBottom: SIZES.padding,
   },
@@ -427,6 +520,20 @@ const styles = StyleSheet.create({
   lockTimeText: {
     color: COLORS.text,
     fontSize: SIZES.small,
+  },
+  infoBox: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(229, 57, 53, 0.1)',
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    gap: SIZES.base,
+    marginBottom: SIZES.padding,
+  },
+  infoBoxText: {
+    flex: 1,
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    lineHeight: 18,
   },
   footer: {
     paddingHorizontal: SIZES.padding,
