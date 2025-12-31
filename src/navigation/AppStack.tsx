@@ -20,6 +20,11 @@ import {
   FriendsScreen,
   BattleVisibilityScreen,
   AddFriendScreen,
+  StatDuelModeScreen,
+  StatDuelDetailsScreen,
+  StatDuelChampionScreen,
+  StatDuelOpponentScreen,
+  StatDuelConfirmScreen,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -132,6 +137,11 @@ export default function AppStack() {
       <Stack.Screen name="Friends" component={FriendsScreen} />
       <Stack.Screen name="BattleVisibility" component={BattleVisibilityScreen} />
       <Stack.Screen name="AddFriend" component={AddFriendScreen} />
+      <Stack.Screen name="StatDuelMode" component={StatDuelModeScreen} />
+      <Stack.Screen name="StatDuelDetails" component={StatDuelDetailsScreen} />
+      <Stack.Screen name="StatDuelChampion" component={StatDuelChampionScreen} />
+      <Stack.Screen name="StatDuelOpponent" component={StatDuelOpponentScreen} />
+      <Stack.Screen name="StatDuelConfirm" component={StatDuelConfirmScreen} />
     </Stack.Navigator>
   );
 }

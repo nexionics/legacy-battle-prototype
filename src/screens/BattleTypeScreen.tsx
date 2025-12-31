@@ -56,7 +56,7 @@ const BATTLE_TYPES: BattleTypeOption[] = [
       { icon: 'stats-chart', text: 'Official Stats' },
       { icon: 'flash', text: 'Instant Results' },
     ],
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'SKILL_BATTLE',
@@ -85,6 +85,8 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
     
     if (type.id === 'GAME_DUEL') {
       navigation.navigate('StartBattle');
+    } else if (type.id === 'STAT_DUEL') {
+      navigation.navigate('StatDuelMode');
     }
   };
 

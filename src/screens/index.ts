@@ -16,3 +16,8 @@ export { default as DevDebugScreen } from './DevDebugScreen';
 export { default as FriendsScreen } from './FriendsScreen';
 export { default as BattleVisibilityScreen } from './BattleVisibilityScreen';
 export { default as AddFriendScreen } from './AddFriendScreen';
+export { default as StatDuelModeScreen } from './StatDuelModeScreen';
+export { default as StatDuelDetailsScreen } from './StatDuelDetailsScreen';
+export { default as StatDuelChampionScreen } from './StatDuelChampionScreen';
+export { default as StatDuelOpponentScreen } from './StatDuelOpponentScreen';
+export { default as StatDuelConfirmScreen } from './StatDuelConfirmScreen';

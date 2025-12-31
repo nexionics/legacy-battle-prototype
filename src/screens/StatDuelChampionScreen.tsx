@@ -1,0 +1,641 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, SIZES } from '../constants/theme';
+
+interface StatDuelChampionScreenProps {
+  navigation: any;
+  route: any;
+}
+
+const MOCK_PLAYERS = [
+  { id: '1', name: 'Patrick Mahomes', team: 'Kansas City Chiefs', position: 'Quarterback' },
+  { id: '2', name: 'Josh Allen', team: 'Buffalo Bills', position: 'Quarterback' },
+  { id: '3', name: 'Travis Kelce', team: 'Kansas City Chiefs', position: 'Tight End' },
+  { id: '4', name: 'Stefon Diggs', team: 'Buffalo Bills', position: 'Wide Receiver' },
+  { id: '5', name: 'Isiah Pacheco', team: 'Kansas City Chiefs', position: 'Running Back' },
+  { id: '6', name: 'James Cook', team: 'Buffalo Bills', position: 'Running Back' },
+];
+
+const STAT_CATEGORIES = [
+  { id: 'passing_yards', name: 'Passing Yards' },
+  { id: 'rushing_yards', name: 'Rushing Yards' },
+  { id: 'receiving_yards', name: 'Receiving Yards' },
+  { id: 'touchdowns', name: 'Touchdowns' },
+  { id: 'receptions', name: 'Receptions' },
+  { id: 'interceptions', name: 'Interceptions' },
+];
+
+const STAKE_OPTIONS = [
+  { id: '10', name: '10 BC' },
+  { id: '25', name: '25 BC' },
+  { id: '50', name: '50 BC' },
+  { id: '100', name: '100 BC' },
+  { id: '250', name: '250 BC' },
+];
+
+export default function StatDuelChampionScreen({ navigation, route }: StatDuelChampionScreenProps) {
+  const { visibility, battleMode, sport, game } = route?.params || {};
+  
+  const [selectedPlayer, setSelectedPlayer] = useState<typeof MOCK_PLAYERS[0] | null>(null);
+  const [selectedStat, setSelectedStat] = useState<string | null>(null);
+  const [selectedStake, setSelectedStake] = useState<string>('50');
+  
+  const [showPlayerModal, setShowPlayerModal] = useState(false);
+  const [showStatModal, setShowStatModal] = useState(false);
+  const [showStakeModal, setShowStakeModal] = useState(false);
+  const [playerSearch, setPlayerSearch] = useState('');
+
+  const filteredPlayers = MOCK_PLAYERS.filter(p => 
+    p.name.toLowerCase().includes(playerSearch.toLowerCase()) ||
+    p.team.toLowerCase().includes(playerSearch.toLowerCase())
+  );
+
+  const selectedStatData = STAT_CATEGORIES.find(s => s.id === selectedStat);
+
+  const handleContinue = () => {
+    navigation.navigate('StatDuelOpponent', {
+      visibility,
+      battleMode,
+      sport,
+      game,
+      player: selectedPlayer,
+      statCategory: selectedStatData,
+      stake: selectedStake,
+    });
+  };
+
+  const canContinue = selectedPlayer && selectedStat && selectedStake;
+
+  const getStatDescription = () => {
+    if (!selectedStatData || !selectedPlayer) return '';
+    return `Compare Total ${selectedStatData.name} For Both Players`;
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <View style={styles.backButtonInner}>
+              <Ionicons name="arrow-back" size={20} color={COLORS.white} />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Create Battle</Text>
+            <View style={styles.headerIcon}>
+              <Ionicons name="globe-outline" size={18} color={COLORS.text} />
+            </View>
+          </View>
+          <TouchableOpacity style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '66%' }]} />
+          </View>
+          <Text style={styles.progressText}>4/6</Text>
+        </View>
+
+        <View style={styles.titleSection}>
+          <Text style={styles.sectionTitle}>Choose Your Champion And The Dueling Stats</Text>
+          <Text style={styles.sectionSubtitle}>Choose Stats To Battle On</Text>
+        </View>
+
+        {/* Player Selection */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>
+            Pick Player * <Ionicons name="information-circle-outline" size={14} color={COLORS.textSecondary} />
+          </Text>
+          <TouchableOpacity style={styles.dropdown} onPress={() => setShowPlayerModal(true)}>
+            <Text style={[styles.dropdownText, !selectedPlayer && styles.dropdownPlaceholder]}>
+              {selectedPlayer ? selectedPlayer.name : 'pick players'}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Stat Category Selection */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>
+            Stat Category * <Ionicons name="information-circle-outline" size={14} color={COLORS.textSecondary} />
+          </Text>
+          <TouchableOpacity style={styles.dropdown} onPress={() => setShowStatModal(true)}>
+            <Text style={[styles.dropdownText, !selectedStat && styles.dropdownPlaceholder]}>
+              {selectedStatData?.name || 'Select stat category'}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Stake Selection */}
+        <View style={styles.dropdownContainer}>
+          <Text style={styles.dropdownLabel}>
+            Stake BC <Ionicons name="information-circle-outline" size={14} color={COLORS.textSecondary} />
+          </Text>
+          <TouchableOpacity style={styles.dropdown} onPress={() => setShowStakeModal(true)}>
+            <Text style={styles.dropdownText}>{selectedStake} BC</Text>
+            <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Stat Description */}
+        {selectedPlayer && selectedStat && (
+          <View style={styles.statDescriptionContainer}>
+            <Text style={styles.statDescriptionTitle}>Stat Description</Text>
+            <Text style={styles.statDescriptionText}>{getStatDescription()}</Text>
+          </View>
+        )}
+
+        {/* Official Rules */}
+        <View style={styles.rulesContainer}>
+          <Text style={styles.rulesTitle}>Official Rules</Text>
+          <Text style={styles.rulesText}>
+            Tie Rule: If Both QBs Have Same Passing Yards — Tie.{'\n'}
+            Minimum Attempts: x10 Passes Required For Each QB.
+          </Text>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
+          onPress={handleContinue}
+          disabled={!canContinue}
+        >
+          <Text style={styles.continueButtonText}>Continue</Text>
+          <View style={styles.continueIcon}>
+            <Text style={styles.continueIconText}>⚔</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Player Selection Modal */}
+      <Modal visible={showPlayerModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Search Player/Teams</Text>
+              <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.searchContainer}>
+              <Ionicons name="search-outline" size={20} color={COLORS.textSecondary} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search players..."
+                placeholderTextColor={COLORS.textMuted}
+                value={playerSearch}
+                onChangeText={setPlayerSearch}
+              />
+            </View>
+
+            <View style={styles.filterTabs}>
+              <TouchableOpacity style={[styles.filterTab, styles.filterTabActive]}>
+                <Ionicons name="person-outline" size={16} color={COLORS.white} />
+                <Text style={styles.filterTabTextActive}>Ps</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.filterTab}>
+                <Ionicons name="filter-outline" size={16} color={COLORS.textSecondary} />
+                <Text style={styles.filterTabText}>Filter</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.playerList}>
+              {filteredPlayers.map((player) => (
+                <TouchableOpacity
+                  key={player.id}
+                  style={styles.playerOption}
+                  onPress={() => {
+                    setSelectedPlayer(player);
+                    setShowPlayerModal(false);
+                    setPlayerSearch('');
+                  }}
+                >
+                  <View style={styles.playerAvatar}>
+                    <Text style={styles.playerAvatarText}>
+                      {player.name.split(' ').map(n => n[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={styles.playerInfo}>
+                    <Text style={styles.playerName}>{player.name}</Text>
+                    <Text style={styles.playerTeam}>{player.position}</Text>
+                  </View>
+                  <View style={styles.playerTeamBadge}>
+                    <Text style={styles.playerTeamName}>{player.team}</Text>
+                    <View style={styles.activeIndicator}>
+                      <View style={styles.activeDot} />
+                      <Text style={styles.activeText}>Active</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Stat Category Modal */}
+      <Modal visible={showStatModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Stat Category</Text>
+              <TouchableOpacity onPress={() => setShowStatModal(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+            {STAT_CATEGORIES.map((stat) => (
+              <TouchableOpacity
+                key={stat.id}
+                style={styles.modalOption}
+                onPress={() => {
+                  setSelectedStat(stat.id);
+                  setShowStatModal(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>{stat.name}</Text>
+                {selectedStat === stat.id && (
+                  <Ionicons name="checkmark" size={20} color={COLORS.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Stake Modal */}
+      <Modal visible={showStakeModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Stake</Text>
+              <TouchableOpacity onPress={() => setShowStakeModal(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+            {STAKE_OPTIONS.map((stake) => (
+              <TouchableOpacity
+                key={stake.id}
+                style={styles.modalOption}
+                onPress={() => {
+                  setSelectedStake(stake.id);
+                  setShowStakeModal(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>{stake.name}</Text>
+                {selectedStake === stake.id && (
+                  <Ionicons name="checkmark" size={20} color={COLORS.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: SIZES.padding,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: SIZES.padding,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButtonInner: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+  },
+  headerTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+  },
+  headerIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.card,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.card,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SIZES.base,
+    marginBottom: SIZES.padding,
+  },
+  progressBar: {
+    flex: 1,
+    height: 8,
+    backgroundColor: COLORS.card,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+    borderRadius: 4,
+  },
+  progressText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+  titleSection: {
+    marginBottom: SIZES.padding,
+  },
+  sectionTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+    marginBottom: SIZES.base / 2,
+  },
+  sectionSubtitle: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.font,
+  },
+  dropdownContainer: {
+    marginBottom: SIZES.padding,
+  },
+  dropdownLabel: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    marginBottom: SIZES.base,
+  },
+  dropdown: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+    paddingHorizontal: SIZES.padding,
+    paddingVertical: SIZES.padding,
+  },
+  dropdownText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+  },
+  dropdownPlaceholder: {
+    color: COLORS.textMuted,
+  },
+  statDescriptionContainer: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  statDescriptionTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    marginBottom: SIZES.base,
+  },
+  statDescriptionText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  rulesContainer: {
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    padding: SIZES.padding,
+    marginBottom: SIZES.padding,
+    borderWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  rulesTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    marginBottom: SIZES.base,
+  },
+  rulesText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+    lineHeight: 18,
+  },
+  footer: {
+    paddingHorizontal: SIZES.padding,
+    paddingVertical: SIZES.padding,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.inputBorder,
+  },
+  continueButton: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.primary,
+    paddingVertical: SIZES.padding,
+    borderRadius: SIZES.radius,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SIZES.base,
+  },
+  continueButtonDisabled: {
+    opacity: 0.5,
+  },
+  continueButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.medium,
+    fontWeight: 'bold',
+  },
+  continueIcon: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  continueIconText: {
+    fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: SIZES.radius * 2,
+    borderTopRightRadius: SIZES.radius * 2,
+    padding: SIZES.padding,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SIZES.padding,
+    paddingBottom: SIZES.padding,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
+  },
+  modalTitle: {
+    color: COLORS.text,
+    fontSize: SIZES.large,
+    fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: SIZES.radius,
+    paddingHorizontal: SIZES.padding,
+    marginBottom: SIZES.padding,
+    gap: SIZES.base,
+  },
+  searchInput: {
+    flex: 1,
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    paddingVertical: SIZES.padding,
+  },
+  filterTabs: {
+    flexDirection: 'row',
+    gap: SIZES.base,
+    marginBottom: SIZES.padding,
+  },
+  filterTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    paddingHorizontal: SIZES.padding,
+    paddingVertical: SIZES.base,
+    borderRadius: SIZES.radius,
+    gap: SIZES.base / 2,
+  },
+  filterTabActive: {
+    backgroundColor: COLORS.primary,
+  },
+  filterTabText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  filterTabTextActive: {
+    color: COLORS.white,
+    fontSize: SIZES.small,
+  },
+  playerList: {
+    maxHeight: 400,
+  },
+  playerOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SIZES.padding,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
+    gap: SIZES.base,
+  },
+  playerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playerAvatarText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  playerInfo: {
+    flex: 1,
+  },
+  playerName: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: '600',
+  },
+  playerTeam: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.small,
+  },
+  playerTeamBadge: {
+    alignItems: 'flex-end',
+  },
+  playerTeamName: {
+    color: COLORS.text,
+    fontSize: SIZES.small,
+    marginBottom: 2,
+  },
+  activeIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  activeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#22c55e',
+  },
+  activeText: {
+    color: '#22c55e',
+    fontSize: 10,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: SIZES.padding,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
+  },
+  modalOptionText: {
+    color: COLORS.text,
+    fontSize: SIZES.font,
+  },
+});
