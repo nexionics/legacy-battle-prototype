@@ -55,6 +55,14 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('StatDuelChampion', { visibility, battleMode, sport, game });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -63,7 +71,7 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={handleBack}
           >
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={COLORS.white} />

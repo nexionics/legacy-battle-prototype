@@ -60,6 +60,14 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
     }
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('StatDuelOpponent', { visibility, battleMode, sport, game, player, statCategory, stake });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -68,7 +76,7 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={handleBack}
           >
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={COLORS.white} />

@@ -116,6 +116,14 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
     return `Compare Total ${selectedStatData.name} For Both Players`;
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('StatDuelDetails', { visibility, battleMode });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
@@ -124,7 +132,7 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={handleBack}
           >
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={COLORS.white} />

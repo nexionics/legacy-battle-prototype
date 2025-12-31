@@ -109,7 +109,15 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
     ? (selectedSport && selectedGame && selectedPosition)
     : (selectedSport && selectedPosition);
 
-  const DropdownButton = ({ 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('StatDuelMode', { visibility });
+    }
+  };
+
+  const DropdownButton = ({
     label, 
     value, 
     placeholder, 
@@ -143,7 +151,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={handleBack}
           >
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={COLORS.white} />
