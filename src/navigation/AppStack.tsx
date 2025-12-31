@@ -80,7 +80,11 @@ function MainTabs({ navigation }: any) {
           tabBarLabelStyle: styles.battleNowLabel,
           tabBarIcon: () => (
             <View style={styles.battleNowIconContainer}>
-              <Ionicons name="flash" size={24} color={COLORS.white} />
+              {/* Crossed swords/arms icon */}
+              <View style={styles.crossedIconContainer}>
+                <View style={[styles.crossedArm, styles.crossedArmLeft]} />
+                <View style={[styles.crossedArm, styles.crossedArmRight]} />
+              </View>
             </View>
           ),
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
@@ -167,6 +171,26 @@ const styles = StyleSheet.create({
   battleNowIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  crossedIconContainer: {
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  crossedArm: {
+    position: 'absolute',
+    width: 4,
+    height: 24,
+    backgroundColor: COLORS.white,
+    borderRadius: 2,
+  },
+  crossedArmLeft: {
+    transform: [{ rotate: '45deg' }],
+  },
+  crossedArmRight: {
+    transform: [{ rotate: '-45deg' }],
   },
   battleNowLabel: {
     color: COLORS.white,
