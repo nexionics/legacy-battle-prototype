@@ -31,15 +31,20 @@ import {
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function CustomTabBarButton({ children, onPress }: any) {
+function CustomTabBarButton({ onPress }: any) {
   return (
     <TouchableOpacity
       style={styles.customTabButton}
       onPress={onPress}
     >
       <View style={styles.customTabButtonInner}>
-        {children}
+        {/* Crossed swords/arms icon */}
+        <View style={styles.crossedIconContainer}>
+          <View style={[styles.crossedArm, styles.crossedArmLeft]} />
+          <View style={[styles.crossedArm, styles.crossedArmRight]} />
+        </View>
       </View>
+      <BattleNowCurvedLabel />
     </TouchableOpacity>
   );
 }
@@ -83,16 +88,8 @@ function MainTabs({ navigation }: any) {
           },
         }}
         options={{
-          tabBarLabel: ({ focused }) => <BattleNowCurvedLabel focused={focused} />,
-          tabBarIcon: () => (
-            <View style={styles.battleNowIconContainer}>
-              {/* Crossed swords/arms icon */}
-              <View style={styles.crossedIconContainer}>
-                <View style={[styles.crossedArm, styles.crossedArmLeft]} />
-                <View style={[styles.crossedArm, styles.crossedArmRight]} />
-              </View>
-            </View>
-          ),
+          tabBarLabel: () => null,
+          tabBarIcon: () => null,
           tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
       />
@@ -179,10 +176,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 8,
-  },
-  battleNowIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   crossedIconContainer: {
     width: 28,
