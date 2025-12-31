@@ -123,7 +123,9 @@ export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomin
   };
 
   const handleBattle = (event: SportsEvent) => {
-    navigation.navigate('CreateBattle', {
+    // Navigate to BattleVisibility first to choose Private/Public
+    // Then it will go directly to CreateBattle with the game data
+    navigation.navigate('BattleVisibility', {
       prefillTitle: `${event.strHomeTeam} vs ${event.strAwayTeam}`,
       prefillEventId: event.idEvent,
       homeTeam: event.strHomeTeam,

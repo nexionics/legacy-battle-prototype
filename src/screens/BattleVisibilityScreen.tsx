@@ -12,11 +12,28 @@ import { COLORS, SIZES } from '../constants/theme';
 
 interface BattleVisibilityScreenProps {
   navigation: any;
+  route: any;
 }
 
-export default function BattleVisibilityScreen({ navigation }: BattleVisibilityScreenProps) {
+export default function BattleVisibilityScreen({ navigation, route }: BattleVisibilityScreenProps) {
+  // Check if we have game data passed from AllUpcomingGamesScreen
+  const { prefillTitle, prefillEventId, homeTeam, awayTeam } = route?.params || {};
+  const hasGameData = !!prefillTitle && !!prefillEventId;
+
   const handleSelectVisibility = (visibility: 'private' | 'public') => {
-    navigation.navigate('BattleType', { visibility });
+    if (hasGameData) {
+      // If we have game data, go directly to CreateBattle (skip sport/type selection)
+      navigation.navigate('CreateBattle', {
+        prefillTitle,
+        prefillEventId,
+        homeTeam,
+        awayTeam,
+        visibility,
+      });
+    } else {
+      // Normal flow: go to BattleType selection
+      navigation.navigate('BattleType', { visibility });
+    }
   };
 
   return (
