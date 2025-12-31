@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
+import BattleNowCurvedLabel from '../components/BattleNowCurvedLabel';
 import {
   HomeScreen,
   BattlesScreen,
@@ -82,8 +83,7 @@ function MainTabs({ navigation }: any) {
           },
         }}
         options={{
-          tabBarLabel: 'Battle Now',
-          tabBarLabelStyle: styles.battleNowLabel,
+          tabBarLabel: ({ focused }) => <BattleNowCurvedLabel focused={focused} />,
           tabBarIcon: () => (
             <View style={styles.battleNowIconContainer}>
               {/* Crossed swords/arms icon */}
@@ -203,11 +203,5 @@ const styles = StyleSheet.create({
   },
   crossedArmRight: {
     transform: [{ rotate: '-45deg' }],
-  },
-  battleNowLabel: {
-    color: COLORS.white,
-    fontSize: 10,
-    fontWeight: '600',
-    marginTop: 4,
   },
 });
