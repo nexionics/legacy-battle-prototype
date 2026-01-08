@@ -1,12 +1,59 @@
-// TheSportsDB API Service
-// Uses the public demo API key from TheSportsDB documentation
-// See: https://www.thesportsdb.com/api.php
-// NFL League ID: 4391
-// NBA League ID: 4387
+// Sports API Service
+// Primary: Supabase sports_events (our Sports Data Repo)
+// Fallback: TheSportsDB (when EXPO_PUBLIC_ENABLE_SPORTS_FALLBACK=true)
 
-// Public demo API key from TheSportsDB (documented at thesportsdb.com/api.php)
+import { SportsRepo, RepoGame } from './sportsRepo';
+
+// Fallback flag - set to true to enable TheSportsDB fallback when repo is empty
+const ENABLE_FALLBACK = process.env.EXPO_PUBLIC_ENABLE_SPORTS_FALLBACK === 'true';
+
+// TheSportsDB config (fallback only)
 const DEMO_API_KEY = '1' + '2' + '3';
 const BASE_URL = `https://www.thesportsdb.com/api/v1/json/${DEMO_API_KEY}`;
+
+// Map sport names from repo format to TheSportsDB format
+function mapSportToDisplay(sport: string): string {
+  switch (sport.toUpperCase()) {
+    case 'NBA':
+      return 'Basketball';
+    case 'NFL':
+      return 'American Football';
+    case 'MLB':
+      return 'Baseball';
+    case 'NHL':
+      return 'Ice Hockey';
+    default:
+      return sport;
+  }
+}
+
+// Convert RepoGame to SportsEvent format (so screens don't need to change)
+function repoGameToSportsEvent(game: RepoGame): SportsEvent {
+  return {
+    idEvent: game.id, // Use canonical UUID as idEvent
+    strEvent: game.display_name || `${game.home_team} vs ${game.away_team}`,
+    strSport: mapSportToDisplay(game.sport),
+    strLeague: game.league,
+    strLeagueBadge: '',
+    strHomeTeam: game.home_team || '',
+    strAwayTeam: game.away_team || '',
+    intHomeScore: game.home_score !== null ? String(game.home_score) : null,
+    intAwayScore: game.away_score !== null ? String(game.away_score) : null,
+    strTimestamp: game.start_time || '',
+    dateEvent: game.start_time ? game.start_time.split('T')[0] : '',
+    strTime: game.start_time ? new Date(game.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+    strTimeLocal: game.start_time ? new Date(game.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+    idHomeTeam: '',
+    strHomeTeamBadge: '',
+    idAwayTeam: '',
+    strAwayTeamBadge: '',
+    strVenue: game.venue || '',
+    strCity: '',
+    strPoster: null,
+    strThumb: null,
+    strStatus: game.status,
+  };
+}
 
 export interface SportsEvent {
   idEvent: string;
@@ -110,9 +157,18 @@ export async function getTeamDetails(teamId: string): Promise<Team | null> {
   }
 }
 
-// Get upcoming games from multiple leagues
+// Get upcoming games from multiple leagues (repo first, then fallback)
 export async function getUpcomingGames(): Promise<SportsEvent[]> {
   try {
+    // Try Supabase repo first
+    const repoGames = await SportsRepo.getUpcomingBySport('ALL', 7);
+    if (repoGames.length > 0) {
+      return repoGames.map(repoGameToSportsEvent);
+    }
+
+    // Fallback to TheSportsDB if enabled and repo is empty
+    if (!ENABLE_FALLBACK) return [];
+
     const [nflEvents, nbaEvents] = await Promise.all([
       getNextLeagueEvents(LEAGUE_IDS.NFL),
       getNextLeagueEvents(LEAGUE_IDS.NBA),
@@ -129,9 +185,18 @@ export async function getUpcomingGames(): Promise<SportsEvent[]> {
   }
 }
 
-// Get recent results from multiple leagues
+// Get recent results from multiple leagues (repo first, then fallback)
 export async function getRecentResults(): Promise<SportsEvent[]> {
   try {
+    // Try Supabase repo first
+    const repoGames = await SportsRepo.getResultsBySport('ALL', 7);
+    if (repoGames.length > 0) {
+      return repoGames.map(repoGameToSportsEvent);
+    }
+
+    // Fallback to TheSportsDB if enabled and repo is empty
+    if (!ENABLE_FALLBACK) return [];
+
     const [nflEvents, nbaEvents] = await Promise.all([
       getPreviousLeagueEvents(LEAGUE_IDS.NFL),
       getPreviousLeagueEvents(LEAGUE_IDS.NBA),
@@ -192,9 +257,18 @@ export function getSportIcon(sport: string): string {
   }
 }
 
-// Get results for a specific sport (last 7 days)
+// Get results for a specific sport (last 7 days) - repo first, then fallback
 export async function getResultsBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'): Promise<SportsEvent[]> {
   try {
+    // Try Supabase repo first
+    const repoGames = await SportsRepo.getResultsBySport(sport, 7);
+    if (repoGames.length > 0) {
+      return repoGames.map(repoGameToSportsEvent);
+    }
+
+    // Fallback to TheSportsDB if enabled and repo is empty
+    if (!ENABLE_FALLBACK) return [];
+
     let events: SportsEvent[] = [];
     
     if (sport === 'ALL') {
@@ -230,9 +304,18 @@ export async function getResultsBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | '
   }
 }
 
-// Get upcoming games for a specific sport (next 7 days)
+// Get upcoming games for a specific sport (next 7 days) - repo first, then fallback
 export async function getUpcomingBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'): Promise<SportsEvent[]> {
   try {
+    // Try Supabase repo first
+    const repoGames = await SportsRepo.getUpcomingBySport(sport, 7);
+    if (repoGames.length > 0) {
+      return repoGames.map(repoGameToSportsEvent);
+    }
+
+    // Fallback to TheSportsDB if enabled and repo is empty
+    if (!ENABLE_FALLBACK) return [];
+
     let events: SportsEvent[] = [];
     
     if (sport === 'ALL') {
@@ -268,9 +351,40 @@ export async function getUpcomingBySport(sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 
   }
 }
 
-// Get event result by event ID (for battle resolution)
+// Helper to check if a string is a UUID
+function isUuid(s: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+}
+
+// Get event result by event ID (for battle resolution) - repo first, then fallback
+// eventId can be either a canonical UUID (sports_events.id) or a legacy provider ID
 export async function getResultByEventId(eventId: string): Promise<{ data: SportsEvent | null; error: Error | null }> {
   try {
+    // First: try canonical lookup if it looks like a UUID
+    if (isUuid(eventId)) {
+      const canonical = await SportsRepo.getEventByCanonicalId(eventId);
+      if (canonical) {
+        return { data: repoGameToSportsEvent(canonical), error: null };
+      }
+    }
+
+    // Second: try lookup by provider ID (for legacy battles using TheSportsDB IDs)
+    const byProvider = await SportsRepo.getEventByProviderId('thesportsdb', eventId);
+    if (byProvider) {
+      return { data: repoGameToSportsEvent(byProvider), error: null };
+    }
+
+    // Also try ESPN provider ID
+    const byEspn = await SportsRepo.getEventByProviderId('espn', eventId);
+    if (byEspn) {
+      return { data: repoGameToSportsEvent(byEspn), error: null };
+    }
+
+    // Fallback to TheSportsDB if enabled
+    if (!ENABLE_FALLBACK) {
+      return { data: null, error: null };
+    }
+
     const response = await fetch(`${BASE_URL}/lookupevent.php?id=${eventId}`);
     const data = await response.json();
     return { data: data.events?.[0] || null, error: null };
