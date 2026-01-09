@@ -2,6 +2,14 @@
 // Reads normalized events from Supabase sports_events table
 import { supabase } from '../lib/supabaseClient';
 
+// Team metadata from sports_teams join
+export type TeamInfo = {
+  id: string;
+  display_name: string | null;
+  abbreviation: string | null;
+  logo_url: string | null;
+};
+
 export type RepoGame = {
   id: string;                 // canonical sports_events.id (uuid)
   provider: string;
@@ -19,7 +27,58 @@ export type RepoGame = {
   display_name?: string | null;
   venue?: string | null;
   raw?: object;
+  // Team metadata from joins
+  home_team_info?: TeamInfo | null;
+  away_team_info?: TeamInfo | null;
 };
+
+// Select query with team joins
+const SELECT_WITH_TEAMS = `
+  id, provider, provider_event_id, sport, league,
+  start_time, status,
+  home_team, away_team,
+  home_score, away_score,
+  home_team_abbr, away_team_abbr,
+  display_name, venue,
+  home_team_info:home_team_id ( id, display_name, abbreviation, logo_url ),
+  away_team_info:away_team_id ( id, display_name, abbreviation, logo_url )
+`;
+
+// Select query with team joins and raw (for single event lookups)
+const SELECT_WITH_TEAMS_AND_RAW = `
+  id, provider, provider_event_id, sport, league,
+  start_time, status,
+  home_team, away_team,
+  home_score, away_score,
+  home_team_abbr, away_team_abbr,
+  display_name, venue, raw,
+  home_team_info:home_team_id ( id, display_name, abbreviation, logo_url ),
+  away_team_info:away_team_id ( id, display_name, abbreviation, logo_url )
+`;
+
+// Transform raw Supabase response to RepoGame
+function transformToRepoGame(row: any): RepoGame {
+  return {
+    id: row.id,
+    provider: row.provider,
+    provider_event_id: row.provider_event_id,
+    sport: row.sport,
+    league: row.league,
+    start_time: row.start_time,
+    status: row.status,
+    home_team: row.home_team,
+    away_team: row.away_team,
+    home_score: row.home_score,
+    away_score: row.away_score,
+    home_team_abbr: row.home_team_abbr,
+    away_team_abbr: row.away_team_abbr,
+    display_name: row.display_name,
+    venue: row.venue,
+    raw: row.raw,
+    home_team_info: row.home_team_info || null,
+    away_team_info: row.away_team_info || null,
+  };
+}
 
 export const SportsRepo = {
   // Next N days (scheduled/live)
@@ -32,9 +91,7 @@ export const SportsRepo = {
 
     let query = supabase
       .from('sports_events')
-      .select(
-        'id,provider,provider_event_id,sport,league,start_time,status,home_team,away_team,home_score,away_score,home_team_abbr,away_team_abbr,display_name,venue'
-      )
+      .select(SELECT_WITH_TEAMS)
       .gte('start_time', now.toISOString())
       .lte('start_time', end.toISOString())
       .in('status', ['scheduled', 'live'])
@@ -47,7 +104,7 @@ export const SportsRepo = {
       console.error('SportsRepo.getUpcomingBySport error', error);
       return [];
     }
-    return (data || []) as RepoGame[];
+    return (data || []).map(transformToRepoGame);
   },
 
   // Past N days (final)
@@ -60,9 +117,7 @@ export const SportsRepo = {
 
     let query = supabase
       .from('sports_events')
-      .select(
-        'id,provider,provider_event_id,sport,league,start_time,status,home_team,away_team,home_score,away_score,home_team_abbr,away_team_abbr,display_name,venue'
-      )
+      .select(SELECT_WITH_TEAMS)
       .gte('start_time', start.toISOString())
       .lte('start_time', now.toISOString())
       .eq('status', 'final')
@@ -75,16 +130,14 @@ export const SportsRepo = {
       console.error('SportsRepo.getResultsBySport error', error);
       return [];
     }
-    return (data || []) as RepoGame[];
+    return (data || []).map(transformToRepoGame);
   },
 
   // Lookup a single event by canonical id (sports_events.id)
   async getEventByCanonicalId(canonicalId: string): Promise<RepoGame | null> {
     const { data, error } = await supabase
       .from('sports_events')
-      .select(
-        'id,provider,provider_event_id,sport,league,start_time,status,home_team,away_team,home_score,away_score,home_team_abbr,away_team_abbr,display_name,venue,raw'
-      )
+      .select(SELECT_WITH_TEAMS_AND_RAW)
       .eq('id', canonicalId)
       .single();
 
@@ -92,21 +145,19 @@ export const SportsRepo = {
       console.error('SportsRepo.getEventByCanonicalId error', error);
       return null;
     }
-    return data as RepoGame;
+    return transformToRepoGame(data);
   },
 
   // Lookup by provider + provider_event_id (used during migration/fallback)
   async getEventByProviderId(provider: string, providerEventId: string): Promise<RepoGame | null> {
     const { data, error } = await supabase
       .from('sports_events')
-      .select(
-        'id,provider,provider_event_id,sport,league,start_time,status,home_team,away_team,home_score,away_score,home_team_abbr,away_team_abbr,display_name,venue,raw'
-      )
+      .select(SELECT_WITH_TEAMS_AND_RAW)
       .eq('provider', provider)
       .eq('provider_event_id', providerEventId)
       .single();
 
     if (error) return null;
-    return data as RepoGame;
+    return transformToRepoGame(data);
   },
 };
