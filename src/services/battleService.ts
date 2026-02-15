@@ -150,6 +150,32 @@ export const BattleService = {
   },
 
   joinBattle: async ({ battleId, userId, pick }: JoinBattleParams) => {
+    const { data: battle, error: battleError } = await supabase
+      .from('battles')
+      .select('creator_id, visibility')
+      .eq('id', battleId)
+      .single();
+
+    if (battleError || !battle) {
+      return { data: null, error: battleError || { message: 'Battle not found' } };
+    }
+
+    if (battle.visibility === 'crew') {
+      const { data: crewLink } = await supabase
+        .from('crew_requests')
+        .select('id')
+        .eq('status', 'accepted')
+        .or(
+          `and(sender_id.eq.${battle.creator_id},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${battle.creator_id})`
+        )
+        .limit(1)
+        .maybeSingle();
+
+      if (!crewLink) {
+        return { data: null, error: { message: 'This battle is crew-only. You must be in the creator\'s crew to join.' } };
+      }
+    }
+
     const { data, error } = await supabase
       .from('battle_participants')
       .insert({
