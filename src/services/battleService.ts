@@ -36,10 +36,11 @@ export type CreateBattleParams = {
   eventId?: string;
   stake?: number;
   creatorPick?: string;
+  visibility?: 'private' | 'public' | 'crew';
 };
 
 export const BattleService = {
-  createBattle: async ({ creatorId, title, description, eventId, stake, creatorPick }: CreateBattleParams) => {
+  createBattle: async ({ creatorId, title, description, eventId, stake, creatorPick, visibility }: CreateBattleParams) => {
     const { data: battle, error } = await supabase
       .from('battles')
       .insert({
@@ -48,6 +49,7 @@ export const BattleService = {
         description: description || null,
         event_id: eventId || null,
         stake: stake || 0,
+        visibility: visibility || 'public',
       })
       .select()
       .single();

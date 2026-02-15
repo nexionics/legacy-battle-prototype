@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
+import { CrewService } from '../services/crewService';
 
 type Profile = {
   id: string;
@@ -43,6 +44,8 @@ export default function ProfileScreen({ navigation }: any) {
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [battleStats, setBattleStats] = useState<BattleStats>({ wins: 0, losses: 0, challenges: 0 });
+  const [crewCount, setCrewCount] = useState(0);
+  const [pendingCrewCount, setPendingCrewCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -78,8 +81,18 @@ export default function ProfileScreen({ navigation }: any) {
       }
     };
 
+    const loadCrewCounts = async () => {
+      const [crewResult, pendingResult] = await Promise.all([
+        CrewService.getCrewMembers(user.id),
+        CrewService.getPendingReceived(user.id),
+      ]);
+      setCrewCount(crewResult.data.length);
+      setPendingCrewCount(pendingResult.data.length);
+    };
+
     loadProfile();
     loadBattleStats();
+    loadCrewCounts();
   }, [user]);
 
   useEffect(() => {
@@ -308,15 +321,20 @@ export default function ProfileScreen({ navigation }: any) {
             </View>
           </TouchableOpacity>
 
-          {/* Friends */}
+          {/* Crew */}
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Friends')}>
             <View style={styles.menuIconContainer}>
               <Ionicons name="people-outline" size={22} color={COLORS.text} />
             </View>
-            <Text style={styles.menuItemText}>Friends</Text>
+            <Text style={styles.menuItemText}>Crew</Text>
             <View style={styles.menuRight}>
+              {pendingCrewCount > 0 && (
+                <View style={styles.menuBadgePending}>
+                  <Text style={styles.menuBadgeText}>{pendingCrewCount}</Text>
+                </View>
+              )}
               <View style={styles.menuBadge}>
-                <Text style={styles.menuBadgeText}>5</Text>
+                <Text style={styles.menuBadgeText}>{crewCount}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
             </View>
@@ -676,6 +694,14 @@ const styles = StyleSheet.create({
   },
   menuBadge: {
     backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    minWidth: 28,
+    alignItems: 'center',
+  },
+  menuBadgePending: {
+    backgroundColor: '#f59e0b',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,

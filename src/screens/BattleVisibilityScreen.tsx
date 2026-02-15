@@ -20,9 +20,8 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
   const { prefillTitle, prefillEventId, homeTeam, awayTeam } = route?.params || {};
   const hasGameData = !!prefillTitle && !!prefillEventId;
 
-  const handleSelectVisibility = (visibility: 'private' | 'public') => {
+  const handleSelectVisibility = (visibility: 'private' | 'public' | 'crew') => {
     if (hasGameData) {
-      // If we have game data, go directly to CreateBattle (skip sport/type selection)
       navigation.navigate('CreateBattle', {
         prefillTitle,
         prefillEventId,
@@ -31,7 +30,6 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
         visibility,
       });
     } else {
-      // Normal flow: go to BattleType selection
       navigation.navigate('BattleType', { visibility });
     }
   };
@@ -73,6 +71,25 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
           <View style={styles.optionTextContainer}>
             <Text style={styles.optionTitle}>Private</Text>
             <Text style={styles.optionDescription}>Only Invited Opponent Can Join</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Crew Only Option */}
+        <TouchableOpacity 
+          style={styles.optionCard}
+          onPress={() => handleSelectVisibility('crew')}
+        >
+          <View style={styles.optionIconContainer}>
+            <View style={styles.crewIcon}>
+              <Ionicons name="people" size={24} color="#22c55e" />
+              <View style={styles.crewBadge}>
+                <Ionicons name="star" size={10} color={COLORS.white} />
+              </View>
+            </View>
+          </View>
+          <View style={styles.optionTextContainer}>
+            <Text style={styles.optionTitle}>Crew Only</Text>
+            <Text style={styles.optionDescription}>Only Your Crew Members Can Join This Battle</Text>
           </View>
         </TouchableOpacity>
 
@@ -180,6 +197,28 @@ const styles = StyleSheet.create({
     height: 18,
     borderRadius: 9,
     backgroundColor: '#4FC3F7',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  crewIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: COLORS.card,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#22c55e',
+    position: 'relative' as const,
+  },
+  crewBadge: {
+    position: 'absolute' as const,
+    bottom: -2,
+    right: -2,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#22c55e',
     justifyContent: 'center',
     alignItems: 'center',
   },

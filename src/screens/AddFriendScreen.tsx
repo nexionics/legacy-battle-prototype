@@ -15,14 +15,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
-import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
+import { CrewService } from '../services/crewService';
 
 type SearchResult = {
   id: string;
   username: string | null;
   display_name: string | null;
-  email: string;
+  avatar_url: string | null;
+  requestStatus?: string;
 };
 
 export default function AddFriendScreen({ navigation }: any) {
@@ -34,30 +35,32 @@ export default function AddFriendScreen({ navigation }: any) {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      Alert.alert('Error', 'Please enter an email or username to search');
+      Alert.alert('Error', 'Please enter a username to search');
       return;
     }
+
+    if (!user) return;
 
     setSearching(true);
     setHasSearched(true);
 
     try {
-      // Search by username or email
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, username, display_name, email')
-        .or(`username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
-        .neq('id', user?.id) // Exclude current user
-        .limit(10);
+      const { data, error } = await CrewService.searchUsers(searchQuery, user.id);
 
       if (error) {
-        console.error('Search error:', error);
         Alert.alert('Error', 'Failed to search for users');
       } else {
-        setSearchResults(data || []);
+        const enriched: SearchResult[] = [];
+        for (const profile of data) {
+          const existing = await CrewService.getRequestStatus(user.id, profile.id);
+          enriched.push({
+            ...profile,
+            requestStatus: existing?.status,
+          });
+        }
+        setSearchResults(enriched);
       }
-    } catch (error) {
-      console.error('Search error:', error);
+    } catch (err) {
       Alert.alert('Error', 'Failed to search for users');
     } finally {
       setSearching(false);
@@ -65,13 +68,19 @@ export default function AddFriendScreen({ navigation }: any) {
   };
 
   const handleAddFriend = async (friendId: string, friendName: string) => {
-    // For now, show a success message
-    // In a real implementation, you would insert into a friends table
-    Alert.alert(
-      'Friend Request Sent',
-      `A friend request has been sent to ${friendName}`,
-      [{ text: 'OK' }]
-    );
+    const { error } = await CrewService.sendRequest(friendId);
+    if (error) {
+      if (error.code === '23505') {
+        Alert.alert('Already Sent', 'You already have a pending request with this user.');
+      } else {
+        Alert.alert('Error', error.message || 'Failed to send crew request');
+      }
+    } else {
+      Alert.alert('Crew Request Sent', `A crew request has been sent to ${friendName}`);
+      setSearchResults((prev) =>
+        prev.map((r) => (r.id === friendId ? { ...r, requestStatus: 'pending' } : r))
+      );
+    }
   };
 
   const handleInviteViaText = async () => {
@@ -124,22 +133,22 @@ export default function AddFriendScreen({ navigation }: any) {
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={20} color={COLORS.white} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add Friend</Text>
+        <Text style={styles.headerTitle}>Add Crew</Text>
         <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Search Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Search for Friends</Text>
-          <Text style={styles.sectionSubtitle}>Find friends by email or username</Text>
+          <Text style={styles.sectionTitle}>Search for Crew</Text>
+          <Text style={styles.sectionSubtitle}>Find people by username</Text>
           
           <View style={styles.searchContainer}>
             <View style={styles.searchInputWrapper}>
               <Ionicons name="search-outline" size={20} color={COLORS.textSecondary} />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Enter email or username"
+                placeholder="Enter username"
                 placeholderTextColor={COLORS.textMuted}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
@@ -187,12 +196,22 @@ export default function AddFriendScreen({ navigation }: any) {
                     @{result.username || 'no-username'}
                   </Text>
                 </View>
-                <TouchableOpacity 
-                  style={styles.addButton}
-                  onPress={() => handleAddFriend(result.id, result.display_name || result.username || 'User')}
-                >
-                  <Ionicons name="person-add" size={18} color={COLORS.white} />
-                </TouchableOpacity>
+                {result.requestStatus === 'accepted' ? (
+                  <View style={[styles.addButton, styles.addButtonDone]}>
+                    <Ionicons name="checkmark" size={18} color={COLORS.white} />
+                  </View>
+                ) : result.requestStatus === 'pending' ? (
+                  <View style={[styles.addButton, styles.addButtonPending]}>
+                    <Ionicons name="time" size={18} color={COLORS.white} />
+                  </View>
+                ) : (
+                  <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => handleAddFriend(result.id, result.display_name || result.username || 'User')}
+                  >
+                    <Ionicons name="person-add" size={18} color={COLORS.white} />
+                  </TouchableOpacity>
+                )}
               </View>
             ))
           )}
@@ -207,8 +226,8 @@ export default function AddFriendScreen({ navigation }: any) {
 
         {/* Invite Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Invite Friends</Text>
-          <Text style={styles.sectionSubtitle}>Invite friends who aren't on Legacy Battle yet</Text>
+          <Text style={styles.sectionTitle}>Invite to Crew</Text>
+          <Text style={styles.sectionSubtitle}>Invite people who aren't on Legacy Battle yet</Text>
           
           <TouchableOpacity style={styles.inviteOption} onPress={handleInviteViaText}>
             <View style={styles.inviteIconContainer}>
@@ -383,6 +402,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addButtonDone: {
+    backgroundColor: '#22c55e',
+  },
+  addButtonPending: {
+    backgroundColor: '#f59e0b',
   },
   divider: {
     flexDirection: 'row',

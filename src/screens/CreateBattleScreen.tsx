@@ -38,6 +38,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
     prefillDescription,
     homeTeam,
     awayTeam,
+    visibility,
   } = route?.params || {};
   
   const [title, setTitle] = useState(prefillTitle || '');
@@ -138,6 +139,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
       eventId: eventId.trim() || undefined,
       stake: parseInt(stake) || 0,
       creatorPick: creatorPickTeam,
+      visibility: visibility || 'public',
     });
 
     setLoading(false);
