@@ -70,7 +70,7 @@ export default function FriendsScreen({ navigation }: any) {
   const handleAddSuggestion = async (memberId: string) => {
     const { error } = await CrewService.sendRequest(memberId);
     if (error) {
-      if (error.code === '23505') {
+      if ('code' in error && error.code === '23505') {
         Alert.alert('Already Sent', 'You already have a pending request with this user.');
       } else {
         Alert.alert('Error', error.message || 'Failed to send request');
