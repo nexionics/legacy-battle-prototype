@@ -33,7 +33,6 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const [joining, setJoining] = useState(false);
   const [pick, setPick] = useState('');
   const [gameScore, setGameScore] = useState<SportsEvent | null>(null);
-  const [resolving, setResolving] = useState(false);
 
   const loadBattle = async () => {
     if (!battleId) return;
@@ -155,27 +154,8 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
     Alert.alert('Joined!', 'You have successfully joined this battle.');
   };
 
-  const handleResolve = async () => {
-    if (!battleId) return;
-
-    setResolving(true);
-    const { error, winnerId } = await BattleService.resolveBattle(battleId);
-    setResolving(false);
-
-    if (error) {
-      Alert.alert('Error', error.message || 'Failed to resolve battle');
-      return;
-    }
-
-    if (winnerId) {
-      Alert.alert('Battle Resolved', 'Winner determined!');
-    } else {
-      Alert.alert('Battle Resolved', 'No winner (tie or unmatched picks).');
-    }
-  };
-
   const matchEnded = gameScore && gameScore.intHomeScore !== null && gameScore.intAwayScore !== null;
-  const canResolve = battle?.status === 'active' && matchEnded && (isCreator || alreadyJoined);
+  const pendingResolution = battle?.status === 'active' && matchEnded;
 
   const getWinnerName = (winnerId: string | null) => {
     if (!winnerId) return 'No winner';
@@ -336,22 +316,11 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
           </View>
         )}
 
-        {/* Resolve Battle Button */}
-        {canResolve && (
-          <TouchableOpacity
-            style={[styles.resolveButton, resolving && styles.resolveButtonDisabled]}
-            onPress={handleResolve}
-            disabled={resolving}
-          >
-            {resolving ? (
-              <ActivityIndicator color={COLORS.white} />
-            ) : (
-              <>
-                <Ionicons name="checkmark-done" size={20} color={COLORS.white} />
-                <Text style={styles.resolveButtonText}>Resolve Battle</Text>
-              </>
-            )}
-          </TouchableOpacity>
+        {pendingResolution && (
+          <View style={styles.autoResolveNotice}>
+            <Ionicons name="hourglass-outline" size={20} color="#f59e0b" />
+            <Text style={styles.autoResolveText}>Game finished. Auto-resolving shortly...</Text>
+          </View>
         )}
 
         {/* Participants Section */}
@@ -846,23 +815,22 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small,
     marginTop: 4,
   },
-  resolveButton: {
+  autoResolveNotice: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    borderWidth: 1,
+    borderColor: '#f59e0b',
     paddingVertical: SIZES.padding,
     borderRadius: SIZES.radius,
     gap: SIZES.base,
     marginBottom: SIZES.padding,
   },
-  resolveButtonDisabled: {
-    opacity: 0.7,
-  },
-  resolveButtonText: {
-    color: COLORS.white,
+  autoResolveText: {
+    color: '#f59e0b',
     fontSize: SIZES.font,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   challengeInfo: {
     marginBottom: SIZES.padding,
