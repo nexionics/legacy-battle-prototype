@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
-  StatusBar,
   TouchableOpacity,
   Alert,
   TextInput,
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../constants/theme';
+import { Screen, AppText } from '../components/ui';
+import { colors, spacing, fontSizes, radii } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { CrewService } from '../services/crewService';
@@ -187,29 +185,28 @@ export default function ProfileScreen({ navigation }: any) {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <Screen>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      </SafeAreaView>
+      </Screen>
     );
   }
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+    <Screen padding={0}>
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.backButton}>
-            <Ionicons name="arrow-back" size={20} color={COLORS.white} />
+            <Ionicons name="arrow-back" size={20} color={colors.white} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>Profile</Text>
-            <Ionicons name="person-outline" size={18} color={COLORS.primary} />
+            <AppText style={styles.headerTitle}>Profile</AppText>
+            <Ionicons name="person-outline" size={18} color={colors.primary} />
           </View>
           <TouchableOpacity style={styles.notificationButton}>
-            <Ionicons name="notifications-outline" size={20} color={COLORS.white} />
+            <Ionicons name="notifications-outline" size={20} color={colors.white} />
           </TouchableOpacity>
         </View>
 
@@ -217,48 +214,48 @@ export default function ProfileScreen({ navigation }: any) {
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{avatarInitials}</Text>
+              <AppText style={styles.avatarText}>{avatarInitials}</AppText>
             </View>
           </View>
           
-          <Text style={styles.username}>{profile?.display_name || profile?.username || 'User'}</Text>
-          <Text style={styles.email}>{user?.email}</Text>
+          <AppText style={styles.username}>{profile?.display_name || profile?.username || 'User'}</AppText>
+          <AppText style={styles.email}>{user?.email}</AppText>
           
           {/* Level Badge */}
           <View style={styles.levelBadgeContainer}>
-            <Text style={styles.trophyIcon}>🏆</Text>
-            <Text style={styles.levelBadgeText}>
+            <AppText style={styles.trophyIcon}>🏆</AppText>
+            <AppText style={styles.levelBadgeText}>
               {levelInfo.level} Level {levelNumber}
-            </Text>
-            <Text style={styles.levelXpText}>  {xpValue.toLocaleString()} XP</Text>
+            </AppText>
+            <AppText style={styles.levelXpText}>  {xpValue.toLocaleString()} XP</AppText>
           </View>
         </View>
 
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={[styles.statBox, styles.statBoxGreen]}>
-            <Text style={[styles.statValue, styles.statValueGreen]}>{battleStats.wins}</Text>
-            <Text style={styles.statLabel}>Wins</Text>
+            <AppText style={[styles.statValue, styles.statValueGreen]}>{battleStats.wins}</AppText>
+            <AppText style={styles.statLabel}>Wins</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxRed]}>
-            <Text style={[styles.statValue, styles.statValueRed]}>{battleStats.losses}</Text>
-            <Text style={styles.statLabel}>Losses</Text>
+            <AppText style={[styles.statValue, styles.statValueRed]}>{battleStats.losses}</AppText>
+            <AppText style={styles.statLabel}>Losses</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxBlue]}>
-            <Text style={[styles.statValue, styles.statValueBlue]}>{battleStats.challenges}</Text>
-            <Text style={styles.statLabel}>Challenges</Text>
+            <AppText style={[styles.statValue, styles.statValueBlue]}>{battleStats.challenges}</AppText>
+            <AppText style={styles.statLabel}>Challenges</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxGray]}>
-            <Text style={styles.statValue}>{Number(walletBalance).toLocaleString()}</Text>
-            <Text style={styles.statLabel}>BC Coins</Text>
+            <AppText style={styles.statValue}>{Number(walletBalance).toLocaleString()}</AppText>
+            <AppText style={styles.statLabel}>BC Coins</AppText>
           </View>
         </View>
 
         {/* Legacy Rank Card */}
         <View style={styles.rankCard}>
           <View style={styles.rankHeader}>
-            <Text style={styles.rankTitle}>Legacy Rank</Text>
-            <Text style={styles.rankLevel}>{levelInfo.level}</Text>
+            <AppText style={styles.rankTitle}>Legacy Rank</AppText>
+            <AppText style={styles.rankLevel}>{levelInfo.level}</AppText>
           </View>
           <View style={styles.rankProgressContainer}>
             <View style={styles.rankProgressBar}>
@@ -266,30 +263,30 @@ export default function ProfileScreen({ navigation }: any) {
             </View>
           </View>
           <View style={styles.rankFooter}>
-            <Text style={styles.rankXpText}>{xpValue.toLocaleString()} XP</Text>
-            <Text style={styles.rankNextText}>{levelInfo.nextLevel}: {levelInfo.nextXp.toLocaleString()} XP</Text>
+            <AppText style={styles.rankXpText}>{xpValue.toLocaleString()} XP</AppText>
+            <AppText style={styles.rankNextText}>{levelInfo.nextLevel}: {levelInfo.nextXp.toLocaleString()} XP</AppText>
           </View>
           
           {/* Battle Invitation */}
           <TouchableOpacity style={styles.invitationBanner}>
-            <Text style={styles.invitationText}>You Have Pending Battle Invites</Text>
-            <Ionicons name="arrow-forward" size={18} color={COLORS.text} />
+            <AppText style={styles.invitationText}>You Have Pending Battle Invites</AppText>
+            <Ionicons name="arrow-forward" size={18} color={colors.text} />
           </TouchableOpacity>
         </View>
 
         {/* Total BC Card */}
         <View style={styles.bcCard}>
           <View style={styles.bcLeft}>
-            <Text style={styles.bcLabel}>Total Bc</Text>
-            <Text style={styles.bcValue}>{Number(walletBalance).toLocaleString()} BC</Text>
+            <AppText style={styles.bcLabel}>Total Bc</AppText>
+            <AppText style={styles.bcValue}>{Number(walletBalance).toLocaleString()} BC</AppText>
           </View>
           <View style={styles.bcRight}>
             <TouchableOpacity>
-              <Ionicons name="eye-outline" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.viewMoreButton}>
-              <Text style={styles.viewMoreText}>View More</Text>
-              <Ionicons name="arrow-forward" size={14} color={COLORS.textSecondary} />
+              <AppText style={styles.viewMoreText}>View More</AppText>
+              <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -299,99 +296,99 @@ export default function ProfileScreen({ navigation }: any) {
           {/* Achievements */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="trophy-outline" size={22} color={COLORS.text} />
+              <Ionicons name="trophy-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Achievements</Text>
+            <AppText style={styles.menuItemText}>Achievements</AppText>
             <View style={styles.menuRight}>
               <View style={styles.menuBadge}>
-                <Text style={styles.menuBadgeText}>12</Text>
+                <AppText style={styles.menuBadgeText}>12</AppText>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
 
           {/* Statistics */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="stats-chart-outline" size={22} color={COLORS.text} />
+              <Ionicons name="stats-chart-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Statistics</Text>
+            <AppText style={styles.menuItemText}>Statistics</AppText>
             <View style={styles.menuRight}>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
 
           {/* Crew */}
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Friends')}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="people-outline" size={22} color={COLORS.text} />
+              <Ionicons name="people-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Crew</Text>
+            <AppText style={styles.menuItemText}>Crew</AppText>
             <View style={styles.menuRight}>
               {pendingCrewCount > 0 && (
                 <View style={styles.menuBadgePending}>
-                  <Text style={styles.menuBadgeText}>{pendingCrewCount}</Text>
+                  <AppText style={styles.menuBadgeText}>{pendingCrewCount}</AppText>
                 </View>
               )}
               <View style={styles.menuBadge}>
-                <Text style={styles.menuBadgeText}>{crewCount}</Text>
+                <AppText style={styles.menuBadgeText}>{crewCount}</AppText>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
 
           {/* Wallet */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="wallet-outline" size={22} color={COLORS.text} />
+              <Ionicons name="wallet-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Wallet</Text>
+            <AppText style={styles.menuItemText}>Wallet</AppText>
             <View style={styles.menuRight}>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
 
           {/* Notifications */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="notifications-outline" size={22} color={COLORS.text} />
+              <Ionicons name="notifications-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Notifications</Text>
+            <AppText style={styles.menuItemText}>Notifications</AppText>
             <View style={styles.menuRight}>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
 
           {/* Help & Support */}
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name="help-circle-outline" size={22} color={COLORS.text} />
+              <Ionicons name="help-circle-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.menuItemText}>Help & Support</Text>
+            <AppText style={styles.menuItemText}>Help & Support</AppText>
             <View style={styles.menuRight}>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color={COLORS.primary} />
-          <Text style={styles.logoutText}>Log Out</Text>
+          <Ionicons name="log-out-outline" size={20} color={colors.primary} />
+          <AppText style={styles.logoutText}>Log Out</AppText>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: spacing[4],
   },
   loadingContainer: {
     flex: 1,
@@ -402,13 +399,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: SIZES.padding,
+    paddingVertical: spacing[4],
   },
   backButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -418,57 +415,57 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerTitle: {
-    color: COLORS.text,
-    fontSize: SIZES.large,
+    color: colors.text,
+    fontSize: fontSizes.lg,
     fontWeight: 'bold',
   },
   notificationButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileSection: {
     alignItems: 'center',
-    marginBottom: SIZES.padding,
+    marginBottom: spacing[4],
   },
   avatarContainer: {
-    marginBottom: SIZES.base,
+    marginBottom: spacing[2],
   },
   avatar: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: COLORS.card,
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: COLORS.inputBorder,
+    borderColor: colors.inputBorder,
   },
   avatarText: {
-    color: COLORS.text,
+    color: colors.text,
     fontSize: 32,
     fontWeight: 'bold',
   },
   username: {
-    color: COLORS.text,
-    fontSize: SIZES.large,
+    color: colors.text,
+    fontSize: fontSizes.lg,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   email: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.font,
-    marginBottom: SIZES.base,
+    color: colors.textSecondary,
+    fontSize: fontSizes.sm,
+    marginBottom: spacing[2],
   },
   levelBadgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
-    paddingHorizontal: SIZES.padding,
-    paddingVertical: SIZES.base,
+    backgroundColor: colors.card,
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[2],
     borderRadius: 20,
   },
   trophyIcon: {
@@ -476,25 +473,25 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   levelBadgeText: {
-    color: COLORS.success,
-    fontSize: SIZES.font,
+    color: colors.success,
+    fontSize: fontSizes.sm,
     fontWeight: '600',
   },
   levelXpText: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.font,
+    color: colors.textSecondary,
+    fontSize: fontSizes.sm,
   },
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: SIZES.padding,
-    gap: SIZES.base,
+    marginBottom: spacing[4],
+    gap: spacing[2],
   },
   statBox: {
     flex: 1,
-    backgroundColor: COLORS.card,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
+    backgroundColor: colors.card,
+    borderRadius: radii.lg,
+    padding: spacing[4],
     alignItems: 'center',
     borderWidth: 1,
   },
@@ -502,17 +499,17 @@ const styles = StyleSheet.create({
     borderColor: '#22c55e',
   },
   statBoxRed: {
-    borderColor: COLORS.primary,
+    borderColor: colors.primary,
   },
   statBoxBlue: {
     borderColor: '#3b82f6',
   },
   statBoxGray: {
-    borderColor: COLORS.inputBorder,
+    borderColor: colors.inputBorder,
   },
   statValue: {
-    color: COLORS.text,
-    fontSize: SIZES.large,
+    color: colors.text,
+    fontSize: fontSizes.lg,
     fontWeight: 'bold',
     marginBottom: 2,
   },
@@ -520,39 +517,39 @@ const styles = StyleSheet.create({
     color: '#22c55e',
   },
   statValueRed: {
-    color: COLORS.primary,
+    color: colors.primary,
   },
   statValueBlue: {
     color: '#3b82f6',
   },
   statLabel: {
-    color: COLORS.textSecondary,
+    color: colors.textSecondary,
     fontSize: 10,
   },
   rankCard: {
-    backgroundColor: COLORS.primary,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
-    marginBottom: SIZES.padding,
+    backgroundColor: colors.primary,
+    borderRadius: radii.lg,
+    padding: spacing[4],
+    marginBottom: spacing[4],
   },
   rankHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SIZES.base,
+    marginBottom: spacing[2],
   },
   rankTitle: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
+    color: colors.white,
+    fontSize: fontSizes.sm,
     fontWeight: 'bold',
   },
   rankLevel: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
+    color: colors.white,
+    fontSize: fontSizes.sm,
     fontWeight: 'bold',
   },
   rankProgressContainer: {
-    marginBottom: SIZES.base,
+    marginBottom: spacing[2],
   },
   rankProgressBar: {
     height: 8,
@@ -561,58 +558,58 @@ const styles = StyleSheet.create({
   },
   rankProgress: {
     height: '100%',
-    backgroundColor: COLORS.white,
+    backgroundColor: colors.white,
     borderRadius: 4,
   },
   rankFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: SIZES.padding,
+    marginBottom: spacing[4],
   },
   rankXpText: {
-    color: COLORS.white,
-    fontSize: SIZES.small,
+    color: colors.white,
+    fontSize: fontSizes.xs,
   },
   rankNextText: {
     color: 'rgba(255,255,255,0.8)',
-    fontSize: SIZES.small,
+    fontSize: fontSizes.xs,
   },
   invitationBanner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
+    borderRadius: radii.lg,
+    padding: spacing[4],
   },
   invitationText: {
-    color: COLORS.white,
-    fontSize: SIZES.font,
+    color: colors.white,
+    fontSize: fontSizes.sm,
   },
   bcCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
-    marginBottom: SIZES.padding,
+    backgroundColor: colors.card,
+    borderRadius: radii.lg,
+    padding: spacing[4],
+    marginBottom: spacing[4],
   },
   bcLeft: {},
   bcLabel: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.small,
+    color: colors.textSecondary,
+    fontSize: fontSizes.xs,
     marginBottom: 4,
   },
   bcValue: {
-    color: COLORS.text,
+    color: colors.text,
     fontSize: 24,
     fontWeight: 'bold',
   },
   bcRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SIZES.padding,
+    gap: spacing[4],
   },
   viewMoreButton: {
     flexDirection: 'row',
@@ -620,14 +617,14 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   viewMoreText: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.small,
+    color: colors.textSecondary,
+    fontSize: fontSizes.xs,
   },
   socialCard: {
-    backgroundColor: COLORS.card,
-    borderRadius: SIZES.radius,
-    padding: SIZES.padding,
-    marginBottom: SIZES.padding,
+    backgroundColor: colors.card,
+    borderRadius: radii.lg,
+    padding: spacing[4],
+    marginBottom: spacing[4],
   },
   socialHeader: {
     flexDirection: 'row',
@@ -638,11 +635,11 @@ const styles = StyleSheet.create({
   socialLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SIZES.base,
+    gap: spacing[2],
   },
   socialTitle: {
-    color: COLORS.text,
-    fontSize: SIZES.font,
+    color: colors.text,
+    fontSize: fontSizes.sm,
     fontWeight: 'bold',
   },
   moreDetailsButton: {
@@ -651,49 +648,49 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   moreDetailsText: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.small,
+    color: colors.textSecondary,
+    fontSize: fontSizes.xs,
   },
   socialSubtitle: {
-    color: COLORS.textSecondary,
-    fontSize: SIZES.small,
+    color: colors.textSecondary,
+    fontSize: fontSizes.xs,
   },
   menuSection: {
-    backgroundColor: COLORS.card,
-    borderRadius: SIZES.radius,
-    marginBottom: SIZES.padding,
+    backgroundColor: colors.card,
+    borderRadius: radii.lg,
+    marginBottom: spacing[4],
     overflow: 'hidden',
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: SIZES.padding,
-    paddingHorizontal: SIZES.padding,
+    paddingVertical: spacing[4],
+    paddingHorizontal: spacing[4],
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.inputBorder,
+    borderBottomColor: colors.inputBorder,
   },
   menuIconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: SIZES.padding,
+    marginRight: spacing[4],
   },
   menuItemText: {
     flex: 1,
-    color: COLORS.text,
-    fontSize: SIZES.font,
+    color: colors.text,
+    fontSize: fontSizes.sm,
     fontWeight: '500',
   },
   menuRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SIZES.base,
+    gap: spacing[2],
   },
   menuBadge: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -709,7 +706,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuBadgeText: {
-    color: COLORS.white,
+    color: colors.white,
     fontSize: 12,
     fontWeight: 'bold',
   },
@@ -717,13 +714,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: SIZES.base,
-    paddingVertical: SIZES.padding,
-    marginBottom: SIZES.padding * 2,
+    gap: spacing[2],
+    paddingVertical: spacing[4],
+    marginBottom: spacing[6],
   },
   logoutText: {
-    color: COLORS.primary,
-    fontSize: SIZES.font,
+    color: colors.primary,
+    fontSize: fontSizes.sm,
     fontWeight: 'bold',
   },
 });

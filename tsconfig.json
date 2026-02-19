@@ -1,7 +1,14 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["src/components/*"],
+      "@/theme/*": ["src/theme/*"],
+      "@/services/*": ["src/services/*"],
+      "@/lib/*": ["src/lib/*"]
+    }
   },
   "exclude": ["supabase"]
 }
