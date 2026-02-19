@@ -59,7 +59,7 @@ export default function FriendsScreen({ navigation }: any) {
   };
 
   const handleReject = async (requestId: string) => {
-    const { error } = await CrewService.rejectRequest(requestId);
+    const { error } = await CrewService.declineRequest(requestId);
     if (error) {
       Alert.alert('Error', 'Failed to reject request');
     } else {
@@ -68,7 +68,7 @@ export default function FriendsScreen({ navigation }: any) {
   };
 
   const handleAddSuggestion = async (memberId: string) => {
-    const { error } = await CrewService.sendRequest(memberId);
+    const { error } = await CrewService.sendRequestById(memberId);
     if (error) {
       if ('code' in error && error.code === '23505') {
         Alert.alert('Already Sent', 'You already have a pending request with this user.');

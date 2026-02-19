@@ -1,14 +1,14 @@
 import { supabase } from '../lib/supabaseClient';
 
-export type CrewRequestStatus = 'pending' | 'accepted' | 'rejected';
+export type CrewRequestStatus = 'pending' | 'accepted' | 'declined' | 'canceled';
 
 export type CrewRequest = {
   id: string;
-  sender_id: string;
-  receiver_id: string;
+  requester_id: string;
+  requested_id: string;
   status: CrewRequestStatus;
   created_at: string;
-  updated_at: string;
+  responded_at: string | null;
 };
 
 export type CrewMember = {
@@ -24,64 +24,84 @@ export type CrewRequestWithProfile = CrewRequest & {
 };
 
 export const CrewService = {
-  sendRequest: async (receiverId: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { data: null, error: { message: 'Not authenticated' } };
+  sendRequest: async (username: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return { data: null, error: { message: 'Not authenticated' } };
 
-    const { data, error } = await supabase
-      .from('crew_requests')
-      .insert({ sender_id: user.id, receiver_id: receiverId })
-      .select()
+    const { data, error } = await supabase.functions.invoke('crew-request', {
+      body: { username },
+    });
+
+    if (error) {
+      return { data: null, error: { message: error.message || 'Failed to send request' } };
+    }
+
+    if (data?.error) {
+      return { data: null, error: { message: data.error, code: data.existingStatus === 'pending' ? '23505' : undefined } };
+    }
+
+    return { data: data?.request ?? null, error: null };
+  },
+
+  sendRequestById: async (receiverId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return { data: null, error: { message: 'Not authenticated' } };
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', receiverId)
       .single();
 
-    return { data, error };
+    if (!profile?.username) {
+      return { data: null, error: { message: 'Could not find user' } };
+    }
+
+    return CrewService.sendRequest(profile.username);
+  },
+
+  respondToRequest: async (requestId: string, action: 'accept' | 'decline' | 'cancel') => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return { data: null, error: { message: 'Not authenticated' } };
+
+    const { data, error } = await supabase.functions.invoke('crew-respond', {
+      body: { request_id: requestId, action },
+    });
+
+    if (error) {
+      return { data: null, error: { message: error.message || 'Failed to respond' } };
+    }
+
+    if (data?.error) {
+      return { data: null, error: { message: data.error } };
+    }
+
+    return { data, error: null };
   },
 
   acceptRequest: async (requestId: string) => {
-    const { data, error } = await supabase
-      .from('crew_requests')
-      .update({ status: 'accepted', updated_at: new Date().toISOString() })
-      .eq('id', requestId)
-      .select()
-      .single();
-
-    return { data, error };
+    return CrewService.respondToRequest(requestId, 'accept');
   },
 
-  rejectRequest: async (requestId: string) => {
-    const { data, error } = await supabase
-      .from('crew_requests')
-      .update({ status: 'rejected', updated_at: new Date().toISOString() })
-      .eq('id', requestId)
-      .select()
-      .single();
-
-    return { data, error };
+  declineRequest: async (requestId: string) => {
+    return CrewService.respondToRequest(requestId, 'decline');
   },
 
-  removeCrewMember: async (requestId: string) => {
-    const { error } = await supabase
-      .from('crew_requests')
-      .delete()
-      .eq('id', requestId);
-
-    return { error };
+  cancelRequest: async (requestId: string) => {
+    return CrewService.respondToRequest(requestId, 'cancel');
   },
 
-  getCrewMembers: async (userId: string): Promise<{ data: CrewMember[]; error: any }> => {
-    const { data: requests, error } = await supabase
-      .from('crew_requests')
-      .select('sender_id, receiver_id')
-      .eq('status', 'accepted')
-      .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+  getCrewMembers: async (userId: string): Promise<{ data: CrewMember[]; error: unknown }> => {
+    const { data: members, error } = await supabase
+      .from('crew_members')
+      .select('crew_user_id')
+      .eq('user_id', userId);
 
-    if (error || !requests || requests.length === 0) {
+    if (error || !members || members.length === 0) {
       return { data: [], error };
     }
 
-    const memberIds = requests.map((r) =>
-      r.sender_id === userId ? r.receiver_id : r.sender_id
-    );
+    const memberIds = members.map((m) => m.crew_user_id);
 
     const { data: profiles, error: profileError } = await supabase
       .from('profiles')
@@ -91,11 +111,11 @@ export const CrewService = {
     return { data: profiles || [], error: profileError };
   },
 
-  getPendingReceived: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: any }> => {
+  getPendingReceived: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
     const { data, error } = await supabase
       .from('crew_requests')
       .select('*')
-      .eq('receiver_id', userId)
+      .eq('requested_id', userId)
       .eq('status', 'pending')
       .order('created_at', { ascending: false });
 
@@ -103,27 +123,27 @@ export const CrewService = {
       return { data: [], error };
     }
 
-    const senderIds = data.map((r) => r.sender_id);
+    const requesterIds = data.map((r) => r.requester_id);
     const { data: profiles } = await supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url')
-      .in('id', senderIds);
+      .in('id', requesterIds);
 
     const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
     const enriched: CrewRequestWithProfile[] = data.map((r) => ({
       ...r,
-      sender: profileMap.get(r.sender_id) || undefined,
+      sender: profileMap.get(r.requester_id) || undefined,
     }));
 
     return { data: enriched, error: null };
   },
 
-  getPendingSent: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: any }> => {
+  getPendingSent: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
     const { data, error } = await supabase
       .from('crew_requests')
       .select('*')
-      .eq('sender_id', userId)
+      .eq('requester_id', userId)
       .eq('status', 'pending')
       .order('created_at', { ascending: false });
 
@@ -131,17 +151,17 @@ export const CrewService = {
       return { data: [], error };
     }
 
-    const receiverIds = data.map((r) => r.receiver_id);
+    const requestedIds = data.map((r) => r.requested_id);
     const { data: profiles } = await supabase
       .from('profiles')
       .select('id, username, display_name, avatar_url')
-      .in('id', receiverIds);
+      .in('id', requestedIds);
 
     const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
     const enriched: CrewRequestWithProfile[] = data.map((r) => ({
       ...r,
-      receiver: profileMap.get(r.receiver_id) || undefined,
+      receiver: profileMap.get(r.requested_id) || undefined,
     }));
 
     return { data: enriched, error: null };
@@ -152,15 +172,16 @@ export const CrewService = {
       .from('crew_requests')
       .select('*')
       .or(
-        `and(sender_id.eq.${userId},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${userId})`
+        `and(requester_id.eq.${userId},requested_id.eq.${otherUserId}),and(requester_id.eq.${otherUserId},requested_id.eq.${userId})`
       )
+      .in('status', ['pending', 'accepted'])
       .limit(1)
       .maybeSingle();
 
     return data;
   },
 
-  getBattleSuggestions: async (userId: string): Promise<{ data: CrewMember[]; error: any }> => {
+  getBattleSuggestions: async (userId: string): Promise<{ data: CrewMember[]; error: unknown }> => {
     const { data: participants, error: partError } = await supabase
       .from('battle_participants')
       .select('battle_id')
@@ -184,14 +205,21 @@ export const CrewService = {
 
     const uniqueUserIds = [...new Set(coParticipants.map((p) => p.user_id))];
 
-    const { data: existingRequests } = await supabase
+    const { data: crewRows } = await supabase
+      .from('crew_members')
+      .select('crew_user_id')
+      .eq('user_id', userId);
+
+    const { data: pendingRequests } = await supabase
       .from('crew_requests')
-      .select('sender_id, receiver_id')
-      .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+      .select('requester_id, requested_id')
+      .or(`requester_id.eq.${userId},requested_id.eq.${userId}`)
+      .in('status', ['pending', 'accepted']);
 
     const connectedIds = new Set<string>();
-    (existingRequests || []).forEach((r) => {
-      connectedIds.add(r.sender_id === userId ? r.receiver_id : r.sender_id);
+    (crewRows || []).forEach((r) => connectedIds.add(r.crew_user_id));
+    (pendingRequests || []).forEach((r) => {
+      connectedIds.add(r.requester_id === userId ? r.requested_id : r.requester_id);
     });
 
     const suggestableIds = uniqueUserIds.filter((id) => !connectedIds.has(id));

@@ -165,7 +165,7 @@ export const BattleService = {
         .select('id')
         .eq('status', 'accepted')
         .or(
-          `and(sender_id.eq.${battle.creator_id},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${battle.creator_id})`
+          `and(requester_id.eq.${battle.creator_id},requested_id.eq.${userId}),and(requester_id.eq.${userId},requested_id.eq.${battle.creator_id})`
         )
         .limit(1)
         .maybeSingle();
