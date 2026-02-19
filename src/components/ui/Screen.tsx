@@ -19,7 +19,7 @@ export function Screen({ children, scroll = false, padding, style }: ScreenProps
       <SafeAreaView style={[styles.container, style]}>
         <StatusBar barStyle="light-content" backgroundColor={colors.background} />
         <ScrollView
-          style={[styles.scroll, { paddingHorizontal: pad }]}
+          contentContainerStyle={{ paddingHorizontal: pad }}
           showsVerticalScrollIndicator={false}
         >
           {children}

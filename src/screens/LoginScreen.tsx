@@ -214,12 +214,12 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: spacing[4] * 2,
+    paddingHorizontal: spacing[6],
     justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: spacing[4] * 2,
+    marginBottom: spacing[6],
   },
   logo: {
     width: 80,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: 'center',
-    marginBottom: spacing[4] * 3,
+    marginBottom: spacing[6] + spacing[4],
   },
   titleAccent: {
     fontStyle: 'italic',

@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: colors.primary,
-    fontSize: 16,
+    fontSize: fontSizes.md,
     fontWeight: 'bold',
   },
   welcomeContainer: {},
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   seeAllButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing[1],
   },
   seeAllText: {
     color: colors.textSecondary,
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   battleIcon: {
     width: 40,
     height: 40,
-    borderRadius: 8,
+    borderRadius: radii.md,
     backgroundColor: colors.inputBackground,
     justifyContent: 'center',
     alignItems: 'center',
@@ -533,8 +533,8 @@ const styles = StyleSheet.create({
   sponsorBadge: {
     backgroundColor: colors.inputBackground,
     paddingHorizontal: spacing[2],
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingVertical: spacing[1],
+    borderRadius: radii.sm,
   },
   sponsorText: {
     color: colors.text,
@@ -590,8 +590,8 @@ const styles = StyleSheet.create({
   statusBadge: {
     backgroundColor: colors.inputBackground,
     paddingHorizontal: spacing[2],
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingVertical: spacing[1],
+    borderRadius: radii.sm,
   },
   statusActive: {
     backgroundColor: colors.primary,
@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
   timeInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing[1],
   },
   timeText: {
     color: colors.textSecondary,
@@ -648,8 +648,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.inputBorder,
     paddingHorizontal: spacing[2],
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingVertical: spacing[1],
+    borderRadius: radii.sm,
   },
   statDuelText: {
     color: colors.textSecondary,
@@ -668,12 +668,12 @@ const styles = StyleSheet.create({
   },
   teamLogos: {
     flexDirection: 'row',
-    gap: 4,
+    gap: spacing[1],
   },
   teamBadge: {
     width: 24,
     height: 24,
-    borderRadius: 4,
+    borderRadius: radii.sm,
   },
   scoreContainer: {
     flexDirection: 'row',
@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
   smallBadge: {
     width: 20,
     height: 20,
-    borderRadius: 4,
+    borderRadius: radii.sm,
   },
   scoreText: {
     color: colors.text,

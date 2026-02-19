@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
   ViewStyle,
+  Insets,
 } from 'react-native';
 import { AppText } from './AppText';
 import { colors, spacing, radii } from '../../theme';
@@ -17,7 +18,10 @@ type ButtonProps = {
   onPress: () => void;
   children: React.ReactNode;
   style?: ViewStyle;
+  hitSlop?: Insets | number;
 };
+
+const DEFAULT_HIT_SLOP: Insets = { top: 8, bottom: 8, left: 8, right: 8 };
 
 export function Button({
   variant = 'primary',
@@ -26,8 +30,19 @@ export function Button({
   onPress,
   children,
   style,
+  hitSlop = DEFAULT_HIT_SLOP,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const pressing = useRef(false);
+
+  const handlePress = useCallback(() => {
+    if (pressing.current) return;
+    pressing.current = true;
+    onPress();
+    setTimeout(() => {
+      pressing.current = false;
+    }, 400);
+  }, [onPress]);
 
   return (
     <TouchableOpacity
@@ -37,9 +52,10 @@ export function Button({
         isDisabled && styles.disabled,
         style,
       ]}
-      onPress={onPress}
+      onPress={handlePress}
       disabled={isDisabled}
       activeOpacity={0.8}
+      hitSlop={hitSlop}
     >
       {loading ? (
         <ActivityIndicator

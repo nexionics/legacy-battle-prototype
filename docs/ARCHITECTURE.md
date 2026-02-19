@@ -1,5 +1,18 @@
 # Architecture Overview
 
+## Repo Map
+
+| Repository | What it is | Where it runs |
+|---|---|---|
+| `legacy-battle-prototype` | Mobile app (Expo / React Native) | User devices via Expo / EAS |
+| `legacy-sports-service` | Sports data ingestion microservice | AWS Lightsail |
+| Supabase project | Database, Auth, Edge Functions, Realtime | Supabase cloud |
+
+**Where to change what:**
+- UI, screens, navigation, client-side logic → `legacy-battle-prototype`
+- Sports data ingestion, scheduling, TheSportsDB API calls → `legacy-sports-service` (do NOT modify from this repo)
+- Database schema, RLS policies, Edge Functions → Supabase Dashboard or `supabase/` folder in this repo
+
 ## Mobile App (Expo / React Native)
 
 The mobile app handles all user-facing functionality:

@@ -18,9 +18,17 @@ const variantStyles: Record<Variant, TextStyle> = {
   label: { fontSize: fontSizes.sm, lineHeight: lineHeights.sm, fontWeight: '600' },
 };
 
-export function AppText({ variant = 'body', color, style, ...rest }: AppTextProps) {
+export function AppText({
+  variant = 'body',
+  color,
+  style,
+  allowFontScaling = true,
+  ...rest
+}: AppTextProps) {
   return (
     <Text
+      accessibilityRole="text"
+      allowFontScaling={allowFontScaling}
       style={[{ color: color ?? colors.text }, variantStyles[variant], style]}
       {...rest}
     />

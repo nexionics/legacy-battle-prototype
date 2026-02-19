@@ -48,6 +48,10 @@ eas build --platform ios
 eas build --platform ios --auto-submit
 ```
 
+## Path Aliases
+
+`tsconfig.json` defines path aliases (`@/components/*`, `@/theme/*`, `@/services/*`, `@/lib/*`). These work for TypeScript type checking but are **not yet wired to Metro** (no `babel-plugin-module-resolver` installed). Existing imports use relative paths. If you want to use `@/` imports at runtime, install `babel-plugin-module-resolver` and add a `babel.config.js`.
+
 ## Common Issues
 
 - **"Module not found" errors**: Run `npm install` again

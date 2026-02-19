@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
   headerCenter: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: spacing[1],
   },
   headerTitle: {
     color: colors.text,
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: fontSizes.lg,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: spacing[1],
   },
   email: {
     color: colors.textSecondary,
@@ -469,8 +469,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   trophyIcon: {
-    fontSize: 16,
-    marginRight: 6,
+    fontSize: fontSizes.md,
+    marginRight: spacing[1],
   },
   levelBadgeText: {
     color: colors.success,
@@ -552,14 +552,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing[2],
   },
   rankProgressBar: {
-    height: 8,
+    height: spacing[2],
     backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
+    borderRadius: radii.sm,
   },
   rankProgress: {
     height: '100%',
     backgroundColor: colors.white,
-    borderRadius: 4,
+    borderRadius: radii.sm,
   },
   rankFooter: {
     flexDirection: 'row',
@@ -599,11 +599,11 @@ const styles = StyleSheet.create({
   bcLabel: {
     color: colors.textSecondary,
     fontSize: fontSizes.xs,
-    marginBottom: 4,
+    marginBottom: spacing[1],
   },
   bcValue: {
     color: colors.text,
-    fontSize: 24,
+    fontSize: fontSizes.xl,
     fontWeight: 'bold',
   },
   bcRight: {
@@ -614,7 +614,7 @@ const styles = StyleSheet.create({
   viewMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing[1],
   },
   viewMoreText: {
     color: colors.textSecondary,
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: spacing[1],
   },
   socialLeft: {
     flexDirection: 'row',
@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
   moreDetailsButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: spacing[1],
   },
   moreDetailsText: {
     color: colors.textSecondary,
@@ -691,23 +691,23 @@ const styles = StyleSheet.create({
   },
   menuBadge: {
     backgroundColor: colors.primary,
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    borderRadius: radii.lg,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
     minWidth: 28,
     alignItems: 'center',
   },
   menuBadgePending: {
-    backgroundColor: '#f59e0b',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    backgroundColor: colors.warning,
+    borderRadius: radii.lg,
+    paddingHorizontal: spacing[2],
+    paddingVertical: spacing[1],
     minWidth: 28,
     alignItems: 'center',
   },
   menuBadgeText: {
     color: colors.white,
-    fontSize: 12,
+    fontSize: fontSizes.xs,
     fontWeight: 'bold',
   },
   logoutButton: {

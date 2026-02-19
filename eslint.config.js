@@ -2,10 +2,11 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 const tsParser = require('@typescript-eslint/parser');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
+const prettierConfig = require('eslint-config-prettier');
 
 module.exports = [
   {
-    ignores: ['node_modules/', 'dist/', '.expo/', 'supabase/', 'babel.config.js', 'metro.config.js'],
+    ignores: ['node_modules/', 'dist/', '.expo/', 'supabase/'],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -36,4 +37,5 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'warn',
     },
   },
+  prettierConfig,
 ];
