@@ -8,11 +8,13 @@ import {
   TextInput,
   ActivityIndicator,
   Image,
+  Switch,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen, AppText } from '../components/ui';
 import { colors, spacing, fontSizes, radii } from '../theme';
 import { useAuth } from '../contexts/AuthContext';
+import { useAppTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabaseClient';
 import { CrewService } from '../services/crewService';
 
@@ -36,6 +38,7 @@ type BattleStats = {
 
 export default function ProfileScreen({ navigation }: any) {
   const { signOut, user } = useAuth();
+  const { mode, toggleTheme } = useAppTheme();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState('');
@@ -369,6 +372,22 @@ export default function ProfileScreen({ navigation }: any) {
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
           </TouchableOpacity>
+
+          {/* Dark/Light Mode Toggle */}
+          <View style={styles.menuItem}>
+            <View style={styles.menuIconContainer}>
+              <Ionicons name={mode === 'dark' ? 'moon-outline' : 'sunny-outline'} size={22} color={colors.text} />
+            </View>
+            <AppText style={styles.menuItemText}>{mode === 'dark' ? 'Dark Mode' : 'Light Mode'}</AppText>
+            <View style={styles.menuRight}>
+              <Switch
+                value={mode === 'light'}
+                onValueChange={toggleTheme}
+                trackColor={{ false: colors.inputBorder, true: colors.primary }}
+                thumbColor={colors.white}
+              />
+            </View>
+          </View>
         </View>
 
         {/* Logout Button */}

@@ -81,7 +81,7 @@ function transformToRepoGame(row: any): RepoGame {
 }
 
 export const SportsRepo = {
-  // Next N days (scheduled/live)
+  // Next N days (scheduled) + currently live games
   async getUpcomingBySport(sport: string, daysAhead = 7): Promise<RepoGame[]> {
     const now = new Date();
     const end = new Date(now);
@@ -89,22 +89,40 @@ export const SportsRepo = {
 
     const sportFilter = sport === 'ALL' ? undefined : sport;
 
-    let query = supabase
+    let scheduledQuery = supabase
       .from('sports_events')
       .select(SELECT_WITH_TEAMS)
       .gte('start_time', now.toISOString())
       .lte('start_time', end.toISOString())
-      .in('status', ['scheduled', 'live'])
+      .eq('status', 'scheduled')
       .order('start_time', { ascending: true });
 
-    if (sportFilter) query = query.eq('sport', sportFilter);
+    if (sportFilter) scheduledQuery = scheduledQuery.eq('sport', sportFilter);
 
-    const { data, error } = await query;
-    if (error) {
-      console.error('SportsRepo.getUpcomingBySport error', error);
-      return [];
+    let liveQuery = supabase
+      .from('sports_events')
+      .select(SELECT_WITH_TEAMS)
+      .eq('status', 'live')
+      .order('start_time', { ascending: true });
+
+    if (sportFilter) liveQuery = liveQuery.eq('sport', sportFilter);
+
+    const [scheduledResult, liveResult] = await Promise.all([
+      scheduledQuery,
+      liveQuery,
+    ]);
+
+    if (scheduledResult.error) {
+      console.error('SportsRepo.getUpcomingBySport scheduled error', scheduledResult.error);
     }
-    return (data || []).map(transformToRepoGame);
+    if (liveResult.error) {
+      console.error('SportsRepo.getUpcomingBySport live error', liveResult.error);
+    }
+
+    const scheduled = (scheduledResult.data || []).map(transformToRepoGame);
+    const live = (liveResult.data || []).map(transformToRepoGame);
+
+    return [...live, ...scheduled];
   },
 
   // Past N days (final)

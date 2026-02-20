@@ -186,21 +186,34 @@ export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomin
           />
         }
       >
-        <Text style={styles.sectionTitle}>Next 7 Days</Text>
-        
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={COLORS.primary} />
             <Text style={styles.loadingText}>Loading games...</Text>
           </View>
         ) : games.length > 0 ? (
-          games.map((event) => (
-            <UpcomingGameCard 
-              key={event.idEvent} 
-              event={event} 
-              onBattle={() => handleBattle(event)}
-            />
-          ))
+          <>
+            {games.some(e => e.strStatus === 'live') && (
+              <>
+                <Text style={styles.liveTitle}>Live Now</Text>
+                {games.filter(e => e.strStatus === 'live').map((event) => (
+                  <UpcomingGameCard
+                    key={event.idEvent}
+                    event={event}
+                    onBattle={() => handleBattle(event)}
+                  />
+                ))}
+              </>
+            )}
+            <Text style={styles.sectionTitle}>Upcoming</Text>
+            {games.filter(e => e.strStatus !== 'live').map((event) => (
+              <UpcomingGameCard
+                key={event.idEvent}
+                event={event}
+                onBattle={() => handleBattle(event)}
+              />
+            ))}
+          </>
         ) : (
           <View style={styles.emptyContainer}>
             <Ionicons name="calendar-outline" size={48} color={COLORS.textSecondary} />
@@ -286,6 +299,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: COLORS.text,
+    fontSize: SIZES.font,
+    fontWeight: 'bold',
+    marginTop: SIZES.padding,
+    marginBottom: SIZES.base,
+  },
+  liveTitle: {
+    color: COLORS.success,
     fontSize: SIZES.font,
     fontWeight: 'bold',
     marginTop: SIZES.padding,

@@ -41,14 +41,40 @@ const DIRECTION_OPTIONS = [
   { id: 'LEAST', name: 'Least' },
 ];
 
-const STAT_CATEGORIES = [
-  { id: 'passing_yards', name: 'Passing Yards' },
-  { id: 'rushing_yards', name: 'Rushing Yards' },
-  { id: 'receiving_yards', name: 'Receiving Yards' },
-  { id: 'touchdowns', name: 'Touchdowns' },
-  { id: 'receptions', name: 'Receptions' },
-  { id: 'interceptions', name: 'Interceptions' },
-];
+const STAT_CATEGORIES_BY_SPORT: Record<string, { id: string; name: string }[]> = {
+  NFL: [
+    { id: 'passing_yards', name: 'Passing Yards' },
+    { id: 'rushing_yards', name: 'Rushing Yards' },
+    { id: 'receiving_yards', name: 'Receiving Yards' },
+    { id: 'touchdowns', name: 'Touchdowns' },
+    { id: 'receptions', name: 'Receptions' },
+    { id: 'interceptions', name: 'Interceptions' },
+  ],
+  NBA: [
+    { id: 'points', name: 'Points' },
+    { id: 'rebounds', name: 'Rebounds' },
+    { id: 'assists', name: 'Assists' },
+    { id: 'steals', name: 'Steals' },
+    { id: 'blocks', name: 'Blocks' },
+    { id: 'three_pointers', name: 'Three Pointers' },
+  ],
+  MLB: [
+    { id: 'home_runs', name: 'Home Runs' },
+    { id: 'rbis', name: 'RBIs' },
+    { id: 'batting_average', name: 'Batting Average' },
+    { id: 'stolen_bases', name: 'Stolen Bases' },
+    { id: 'strikeouts', name: 'Strikeouts' },
+    { id: 'era', name: 'ERA' },
+  ],
+  NHL: [
+    { id: 'goals', name: 'Goals' },
+    { id: 'assists', name: 'Assists' },
+    { id: 'points', name: 'Points' },
+    { id: 'plus_minus', name: 'Plus/Minus' },
+    { id: 'saves', name: 'Saves' },
+    { id: 'penalty_minutes', name: 'Penalty Minutes' },
+  ],
+};
 
 const STAKE_OPTIONS = [
   { id: '10', name: '10 BC' },
@@ -87,7 +113,8 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
            p.team.toLowerCase().includes(playerSearch.toLowerCase());
   });
 
-  const selectedStatData = STAT_CATEGORIES.find(s => s.id === selectedStat);
+  const statCategories = STAT_CATEGORIES_BY_SPORT[sport] || STAT_CATEGORIES_BY_SPORT.NFL;
+  const selectedStatData = statCategories.find(s => s.id === selectedStat);
   const selectedDirectionData = DIRECTION_OPTIONS.find(d => d.id === selectedDirection);
 
   const handleContinue = () => {
@@ -321,7 +348,7 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
                 <Ionicons name="close" size={24} color={COLORS.text} />
               </TouchableOpacity>
             </View>
-            {STAT_CATEGORIES.map((stat) => (
+            {statCategories.map((stat) => (
               <TouchableOpacity
                 key={stat.id}
                 style={styles.modalOption}

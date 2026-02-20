@@ -234,7 +234,7 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
         <View style={styles.battleCard}>
           <View style={styles.battleHeader}>
             <View style={styles.battleIcon}>
-              <Text style={styles.battleIconText}>⚔️</Text>
+              <Text style={styles.battleIconText}>LB</Text>
             </View>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(battle.status) }]}>
               <Text style={styles.statusText}>{battle.status.toUpperCase()}</Text>
@@ -509,12 +509,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: COLORS.inputBackground,
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   battleIconText: {
-    fontSize: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    letterSpacing: 1,
   },
   statusBadge: {
     paddingHorizontal: SIZES.base,
