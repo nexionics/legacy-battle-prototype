@@ -4,10 +4,9 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/theme/*": ["src/theme/*"],
-      "@/services/*": ["src/services/*"],
-      "@/lib/*": ["src/lib/*"]
+      "@/app/*": ["src/app/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/shared/*": ["src/shared/*"]
     }
   },
   "exclude": ["supabase"]
