@@ -78,12 +78,10 @@ export const BattleService = {
 
     if (battle.visibility === 'crew') {
       const { data: crewLink } = await supabase
-        .from('crew_requests')
+        .from('crew_members')
         .select('id')
-        .eq('status', 'accepted')
-        .or(
-          `and(requester_id.eq.${battle.creator_id},requested_id.eq.${userId}),and(requester_id.eq.${userId},requested_id.eq.${battle.creator_id})`
-        )
+        .eq('user_id', battle.creator_id)
+        .eq('crew_user_id', userId)
         .limit(1)
         .maybeSingle();
 
