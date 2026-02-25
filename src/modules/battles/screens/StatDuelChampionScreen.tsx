@@ -20,20 +20,59 @@ interface StatDuelChampionScreenProps {
 
 // Mock players with position codes for filtering
 const MOCK_PLAYERS = [
+  // NFL (2 per position)
   { id: '1', name: 'Patrick Mahomes', team: 'Kansas City Chiefs', position: 'Quarterback', positionCode: 'QB', sport: 'NFL' },
   { id: '2', name: 'Josh Allen', team: 'Buffalo Bills', position: 'Quarterback', positionCode: 'QB', sport: 'NFL' },
-  { id: '3', name: 'Travis Kelce', team: 'Kansas City Chiefs', position: 'Tight End', positionCode: 'TE', sport: 'NFL' },
-  { id: '4', name: 'Stefon Diggs', team: 'Buffalo Bills', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
-  { id: '5', name: 'Isiah Pacheco', team: 'Kansas City Chiefs', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
-  { id: '6', name: 'James Cook', team: 'Buffalo Bills', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
-  { id: '7', name: 'Tyreek Hill', team: 'Miami Dolphins', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
-  { id: '8', name: 'Davante Adams', team: 'Las Vegas Raiders', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
-  { id: '9', name: 'Derrick Henry', team: 'Tennessee Titans', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
-  { id: '10', name: 'Saquon Barkley', team: 'New York Giants', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
-  { id: '11', name: 'LeBron James', team: 'Los Angeles Lakers', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
-  { id: '12', name: 'Stephen Curry', team: 'Golden State Warriors', position: 'Point Guard', positionCode: 'PG', sport: 'NBA' },
-  { id: '13', name: 'Kevin Durant', team: 'Phoenix Suns', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
-  { id: '14', name: 'Jayson Tatum', team: 'Boston Celtics', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+  { id: '3', name: 'Derrick Henry', team: 'Tennessee Titans', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '4', name: 'Christian McCaffrey', team: 'San Francisco 49ers', position: 'Running Back', positionCode: 'RB', sport: 'NFL' },
+  { id: '5', name: 'Tyreek Hill', team: 'Miami Dolphins', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
+  { id: '6', name: 'Justin Jefferson', team: 'Minnesota Vikings', position: 'Wide Receiver', positionCode: 'WR', sport: 'NFL' },
+  { id: '7', name: 'Travis Kelce', team: 'Kansas City Chiefs', position: 'Tight End', positionCode: 'TE', sport: 'NFL' },
+  { id: '8', name: 'George Kittle', team: 'San Francisco 49ers', position: 'Tight End', positionCode: 'TE', sport: 'NFL' },
+  { id: '9', name: 'Justin Tucker', team: 'Baltimore Ravens', position: 'Kicker', positionCode: 'K', sport: 'NFL' },
+  { id: '10', name: 'Harrison Butker', team: 'Kansas City Chiefs', position: 'Kicker', positionCode: 'K', sport: 'NFL' },
+  { id: '11', name: 'San Francisco 49ers', team: '49ers Defense', position: 'Defense', positionCode: 'DEF', sport: 'NFL' },
+  { id: '12', name: 'Dallas Cowboys', team: 'Cowboys Defense', position: 'Defense', positionCode: 'DEF', sport: 'NFL' },
+
+  // NBA (2 per position)
+  { id: '13', name: 'Stephen Curry', team: 'Golden State Warriors', position: 'Point Guard', positionCode: 'PG', sport: 'NBA' },
+  { id: '14', name: 'Luka Doncic', team: 'Dallas Mavericks', position: 'Point Guard', positionCode: 'PG', sport: 'NBA' },
+  { id: '15', name: 'Devin Booker', team: 'Phoenix Suns', position: 'Shooting Guard', positionCode: 'SG', sport: 'NBA' },
+  { id: '16', name: 'Anthony Edwards', team: 'Minnesota Timberwolves', position: 'Shooting Guard', positionCode: 'SG', sport: 'NBA' },
+  { id: '17', name: 'LeBron James', team: 'Los Angeles Lakers', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+  { id: '18', name: 'Jayson Tatum', team: 'Boston Celtics', position: 'Small Forward', positionCode: 'SF', sport: 'NBA' },
+  { id: '19', name: 'Giannis Antetokounmpo', team: 'Milwaukee Bucks', position: 'Power Forward', positionCode: 'PF', sport: 'NBA' },
+  { id: '20', name: 'Kevin Durant', team: 'Phoenix Suns', position: 'Power Forward', positionCode: 'PF', sport: 'NBA' },
+  { id: '21', name: 'Nikola Jokic', team: 'Denver Nuggets', position: 'Center', positionCode: 'C', sport: 'NBA' },
+  { id: '22', name: 'Joel Embiid', team: 'Philadelphia 76ers', position: 'Center', positionCode: 'C', sport: 'NBA' },
+
+  // MLB (2 per position)
+  { id: '23', name: 'Gerrit Cole', team: 'New York Yankees', position: 'Pitcher', positionCode: 'P', sport: 'MLB' },
+  { id: '24', name: 'Max Scherzer', team: 'Texas Rangers', position: 'Pitcher', positionCode: 'P', sport: 'MLB' },
+  { id: '25', name: 'J.T. Realmuto', team: 'Philadelphia Phillies', position: 'Catcher', positionCode: 'C', sport: 'MLB' },
+  { id: '26', name: 'Will Smith', team: 'Los Angeles Dodgers', position: 'Catcher', positionCode: 'C', sport: 'MLB' },
+  { id: '27', name: 'Freddie Freeman', team: 'Los Angeles Dodgers', position: 'First Base', positionCode: '1B', sport: 'MLB' },
+  { id: '28', name: 'Paul Goldschmidt', team: 'St. Louis Cardinals', position: 'First Base', positionCode: '1B', sport: 'MLB' },
+  { id: '29', name: 'Mookie Betts', team: 'Los Angeles Dodgers', position: 'Second Base', positionCode: '2B', sport: 'MLB' },
+  { id: '30', name: 'Jose Altuve', team: 'Houston Astros', position: 'Second Base', positionCode: '2B', sport: 'MLB' },
+  { id: '31', name: 'Trea Turner', team: 'Philadelphia Phillies', position: 'Shortstop', positionCode: 'SS', sport: 'MLB' },
+  { id: '32', name: 'Francisco Lindor', team: 'New York Mets', position: 'Shortstop', positionCode: 'SS', sport: 'MLB' },
+  { id: '33', name: 'Nolan Arenado', team: 'St. Louis Cardinals', position: 'Third Base', positionCode: '3B', sport: 'MLB' },
+  { id: '34', name: 'Jose Ramirez', team: 'Cleveland Guardians', position: 'Third Base', positionCode: '3B', sport: 'MLB' },
+  { id: '35', name: 'Mike Trout', team: 'Los Angeles Angels', position: 'Outfield', positionCode: 'OF', sport: 'MLB' },
+  { id: '36', name: 'Ronald Acuna Jr', team: 'Atlanta Braves', position: 'Outfield', positionCode: 'OF', sport: 'MLB' },
+
+  // NHL (2 per position)
+  { id: '37', name: 'Connor McDavid', team: 'Edmonton Oilers', position: 'Center', positionCode: 'C', sport: 'NHL' },
+  { id: '38', name: 'Auston Matthews', team: 'Toronto Maple Leafs', position: 'Center', positionCode: 'C', sport: 'NHL' },
+  { id: '39', name: 'Alex Ovechkin', team: 'Washington Capitals', position: 'Left Wing', positionCode: 'LW', sport: 'NHL' },
+  { id: '40', name: 'Matthew Tkachuk', team: 'Florida Panthers', position: 'Left Wing', positionCode: 'LW', sport: 'NHL' },
+  { id: '41', name: 'Nikita Kucherov', team: 'Tampa Bay Lightning', position: 'Right Wing', positionCode: 'RW', sport: 'NHL' },
+  { id: '42', name: 'David Pastrnak', team: 'Boston Bruins', position: 'Right Wing', positionCode: 'RW', sport: 'NHL' },
+  { id: '43', name: 'Cale Makar', team: 'Colorado Avalanche', position: 'Defenseman', positionCode: 'D', sport: 'NHL' },
+  { id: '44', name: 'Victor Hedman', team: 'Tampa Bay Lightning', position: 'Defenseman', positionCode: 'D', sport: 'NHL' },
+  { id: '45', name: 'Igor Shesterkin', team: 'New York Rangers', position: 'Goalie', positionCode: 'G', sport: 'NHL' },
+  { id: '46', name: 'Andrei Vasilevskiy', team: 'Tampa Bay Lightning', position: 'Goalie', positionCode: 'G', sport: 'NHL' },
 ];
 
 const DIRECTION_OPTIONS = [
