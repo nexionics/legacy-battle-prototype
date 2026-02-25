@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../../shared/constants/theme';
-import { BattleService, Battle, BattleParticipant } from '../services/battleService';
-import { useAuth } from '../../../app/providers/AuthContext';
-import { supabase } from '../../../shared/lib/supabaseClient';
-import { getResultByEventId, SportsEvent } from '../../sports/services/sportsApi';
+import { COLORS, SIZES } from '@/shared/constants/theme';
+import type { Battle, BattleParticipant, SportsEvent } from '@/shared/types';
+import { BattleService } from '@/modules/battles/services/battleService';
+import { BattlesRepo } from '@/modules/battles/services/battlesRepo';
+import { useAuth } from '@/app/providers/AuthContext';
+import { getResultByEventId } from '@/modules/sports';
 
 interface BattleDetailScreenProps {
   navigation: any;
@@ -37,7 +38,7 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
   const loadBattle = async () => {
     if (!battleId) return;
 
-    const { battle, participants, error } = await BattleService.getBattleWithParticipants(battleId);
+    const { battle, participants, error } = await BattlesRepo.getBattleWithParticipants(battleId);
     if (error) {
       console.error('Error loading battle', error);
     }
@@ -60,8 +61,8 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
     });
 
     return () => {
-      supabase.removeChannel(battleChannel);
-      supabase.removeChannel(participantChannel);
+      BattleService.removeChannel(battleChannel);
+      BattleService.removeChannel(participantChannel);
     };
   }, [battleId]);
 
@@ -304,14 +305,24 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
               Winner: {getWinnerName(battle.winner_id)}
             </Text>
             {battle.final_outcome && (
+              (() => {
+                const outcome = battle.final_outcome as {
+                  home_team?: string;
+                  home_score?: number | string | null;
+                  away_team?: string;
+                  away_score?: number | string | null;
+                };
+                return (
               <View style={styles.outcomeDetails}>
                 <Text style={styles.outcomeText}>
-                  {battle.final_outcome.home_team}: {battle.final_outcome.home_score}
+                  {outcome.home_team ?? 'Home'}: {outcome.home_score ?? '-'}
                 </Text>
                 <Text style={styles.outcomeText}>
-                  {battle.final_outcome.away_team}: {battle.final_outcome.away_score}
+                  {outcome.away_team ?? 'Away'}: {outcome.away_score ?? '-'}
                 </Text>
               </View>
+                );
+              })()
             )}
           </View>
         )}

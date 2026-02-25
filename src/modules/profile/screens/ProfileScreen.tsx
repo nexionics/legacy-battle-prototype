@@ -6,41 +6,32 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
-  ActivityIndicator,
   Image,
   Switch,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, AppText } from '../../../shared/ui';
-import { colors, spacing, fontSizes, radii } from '../../../shared/theme';
-import { useAuth } from '../../../app/providers/AuthContext';
-import { useAppTheme } from '../../../app/providers/ThemeContext';
-import { supabase } from '../../../shared/lib/supabaseClient';
-import { CrewService } from '../../crew/services/crewService';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Screen, AppText, LoadingState, ErrorState } from '@/shared/ui';
+import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import { useAuth } from '@/app/providers/AuthContext';
+import { useAppTheme } from '@/app/providers/ThemeContext';
+import type { UserProfile } from '@/shared/types';
+import { ProfileRepo, BattleStats } from '@/modules/profile/services/profileRepo';
+import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
 
-type Profile = {
-  id: string;
-  username: string | null;
-  display_name: string | null;
-  avatar_url: string | null;
-  xp: number;
-  level: string;
-  wallet_balance: number;
-  created_at: string;
-  updated_at: string;
-};
+type ProfileScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'Profile'>,
+  NativeStackScreenProps<AppStackParamList>
+>;
 
-type BattleStats = {
-  wins: number;
-  losses: number;
-  challenges: number;
-};
-
-export default function ProfileScreen({ navigation }: any) {
+export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   const { signOut, user } = useAuth();
   const { mode, toggleTheme } = useAppTheme();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -48,50 +39,37 @@ export default function ProfileScreen({ navigation }: any) {
   const [crewCount, setCrewCount] = useState(0);
   const [pendingCrewCount, setPendingCrewCount] = useState(0);
 
+  const loadBattleStats = async () => {
+    if (!user) return;
+    const stats = await ProfileRepo.getBattleStats(user.id);
+    setBattleStats(stats);
+  };
+
+  const loadCrewCounts = async () => {
+    if (!user) return;
+    const result = await ProfileRepo.getCrewCounts(user.id);
+    setCrewCount(result.crewCount);
+    setPendingCrewCount(result.pendingCount);
+  };
+
+  const reloadProfile = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data, error } = await ProfileRepo.getProfileById(user.id);
+    if (error) {
+      console.error('Error loading profile', error);
+      setError('Unable to load profile.');
+    } else {
+      setError(null);
+      setProfile(data as UserProfile);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!user) return;
 
-    const loadProfile = async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (error) {
-        console.error('Error loading profile', error);
-      } else {
-        setProfile(data);
-      }
-
-      setLoading(false);
-    };
-
-    const loadBattleStats = async () => {
-      const { data: participations } = await supabase
-        .from('battle_participants')
-        .select('battle_id, is_winner, battles!inner(status)')
-        .eq('user_id', user.id);
-
-      if (participations) {
-        const completed = participations.filter((p: any) => p.battles?.status === 'resolved');
-        const wins = completed.filter((p: any) => p.is_winner === true).length;
-        const losses = completed.filter((p: any) => p.is_winner === false).length;
-        const challenges = participations.length;
-        setBattleStats({ wins, losses, challenges });
-      }
-    };
-
-    const loadCrewCounts = async () => {
-      const [crewResult, pendingResult] = await Promise.all([
-        CrewService.getCrewMembers(user.id),
-        CrewService.getPendingReceived(user.id),
-      ]);
-      setCrewCount(crewResult.data.length);
-      setPendingCrewCount(pendingResult.data.length);
-    };
-
-    loadProfile();
+    reloadProfile();
     loadBattleStats();
     loadCrewCounts();
   }, [user]);
@@ -105,25 +83,12 @@ export default function ProfileScreen({ navigation }: any) {
   useEffect(() => {
     if (!user) return;
 
-    const channel = supabase
-      .channel('profiles-change')
-      // Realtime keeps the profile view in sync with server-side XP/level updates.
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `id=eq.${user.id}`,
-        },
-        (payload) => {
-          setProfile(payload.new as Profile);
-        }
-      )
-      .subscribe();
+    const channel = ProfileRepo.subscribeToProfile(user.id, (nextProfile) => {
+      setProfile(nextProfile);
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, [user]);
 
@@ -132,12 +97,7 @@ export default function ProfileScreen({ navigation }: any) {
 
     setSaving(true);
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        display_name: displayName,
-      })
-      .eq('id', user.id);
+    const { error } = await ProfileRepo.updateDisplayName(user.id, displayName);
 
     setSaving(false);
 
@@ -190,9 +150,22 @@ export default function ProfileScreen({ navigation }: any) {
   if (loading) {
     return (
       <Screen>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
+        <LoadingState message="Loading profile..." />
+      </Screen>
+    );
+  }
+
+  if (error) {
+    return (
+      <Screen>
+        <ErrorState
+          message={error}
+          onRetry={() => {
+            reloadProfile();
+            loadBattleStats();
+            loadCrewCounts();
+          }}
+        />
       </Screen>
     );
   }

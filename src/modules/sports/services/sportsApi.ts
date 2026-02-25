@@ -3,6 +3,8 @@
 // Fallback: TheSportsDB (when EXPO_PUBLIC_ENABLE_SPORTS_FALLBACK=true)
 
 import { SportsRepo, RepoGame } from './sportsRepo';
+import type { SportsEvent } from '@/shared/types';
+export type { SportsEvent } from '@/shared/types';
 
 // Fallback flag - set to true to enable TheSportsDB fallback when repo is empty
 const ENABLE_FALLBACK = process.env.EXPO_PUBLIC_ENABLE_SPORTS_FALLBACK === 'true';
@@ -53,31 +55,6 @@ function repoGameToSportsEvent(game: RepoGame): SportsEvent {
     strThumb: null,
     strStatus: game.status,
   };
-}
-
-export interface SportsEvent {
-  idEvent: string;
-  strEvent: string;
-  strSport: string;
-  strLeague: string;
-  strLeagueBadge: string;
-  strHomeTeam: string;
-  strAwayTeam: string;
-  intHomeScore: string | null;
-  intAwayScore: string | null;
-  strTimestamp: string;
-  dateEvent: string;
-  strTime: string;
-  strTimeLocal: string;
-  idHomeTeam: string;
-  strHomeTeamBadge: string;
-  idAwayTeam: string;
-  strAwayTeamBadge: string;
-  strVenue: string;
-  strCity: string;
-  strPoster: string | null;
-  strThumb: string | null;
-  strStatus: string;
 }
 
 export interface Team {

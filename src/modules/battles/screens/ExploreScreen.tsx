@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../../shared/constants/theme';
-import { supabase } from '../../../shared/lib/supabaseClient';
+import { COLORS, SIZES } from '@/shared/constants/theme';
+import { BattlesRepo } from '@/modules/battles/services/battlesRepo';
 
 type FilterTab = 'Trending' | 'Ending Soon' | 'New' | 'High Activity';
 
@@ -40,37 +40,11 @@ export default function ExploreScreen() {
   const loadBattles = async () => {
     setLoading(true);
     try {
-      let query = supabase
-        .from('battles')
-        .select(`
-          id,
-          title,
-          status,
-          created_at,
-          stake,
-          event_id,
-          battle_participants(count)
-        `)
-        .eq('status', 'open');
-
-      if (activeTab === 'Ending Soon') {
-        query = query.order('created_at', { ascending: true });
-      } else if (activeTab === 'New') {
-        query = query.order('created_at', { ascending: false });
-      } else {
-        query = query.order('created_at', { ascending: false });
-      }
-
-      const { data, error } = await query.limit(10);
-
+      const { data, error } = await BattlesRepo.getExploreBattles(activeTab);
       if (error) {
         console.error('Error loading battles:', error);
       } else {
-        const battlesWithCount = (data || []).map((b: any) => ({
-          ...b,
-          participant_count: b.battle_participants?.[0]?.count || 0,
-        }));
-        setBattles(battlesWithCount);
+        setBattles(data);
       }
     } catch (err) {
       console.error('Error:', err);

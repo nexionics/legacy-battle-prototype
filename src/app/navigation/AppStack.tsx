@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../shared/constants/theme';
+import type { AppStackParamList, TabParamList } from './types';
 import HomeScreen from '../../modules/sports/screens/HomeScreen';
 import BattlesScreen from '../../modules/battles/screens/BattlesScreen';
 import CreateBattleScreen from '../../modules/battles/screens/CreateBattleScreen';
@@ -25,8 +26,8 @@ import StatDuelChampionScreen from '../../modules/battles/screens/StatDuelChampi
 import StatDuelOpponentScreen from '../../modules/battles/screens/StatDuelOpponentScreen';
 import StatDuelConfirmScreen from '../../modules/battles/screens/StatDuelConfirmScreen';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 function CustomTabBarButton({ onPress }: any) {
   return (
@@ -35,12 +36,16 @@ function CustomTabBarButton({ onPress }: any) {
       onPress={onPress}
     >
       <Image
-        source={require('../../assets/battle-now-button.png')}
+        source={require('../../../assets/battle-now-button.png')}
         style={styles.battleNowImage}
         resizeMode="contain"
       />
     </TouchableOpacity>
   );
+}
+
+function BattleNowPlaceholder() {
+  return null;
 }
 
 function MainTabs({ navigation }: any) {
@@ -74,7 +79,7 @@ function MainTabs({ navigation }: any) {
       />
       <Tab.Screen
         name="BattleNow"
-        component={HomeScreen}
+        component={BattleNowPlaceholder}
         listeners={{
           tabPress: (e) => {
             e.preventDefault();

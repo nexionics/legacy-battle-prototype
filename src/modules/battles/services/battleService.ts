@@ -1,26 +1,5 @@
-import { supabase } from '../../../shared/lib/supabaseClient';
-
-export type Battle = {
-  id: string;
-  creator_id: string;
-  event_id: string | null;
-  title: string;
-  description: string | null;
-  stake: number;
-  status: 'open' | 'active' | 'completed' | 'canceled';
-  created_at: string;
-  winner_id: string | null;
-  resolved_at: string | null;
-  final_outcome: Record<string, any> | null;
-};
-
-export type BattleParticipant = {
-  id: string;
-  battle_id?: string;
-  user_id: string;
-  pick: string | null;
-  joined_at: string;
-};
+import { supabase } from '@/shared/lib/supabaseClient';
+import type { Battle, BattleParticipant } from '@/shared/types';
 
 export type JoinBattleParams = {
   battleId: string;
@@ -74,49 +53,6 @@ export const BattleService = {
     return { data: battle, error };
   },
 
-  getBattles: async () => {
-    return await supabase
-      .from('battles')
-      .select('*')
-      .order('created_at', { ascending: false });
-  },
-
-  getBattlesByStatus: async (status: Battle['status']) => {
-    return await supabase
-      .from('battles')
-      .select('*')
-      .eq('status', status)
-      .order('created_at', { ascending: false });
-  },
-
-  getUserBattles: async (userId: string) => {
-    return await supabase
-      .from('battles')
-      .select('*')
-      .eq('creator_id', userId)
-      .order('created_at', { ascending: false });
-  },
-
-  getMyAcceptedBattles: async (userId: string, limit = 5) => {
-    return await supabase
-      .from('battles')
-      .select('*, battle_participants(*)')
-      .eq('creator_id', userId)
-      .in('status', ['active', 'completed'])
-      .order('created_at', { ascending: false })
-      .limit(limit);
-  },
-
-  getQuickPickBattles: async (userId: string, limit = 5) => {
-    return await supabase
-      .from('battles')
-      .select('*, battle_participants(*)')
-      .eq('status', 'open')
-      .neq('creator_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(limit);
-  },
-
   subscribeToBattles: (callback: (payload: any) => void) => {
     // Realtime keeps battle lists fresh without client-side polling.
     return supabase
@@ -127,26 +63,6 @@ export const BattleService = {
         callback
       )
       .subscribe();
-  },
-
-  getBattleWithParticipants: async (battleId: string) => {
-    const { data: battle, error: battleError } = await supabase
-      .from('battles')
-      .select('*')
-      .eq('id', battleId)
-      .single();
-
-    if (battleError) {
-      return { battle: null, participants: [], error: battleError };
-    }
-
-    const { data: participants, error: participantsError } = await supabase
-      .from('battle_participants')
-      .select('id, user_id, pick, joined_at')
-      .eq('battle_id', battleId)
-      .order('joined_at', { ascending: true });
-
-    return { battle, participants: participants || [], error: participantsError };
   },
 
   joinBattle: async ({ battleId, userId, pick }: JoinBattleParams) => {
@@ -220,6 +136,10 @@ export const BattleService = {
         callback
       )
       .subscribe();
+  },
+
+  removeChannel: (channel: ReturnType<typeof supabase.channel>) => {
+    supabase.removeChannel(channel);
   },
 
 };

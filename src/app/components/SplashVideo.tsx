@@ -22,7 +22,7 @@ export default function SplashVideo({ onFinish }: SplashVideoProps) {
     <View style={styles.container}>
       <Video
         ref={videoRef}
-        source={require('../../assets/splash-video.mp4')}
+        source={require('../../../assets/splash-video.mp4')}
         style={styles.video}
         resizeMode={ResizeMode.COVER}
         shouldPlay

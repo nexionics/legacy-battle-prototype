@@ -1,14 +1,10 @@
 // src/modules/sports/services/sportsRepo.ts
 // Reads normalized events from Supabase sports_events table
-import { supabase } from '../../../shared/lib/supabaseClient';
+import { supabase } from '@/shared/lib/supabaseClient';
+import type { SportsTeam } from '@/shared/types';
 
 // Team metadata from sports_teams join
-export type TeamInfo = {
-  id: string;
-  display_name: string | null;
-  abbreviation: string | null;
-  logo_url: string | null;
-};
+export type TeamInfo = SportsTeam;
 
 export type RepoGame = {
   id: string;                 // canonical sports_events.id (uuid)

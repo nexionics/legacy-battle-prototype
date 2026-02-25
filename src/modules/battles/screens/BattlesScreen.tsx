@@ -6,18 +6,24 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
-  ActivityIndicator,
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../../shared/constants/theme';
-import { BattleService, Battle } from '../services/battleService';
-import { supabase } from '../../../shared/lib/supabaseClient';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { COLORS, SIZES } from '@/shared/constants/theme';
+import { LoadingState, EmptyState, ErrorState } from '@/shared/ui';
+import type { Battle } from '@/shared/types';
+import { BattleService } from '@/modules/battles/services/battleService';
+import { BattlesRepo } from '@/modules/battles/services/battlesRepo';
+import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
 
-interface BattlesScreenProps {
-  navigation: any;
-}
+type BattlesScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'Battles'>,
+  NativeStackScreenProps<AppStackParamList>
+>;
 
 type TabType = 'open' | 'active' | 'completed';
 
@@ -26,13 +32,16 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('open');
+  const [error, setError] = useState<string | null>(null);
 
   const loadBattles = async () => {
-    const { data, error } = await BattleService.getBattles();
+    const { data, error } = await BattlesRepo.getBattles();
     if (error) {
       console.error('Error loading battles', error);
+      setError('Unable to load battles.');
     } else {
-      setBattles(data || []);
+      setError(null);
+      setBattles((data || []) as Battle[]);
     }
     setLoading(false);
     setRefreshing(false);
@@ -46,7 +55,7 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
     });
 
     return () => {
-      supabase.removeChannel(channel);
+      BattleService.removeChannel(channel);
     };
   }, []);
 
@@ -142,20 +151,18 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
 
         {/* Loading State */}
         {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
-          </View>
+          <LoadingState message="Loading battles..." />
+        ) : error ? (
+          <ErrorState message={error} onRetry={loadBattles} />
         ) : filteredBattles.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Ionicons name="trophy-outline" size={48} color={COLORS.textSecondary} />
-            <Text style={styles.emptyText}>No {activeTab} battles yet</Text>
+          <EmptyState title={`No ${activeTab} battles`} message="Create your first battle to get started.">
             <TouchableOpacity 
               style={styles.emptyButton}
               onPress={() => navigation.navigate('CreateBattle')}
             >
               <Text style={styles.emptyButtonText}>Create Your First Battle</Text>
             </TouchableOpacity>
-          </View>
+          </EmptyState>
         ) : (
           /* Battle Cards */
           filteredBattles.map((battle) => (

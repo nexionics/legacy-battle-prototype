@@ -14,9 +14,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../../shared/constants/theme';
-import { useAuth } from '../../../app/providers/AuthContext';
-import { CrewService } from '../services/crewService';
+import { COLORS, SIZES } from '@/shared/constants/theme';
+import { useAuth } from '@/app/providers/AuthContext';
+import { CrewService } from '@/modules/crew/services/crewService';
+import { CrewRepo } from '@/modules/crew/services/crewRepo';
 
 type SearchResult = {
   id: string;
@@ -45,14 +46,14 @@ export default function AddFriendScreen({ navigation }: any) {
     setHasSearched(true);
 
     try {
-      const { data, error } = await CrewService.searchUsers(searchQuery, user.id);
+      const { data, error } = await CrewRepo.searchUsers(searchQuery, user.id);
 
       if (error) {
         Alert.alert('Error', 'Failed to search for users');
       } else {
         const enriched: SearchResult[] = [];
         for (const profile of data) {
-          const existing = await CrewService.getRequestStatus(user.id, profile.id);
+          const existing = await CrewRepo.getRequestStatus(user.id, profile.id);
           enriched.push({
             ...profile,
             requestStatus: existing?.status,

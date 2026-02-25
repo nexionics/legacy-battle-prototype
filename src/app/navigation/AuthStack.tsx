@@ -2,12 +2,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS } from '../../shared/constants/theme';
+import type { AuthStackParamList } from './types';
 import LoginScreen from '../../modules/auth/screens/LoginScreen';
 import SignUpScreen from '../../modules/auth/screens/SignUpScreen';
 import OTPVerificationScreen from '../../modules/auth/screens/OTPVerificationScreen';
 import CreateUsernameScreen from '../../modules/auth/screens/CreateUsernameScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export default function AuthStack() {
   return (

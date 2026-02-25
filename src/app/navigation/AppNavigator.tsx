@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../shared/constants/theme';
+import type { RootStackParamList, TabParamList } from './types';
 import LoginScreen from '../../modules/auth/screens/LoginScreen';
 import SignUpScreen from '../../modules/auth/screens/SignUpScreen';
 import OTPVerificationScreen from '../../modules/auth/screens/OTPVerificationScreen';
@@ -15,8 +16,8 @@ import ExploreScreen from '../../modules/battles/screens/ExploreScreen';
 import ProfileScreen from '../../modules/profile/screens/ProfileScreen';
 import DevDebugScreen from '../../modules/profile/screens/DevDebugScreen';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 function CustomTabBarButton({ children, onPress }: any) {
   return (
@@ -29,6 +30,10 @@ function CustomTabBarButton({ children, onPress }: any) {
       </View>
     </TouchableOpacity>
   );
+}
+
+function BattleNowPlaceholder() {
+  return null;
 }
 
 function MainTabs() {
@@ -62,7 +67,7 @@ function MainTabs() {
       />
       <Tab.Screen
         name="BattleNow"
-        component={HomeScreen}
+        component={BattleNowPlaceholder}
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (

@@ -8,21 +8,21 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, AppText, Card } from '../../../shared/ui';
-import { colors, spacing, fontSizes, radii } from '../../../shared/theme';
-import {
-  getUpcomingGames,
-  getRecentResults,
-  SportsEvent,
-  formatEventTime,
-  getSportIcon,
-} from '../services/sportsApi';
-import { BattleService, Battle } from '../../battles/services/battleService';
-import { useAuth } from '../../../app/providers/AuthContext';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Screen, AppText, LoadingState, ErrorState, EmptyState } from '@/shared/ui';
+import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import type { Battle, SportsEvent } from '@/shared/types';
+import { getUpcomingGames, getRecentResults, formatEventTime, getSportIcon } from '../services/sportsApi';
+import { BattlesRepo } from '@/modules/battles';
+import { useAuth } from '@/app/providers/AuthContext';
+import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
 
-interface HomeScreenProps {
-  navigation: any;
-}
+type HomeScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabParamList, 'Home'>,
+  NativeStackScreenProps<AppStackParamList>
+>;
 
 const UpcomingGameCard = ({ event, onJoin }: { event: SportsEvent; onJoin: () => void }) => (
   <View style={styles.battleCard}>
@@ -107,6 +107,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [quickPicks, setQuickPicks] = useState<Battle[]>([]);
   const [myBattles, setMyBattles] = useState<Battle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadAllData();
@@ -114,6 +115,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   const loadAllData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const [upcoming, recent] = await Promise.all([
         getUpcomingGames(),
@@ -124,18 +126,35 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
       if (user?.id) {
         const [quickPicksResult, myBattlesResult] = await Promise.all([
-          BattleService.getQuickPickBattles(user.id, 5),
-          BattleService.getMyAcceptedBattles(user.id, 5),
+          BattlesRepo.getQuickPickBattles(user.id, 5),
+          BattlesRepo.getMyAcceptedBattles(user.id, 5),
         ]);
         if (quickPicksResult.data) setQuickPicks(quickPicksResult.data);
         if (myBattlesResult.data) setMyBattles(myBattlesResult.data);
       }
     } catch (error) {
       console.error('Error loading data:', error);
+      setError('Unable to load home data. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Screen>
+        <LoadingState message="Loading home feed..." />
+      </Screen>
+    );
+  }
+
+  if (error) {
+    return (
+      <Screen>
+        <ErrorState message={error} onRetry={loadAllData} />
+      </Screen>
+    );
+  }
 
   return (
     <Screen padding={0}>
@@ -219,9 +238,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
               ))}
             </ScrollView>
           ) : (
-            <View style={styles.emptyContainer}>
-              <AppText style={styles.emptyText}>No open battles to join yet</AppText>
-            </View>
+            <EmptyState title="No open battles" message="Check back soon for new challenges." />
           )}
         </View>
 
@@ -264,9 +281,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
               </TouchableOpacity>
             ))
           ) : (
-            <View style={styles.emptyContainer}>
-              <AppText style={styles.emptyText}>No active battles yet</AppText>
-            </View>
+            <EmptyState title="No active battles" message="Join or create a battle to get started." />
           )}
         </View>
 

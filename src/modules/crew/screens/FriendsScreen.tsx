@@ -12,9 +12,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES } from '../../../shared/constants/theme';
-import { useAuth } from '../../../app/providers/AuthContext';
-import { CrewService, CrewMember, CrewRequestWithProfile } from '../services/crewService';
+import { COLORS, SIZES } from '@/shared/constants/theme';
+import { useAuth } from '@/app/providers/AuthContext';
+import type { CrewMember } from '@/shared/types';
+import { CrewService } from '@/modules/crew/services/crewService';
+import { CrewRepo, type CrewRequestWithProfile } from '@/modules/crew/services/crewRepo';
 
 export default function FriendsScreen({ navigation }: any) {
   const { user } = useAuth();
@@ -28,9 +30,9 @@ export default function FriendsScreen({ navigation }: any) {
     if (!user) return;
 
     const [crewResult, pendingResult, suggestionsResult] = await Promise.all([
-      CrewService.getCrewMembers(user.id),
-      CrewService.getPendingReceived(user.id),
-      CrewService.getBattleSuggestions(user.id),
+      CrewRepo.getCrewMembers(user.id),
+      CrewRepo.getPendingReceived(user.id),
+      CrewRepo.getBattleSuggestions(user.id),
     ]);
 
     setCrewMembers(crewResult.data);
