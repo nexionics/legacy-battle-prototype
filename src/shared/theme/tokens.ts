@@ -1,24 +1,3 @@
-export const colors = {
-  primary: '#E53935',
-  primaryDark: '#C62828',
-  background: '#121212',
-  surface: '#1E1E1E',
-  card: '#1E1E1E',
-  text: '#FFFFFF',
-  textSecondary: '#9E9E9E',
-  muted: '#666666',
-  border: '#333333',
-  inputBackground: '#2A2A2A',
-  inputBorder: '#404040',
-  success: '#4CAF50',
-  warning: '#FFC107',
-  error: '#F44336',
-  white: '#FFFFFF',
-  black: '#000000',
-  transparent: 'transparent',
-  overlay: 'rgba(0, 0, 0, 0.5)',
-} as const;
-
 export const spacing = {
   0: 0,
   1: 4,

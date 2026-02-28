@@ -1,43 +1,39 @@
-// src/navigation/AppStack.tsx
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  type NativeStackNavigationOptions,
+} from '@react-navigation/native-stack';
+import {
+  BattlesScreen,
+  CreateBattleScreen,
+  BattleDetailScreen,
+  StartBattleScreen,
+  BattleTypeScreen,
+  ExploreScreen,
+  BattleVisibilityScreen,
+  StatDuelModeScreen,
+  StatDuelDetailsScreen,
+  StatDuelChampionScreen,
+  StatDuelOpponentScreen,
+  StatDuelConfirmScreen,
+} from '@/features/battles';
+import { FriendsScreen, AddFriendScreen } from '@/features/crew';
+import { ProfileScreen, DevDebugScreen } from '@/features/profile';
+import { HomeScreen, AllResultsScreen, AllUpcomingGamesScreen } from '@/features/sports';
+import { RootStackParamList } from './types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../shared/constants/theme';
-import type { AppStackParamList, TabParamList } from './types';
-import HomeScreen from '../../modules/sports/screens/HomeScreen';
-import BattlesScreen from '../../modules/battles/screens/BattlesScreen';
-import CreateBattleScreen from '../../modules/battles/screens/CreateBattleScreen';
-import BattleDetailScreen from '../../modules/battles/screens/BattleDetailScreen';
-import AllResultsScreen from '../../modules/sports/screens/AllResultsScreen';
-import AllUpcomingGamesScreen from '../../modules/sports/screens/AllUpcomingGamesScreen';
-import StartBattleScreen from '../../modules/battles/screens/StartBattleScreen';
-import BattleTypeScreen from '../../modules/battles/screens/BattleTypeScreen';
-import ExploreScreen from '../../modules/battles/screens/ExploreScreen';
-import ProfileScreen from '../../modules/profile/screens/ProfileScreen';
-import DevDebugScreen from '../../modules/profile/screens/DevDebugScreen';
-import FriendsScreen from '../../modules/crew/screens/FriendsScreen';
-import BattleVisibilityScreen from '../../modules/battles/screens/BattleVisibilityScreen';
-import AddFriendScreen from '../../modules/crew/screens/AddFriendScreen';
-import StatDuelModeScreen from '../../modules/battles/screens/StatDuelModeScreen';
-import StatDuelDetailsScreen from '../../modules/battles/screens/StatDuelDetailsScreen';
-import StatDuelChampionScreen from '../../modules/battles/screens/StatDuelChampionScreen';
-import StatDuelOpponentScreen from '../../modules/battles/screens/StatDuelOpponentScreen';
-import StatDuelConfirmScreen from '../../modules/battles/screens/StatDuelConfirmScreen';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Colors } from '@/shared/theme';
 
-const Stack = createNativeStackNavigator<AppStackParamList>();
-const Tab = createBottomTabNavigator<TabParamList>();
+const Tab = createBottomTabNavigator();
 
 function CustomTabBarButton({ onPress }: any) {
   return (
-    <TouchableOpacity
-      style={styles.customTabButton}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={tabStyles.customTabButton} onPress={onPress}>
       <Image
-        source={require('../../../assets/battle-now-button.png')}
-        style={styles.battleNowImage}
+        source={require('../../assets/images/battle-now-button.png')}
+        style={tabStyles.battleNowImage}
         resizeMode="contain"
       />
     </TouchableOpacity>
@@ -53,15 +49,15 @@ function MainTabs({ navigation }: any) {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textSecondary,
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarStyle: tabStyles.tabBar,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textSecondary,
+        tabBarLabelStyle: tabStyles.tabBarLabel,
       }}
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeScreen as React.ComponentType<any>}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
@@ -70,7 +66,7 @@ function MainTabs({ navigation }: any) {
       />
       <Tab.Screen
         name="Battles"
-        component={BattlesScreen}
+        component={BattlesScreen as React.ComponentType<any>}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="trophy-outline" size={size} color={color} />
@@ -103,7 +99,7 @@ function MainTabs({ navigation }: any) {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileScreen as React.ComponentType<any>}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
@@ -114,14 +110,26 @@ function MainTabs({ navigation }: any) {
   );
 }
 
-export default function AppStack() {
+const tabStyles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: Colors.background,
+    borderTopColor: Colors.inputBorder,
+    borderTopWidth: 1,
+    height: 70,
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  tabBarLabel: { fontSize: 10, fontWeight: '500' },
+  customTabButton: { top: -20, justifyContent: 'center', alignItems: 'center' },
+  battleNowImage: { width: 70, height: 70 },
+});
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+const headerOptions: NativeStackNavigationOptions = { headerShown: false };
+
+const AppStack = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: COLORS.background },
-      }}
-    >
+    <Stack.Navigator screenOptions={headerOptions}>
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="CreateBattle" component={CreateBattleScreen} />
       <Stack.Screen name="BattleDetail" component={BattleDetailScreen} />
@@ -140,28 +148,6 @@ export default function AppStack() {
       <Stack.Screen name="StatDuelConfirm" component={StatDuelConfirmScreen} />
     </Stack.Navigator>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: COLORS.background,
-    borderTopColor: COLORS.inputBorder,
-    borderTopWidth: 1,
-    height: 70,
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  tabBarLabel: {
-    fontSize: 10,
-    fontWeight: '500',
-  },
-  customTabButton: {
-    top: -20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  battleNowImage: {
-    width: 70,
-    height: 70,
-  },
-});
+export default AppStack;
