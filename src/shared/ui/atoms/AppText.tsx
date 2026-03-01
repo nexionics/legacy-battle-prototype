@@ -1,4 +1,4 @@
-import { colors, fontSizes, lineHeights } from '@/shared/theme';
+import { colors, fontSizes, lineHeights, FontFamily } from '@/shared/theme';
 import { Text, TextStyle, TextProps } from 'react-native';
 
 type Variant = 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'label';
@@ -9,12 +9,36 @@ type AppTextProps = TextProps & {
 };
 
 const variantStyles: Record<Variant, TextStyle> = {
-  h1: { fontSize: fontSizes.xxl, lineHeight: lineHeights.xxl, fontWeight: 'bold' },
-  h2: { fontSize: fontSizes.xl, lineHeight: lineHeights.xl, fontWeight: 'bold' },
-  h3: { fontSize: fontSizes.lg, lineHeight: lineHeights.lg, fontWeight: '600' },
-  body: { fontSize: fontSizes.md, lineHeight: lineHeights.md, fontWeight: '400' },
-  caption: { fontSize: fontSizes.xs, lineHeight: lineHeights.xs, fontWeight: '400' },
-  label: { fontSize: fontSizes.sm, lineHeight: lineHeights.sm, fontWeight: '600' },
+  h1: {
+    fontFamily: FontFamily.montserratBold,
+    fontSize: fontSizes.xxl,
+    lineHeight: lineHeights.xxl,
+  },
+  h2: {
+    fontFamily: FontFamily.montserratBold,
+    fontSize: fontSizes.xl,
+    lineHeight: lineHeights.xl,
+  },
+  h3: {
+    fontFamily: FontFamily.montserratSemiBold,
+    fontSize: fontSizes.lg,
+    lineHeight: lineHeights.lg,
+  },
+  body: {
+    fontFamily: FontFamily.montserratRegular,
+    fontSize: fontSizes.md,
+    lineHeight: lineHeights.md,
+  },
+  caption: {
+    fontFamily: FontFamily.montserratRegular,
+    fontSize: fontSizes.xs,
+    lineHeight: lineHeights.xs,
+  },
+  label: {
+    fontFamily: FontFamily.montserratSemiBold,
+    fontSize: fontSizes.sm,
+    lineHeight: lineHeights.sm,
+  },
 };
 
 export function AppText({

@@ -1,11 +1,19 @@
 import React, { useRef, useEffect } from 'react';
 import { StyleSheet, View, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Colors, RPH, RPW, Sizes, verticalScale } from '@/shared/theme';
-import { AppText } from '../atoms/AppText';
+import {
+  colors,
+  RPH,
+  RPW,
+  Sizes,
+  verticalScale,
+  horizontalScale,
+  shadows,
+} from '@/shared/theme';
+import { AppText } from '@/shared/ui/atoms/AppText';
 
 interface ToastProps {
-  type: string;
+  type: 'success' | 'fail';
   message: string;
   visible: boolean;
   onClose: () => void;
@@ -13,20 +21,16 @@ interface ToastProps {
 
 const TOAST_DURATION = 5000;
 
+const typeConfig = {
+  success: { label: 'Success!', color: colors.success } as const,
+  fail: { label: 'Error!', color: colors.error } as const,
+};
+
 export const Toast: React.FC<ToastProps> = ({ type, message, visible, onClose }) => {
   const windowHeight = Dimensions.get('window').height;
   const popAnim = useRef(new Animated.Value(windowHeight * -1)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-
-  const colors: { [key: string]: string } = {
-    success: '#6dcf81',
-    fail: '#bf6060',
-  };
-
-  const headers: { [key: string]: string } = {
-    success: 'Success!',
-    fail: 'Error!',
-  };
+  const config = typeConfig[type];
 
   useEffect(() => {
     if (visible) {
@@ -85,14 +89,18 @@ export const Toast: React.FC<ToastProps> = ({ type, message, visible, onClose })
         <AntDesign
           name={type === 'success' ? 'check-circle' : 'close-circle'}
           size={Sizes.font22}
-          color={colors[type]}
+          color={config.color}
         />
         <View style={styles.toastText}>
-          <AppText fontMedium>{headers[type]}</AppText>
-          <AppText small>{message}</AppText>
+          <AppText variant="label" color={colors.text}>
+            {config.label}
+          </AppText>
+          <AppText variant="caption" color={colors.textSecondary}>
+            {message}
+          </AppText>
         </View>
         <TouchableOpacity onPress={instantPopOut}>
-          <Entypo name="cross" size={Sizes.font22} color={Colors.black} />
+          <Entypo name="cross" size={Sizes.font22} color={colors.text} />
         </TouchableOpacity>
       </View>
       <Animated.View
@@ -115,17 +123,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: RPH(50),
     alignSelf: 'center',
-    transform: [{ translateX: -175 }],
+    transform: [{ translateX: -RPW(45) }],
     height: verticalScale(60),
     width: RPW(90),
-    backgroundColor: Colors.white,
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: Sizes.font6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    borderRadius: Sizes.radius,
+    ...shadows.md,
     elevation: 5,
   },
   toastRow: {
@@ -136,13 +141,14 @@ const styles = StyleSheet.create({
   },
   toastText: {
     width: '70%',
-    padding: Sizes.font2,
+    paddingVertical: verticalScale(8),
+    paddingHorizontal: horizontalScale(16),
   },
   progressBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    height: Sizes.font4 + 1,
-    backgroundColor: Colors.secondary,
+    height: verticalScale(5),
+    backgroundColor: colors.secondary,
   },
 });

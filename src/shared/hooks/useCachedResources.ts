@@ -8,6 +8,14 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
+import {
+  Geist_100Thin,
+  Geist_300Light,
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from '@expo-google-fonts/geist';
 
 export type UseCachedResourcesResult = {
   isLoaded: boolean;
@@ -23,6 +31,12 @@ export const useCachedResources = (): UseCachedResourcesResult => {
     Montserrat_500Medium,
     Montserrat_600SemiBold,
     Montserrat_700Bold,
+    Geist_100Thin,
+    Geist_300Light,
+    Geist_400Regular,
+    Geist_500Medium,
+    Geist_600SemiBold,
+    Geist_700Bold,
   });
 
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);

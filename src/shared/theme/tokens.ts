@@ -1,60 +1,67 @@
+import { moderateScale } from 'react-native-size-matters';
+
+const scale = (n: number, factor = 0.5) => moderateScale(n, factor);
+
 export const spacing = {
   0: 0,
-  1: 4,
-  2: 8,
-  3: 12,
-  4: 16,
-  5: 24,
-  6: 32,
+  1: scale(4),
+  2: scale(8),
+  3: scale(12),
+  4: scale(16),
+  5: scale(24),
+  6: scale(32),
 } as const;
 
 export const radii = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 24,
+  sm: scale(4),
+  md: scale(8),
+  lg: scale(12),
+  xl: scale(24),
 } as const;
 
 export const fontSizes = {
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 18,
-  xl: 24,
-  xxl: 32,
-  xxxl: 40,
+  xs: scale(12, 0.5),
+  sm: scale(14, 0.5),
+  md: scale(16, 0.7),
+  lg: scale(18),
+  xl: scale(24, 0.4),
+  xxl: scale(32, 0.4),
+  xxxl: scale(40, 0.5),
 } as const;
 
 export const lineHeights = {
-  xs: 16,
-  sm: 20,
-  md: 24,
-  lg: 26,
-  xl: 32,
-  xxl: 40,
-  xxxl: 48,
+  xs: scale(16),
+  sm: scale(20),
+  md: scale(24),
+  lg: scale(26),
+  xl: scale(32),
+  xxl: scale(40),
+  xxxl: scale(48),
 } as const;
+
+const shadowOffset = (h: number) => ({ width: 0, height: scale(h) });
+const shadowRadius = (r: number) => scale(r);
 
 export const shadows = {
   sm: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: shadowOffset(1),
     shadowOpacity: 0.18,
-    shadowRadius: 1.0,
+    shadowRadius: shadowRadius(1),
     elevation: 1,
   },
   md: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: shadowOffset(2),
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: shadowRadius(3.84),
     elevation: 3,
   },
   lg: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: shadowOffset(4),
     shadowOpacity: 0.3,
-    shadowRadius: 4.65,
+    shadowRadius: shadowRadius(4.65),
     elevation: 6,
   },
 } as const;

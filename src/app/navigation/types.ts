@@ -1,3 +1,4 @@
+import type { GestureResponderEvent } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
@@ -53,3 +54,11 @@ export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =
 
 export type AppStackParamList = RootStackParamList;
 export type TabParamList = TabStackParamList;
+
+/** Props for the custom Battle Now tab bar button. */
+export interface CustomTabBarButtonProps {
+  onPress?: (e: GestureResponderEvent) => void;
+}
+
+/** Props for the MainTabs screen (tab navigator) when used inside the root stack. */
+export type MainTabsScreenProps = RootStackScreenProps<'MainTabs'>;

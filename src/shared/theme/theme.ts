@@ -30,8 +30,18 @@ export const colorScheme = Appearance.getColorScheme();
 export const screenHeight = Dimensions.get('window').height;
 export const screenWidth = Dimensions.get('window').width;
 
+/**
+ * Use for horizontal layout: marginLeft, marginRight, marginHorizontal,
+ * paddingHorizontal, width. Pass the design-size number (e.g. 16).
+ */
 export const horizontalScale = (size: number) => horizontalScaleLib(size);
+
+/**
+ * Use for vertical layout: marginTop, marginBottom, marginVertical,
+ * paddingVertical, height. Pass the design-size number (e.g. 16).
+ */
 export const verticalScale = (size: number) => verticalScaleLib(size);
+
 export const moderate = (size: number, factor = 0.5) => moderateScale(size, factor);
 export const scaleText = (size: number) => moderateScale(size, 0.3);
 export const scaleLayout = (size: number) => moderateScale(size, 0.3);
@@ -39,14 +49,21 @@ export const scaleLayout = (size: number) => moderateScale(size, 0.3);
 export const RPH = (percentage: number) => (percentage / 100) * screenHeight;
 export const RPW = (percentage: number) => (percentage / 100) * screenWidth;
 
+/** Font family aliases (name reflects font). Use in styles: fontFamily: FontFamily.montserratRegular */
 export const FontFamily = {
-  thin: 'Montserrat_100Thin',
-  light: 'Montserrat_300Light',
-  regular: 'Montserrat_400Regular',
-  medium: 'Montserrat_500Medium',
-  semiBold: 'Montserrat_600SemiBold',
-  bold: 'Montserrat_700Bold',
-};
+  montserratThin: 'Montserrat_100Thin',
+  montserratLight: 'Montserrat_300Light',
+  montserratRegular: 'Montserrat_400Regular',
+  montserratMedium: 'Montserrat_500Medium',
+  montserratSemiBold: 'Montserrat_600SemiBold',
+  montserratBold: 'Montserrat_700Bold',
+  geistThin: 'Geist_100Thin',
+  geistLight: 'Geist_300Light',
+  geistRegular: 'Geist_400Regular',
+  geistMedium: 'Geist_500Medium',
+  geistSemiBold: 'Geist_600SemiBold',
+  geistBold: 'Geist_700Bold',
+} as const;
 
 export const Sizes = {
   font2: moderateScale(2),

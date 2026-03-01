@@ -1,14 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '@/shared/theme';
+import { View, StyleSheet } from 'react-native';
+import {
+  colors,
+  Sizes,
+  horizontalScale,
+  verticalScale,
+} from '@/shared/theme';
+import { AppText } from '@/shared/ui/atoms/AppText';
 
 interface Props {
   focused?: boolean;
 }
 
+const radius = Sizes.xxxl;
+const yOffset = verticalScale(8);
+
 export function BattleNowCurvedLabel({ focused }: Props) {
   const text = 'BATTLE NOW';
-  const radius = 38;
   const startAngle = -50;
   const endAngle = 50;
   const angleStep = (endAngle - startAngle) / (text.length - 1);
@@ -20,11 +28,13 @@ export function BattleNowCurvedLabel({ focused }: Props) {
         const radians = (angle * Math.PI) / 180;
 
         const x = radius * Math.sin(radians);
-        const y = radius * (1 - Math.cos(radians)) - 8;
+        const y = radius * (1 - Math.cos(radians)) - yOffset;
 
         return (
-          <Text
+          <AppText
             key={index}
+            variant="label"
+            color={colors.white}
             style={[
               styles.character,
               {
@@ -33,7 +43,7 @@ export function BattleNowCurvedLabel({ focused }: Props) {
             ]}
           >
             {char}
-          </Text>
+          </AppText>
         );
       })}
     </View>
@@ -42,17 +52,15 @@ export function BattleNowCurvedLabel({ focused }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 80,
-    height: 24,
+    width: horizontalScale(80),
+    height: verticalScale(24),
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 2,
+    marginTop: verticalScale(2),
   },
   character: {
     position: 'absolute',
-    color: COLORS.white,
-    fontSize: 8,
-    fontWeight: '700',
+    fontSize: Sizes.font8,
     letterSpacing: 0.5,
   },
 });
