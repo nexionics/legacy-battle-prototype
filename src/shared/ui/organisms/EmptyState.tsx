@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../theme';
+import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms';
 
 type EmptyStateProps = {
@@ -15,7 +15,7 @@ export function EmptyState({ title, message, children }: EmptyStateProps) {
       <AppText variant="h3" style={styles.title}>
         {title}
       </AppText>
-      {message ? <AppText style={styles.message}>{message}</AppText> : null}
+      {message ? <AppText variant="body2" style={styles.message}>{message}</AppText> : null}
       {children}
     </View>
   );

@@ -198,7 +198,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <Ionicons name="arrow-back" size={20} color={colors.white} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <AppText style={styles.headerTitle}>Profile</AppText>
+            <AppText variant="h3" style={styles.headerTitle}>Profile</AppText>
             <Ionicons name="person-outline" size={18} color={colors.primary} />
           </View>
           <TouchableOpacity style={styles.notificationButton}>
@@ -210,52 +210,52 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
-              <AppText style={styles.avatarText}>{avatarInitials}</AppText>
+              <AppText variant="h1" style={styles.avatarText}>{avatarInitials}</AppText>
             </View>
           </View>
 
-          <AppText style={styles.username}>
+          <AppText variant="h4" style={styles.username}>
             {profile?.display_name || profile?.username || 'User'}
           </AppText>
-          <AppText style={styles.email}>{user?.email}</AppText>
+          <AppText variant="body2" style={styles.email}>{user?.email}</AppText>
 
           {/* Level Badge */}
           <View style={styles.levelBadgeContainer}>
-            <AppText style={styles.trophyIcon}>🏆</AppText>
-            <AppText style={styles.levelBadgeText}>
+            <AppText variant="body1" style={styles.trophyIcon}>🏆</AppText>
+            <AppText variant="label" style={styles.levelBadgeText}>
               {levelInfo.level} Level {levelNumber}
             </AppText>
-            <AppText style={styles.levelXpText}> {xpValue.toLocaleString()} XP</AppText>
+            <AppText variant="body2" style={styles.levelXpText}> {xpValue.toLocaleString()} XP</AppText>
           </View>
         </View>
 
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={[styles.statBox, styles.statBoxGreen]}>
-            <AppText style={[styles.statValue, styles.statValueGreen]}>{battleStats.wins}</AppText>
-            <AppText style={styles.statLabel}>Wins</AppText>
+            <AppText variant="h5" style={[styles.statValue, styles.statValueGreen]}>{battleStats.wins}</AppText>
+            <AppText variant="label" style={styles.statLabel}>Wins</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxRed]}>
-            <AppText style={[styles.statValue, styles.statValueRed]}>{battleStats.losses}</AppText>
-            <AppText style={styles.statLabel}>Losses</AppText>
+            <AppText variant="h5" style={[styles.statValue, styles.statValueRed]}>{battleStats.losses}</AppText>
+            <AppText variant="label" style={styles.statLabel}>Losses</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxBlue]}>
-            <AppText style={[styles.statValue, styles.statValueBlue]}>
+            <AppText variant="h5" style={[styles.statValue, styles.statValueBlue]}>
               {battleStats.challenges}
             </AppText>
-            <AppText style={styles.statLabel}>Challenges</AppText>
+            <AppText variant="label" style={styles.statLabel}>Challenges</AppText>
           </View>
           <View style={[styles.statBox, styles.statBoxGray]}>
-            <AppText style={styles.statValue}>{Number(walletBalance).toLocaleString()}</AppText>
-            <AppText style={styles.statLabel}>BC Coins</AppText>
+            <AppText variant="h5" style={styles.statValue}>{Number(walletBalance).toLocaleString()}</AppText>
+            <AppText variant="label" style={styles.statLabel}>BC Coins</AppText>
           </View>
         </View>
 
         {/* Legacy Rank Card */}
         <View style={styles.rankCard}>
           <View style={styles.rankHeader}>
-            <AppText style={styles.rankTitle}>Legacy Rank</AppText>
-            <AppText style={styles.rankLevel}>{levelInfo.level}</AppText>
+            <AppText variant="label" style={styles.rankTitle}>Legacy Rank</AppText>
+            <AppText variant="h5" style={styles.rankLevel}>{levelInfo.level}</AppText>
           </View>
           <View style={styles.rankProgressContainer}>
             <View style={styles.rankProgressBar}>
@@ -263,15 +263,15 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             </View>
           </View>
           <View style={styles.rankFooter}>
-            <AppText style={styles.rankXpText}>{xpValue.toLocaleString()} XP</AppText>
-            <AppText style={styles.rankNextText}>
+            <AppText variant="captionSm" style={styles.rankXpText}>{xpValue.toLocaleString()} XP</AppText>
+            <AppText variant="captionSm" style={styles.rankNextText}>
               {levelInfo.nextLevel}: {levelInfo.nextXp.toLocaleString()} XP
             </AppText>
           </View>
 
           {/* Battle Invitation */}
           <TouchableOpacity style={styles.invitationBanner}>
-            <AppText style={styles.invitationText}>You Have Pending Battle Invites</AppText>
+            <AppText variant="body2" style={styles.invitationText}>You Have Pending Battle Invites</AppText>
             <Ionicons name="arrow-forward" size={18} color={colors.text} />
           </TouchableOpacity>
         </View>
@@ -279,15 +279,15 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
         {/* Total BC Card */}
         <View style={styles.bcCard}>
           <View style={styles.bcLeft}>
-            <AppText style={styles.bcLabel}>Total Bc</AppText>
-            <AppText style={styles.bcValue}>{Number(walletBalance).toLocaleString()} BC</AppText>
+            <AppText variant="label" style={styles.bcLabel}>Total Bc</AppText>
+            <AppText variant="h4" style={styles.bcValue}>{Number(walletBalance).toLocaleString()} BC</AppText>
           </View>
           <View style={styles.bcRight}>
             <TouchableOpacity>
               <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.viewMoreButton}>
-              <AppText style={styles.viewMoreText}>View More</AppText>
+              <AppText variant="captionLg" style={styles.viewMoreText}>View More</AppText>
               <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -300,10 +300,10 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="trophy-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Achievements</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Achievements</AppText>
             <View style={styles.menuRight}>
               <View style={styles.menuBadge}>
-                <AppText style={styles.menuBadgeText}>12</AppText>
+                <AppText variant="captionSm" style={styles.menuBadgeText}>12</AppText>
               </View>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -314,7 +314,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="stats-chart-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Statistics</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Statistics</AppText>
             <View style={styles.menuRight}>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -325,15 +325,15 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="people-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Crew</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Crew</AppText>
             <View style={styles.menuRight}>
               {pendingCrewCount > 0 && (
                 <View style={styles.menuBadgePending}>
-                  <AppText style={styles.menuBadgeText}>{pendingCrewCount}</AppText>
+                  <AppText variant="captionSm" style={styles.menuBadgeText}>{pendingCrewCount}</AppText>
                 </View>
               )}
               <View style={styles.menuBadge}>
-                <AppText style={styles.menuBadgeText}>{crewCount}</AppText>
+                <AppText variant="captionSm" style={styles.menuBadgeText}>{crewCount}</AppText>
               </View>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -344,7 +344,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="wallet-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Wallet</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Wallet</AppText>
             <View style={styles.menuRight}>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -355,7 +355,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="notifications-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Notifications</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Notifications</AppText>
             <View style={styles.menuRight}>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -366,7 +366,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
             <View style={styles.menuIconContainer}>
               <Ionicons name="help-circle-outline" size={22} color={colors.text} />
             </View>
-            <AppText style={styles.menuItemText}>Help & Support</AppText>
+            <AppText variant="body1" style={styles.menuItemText}>Help & Support</AppText>
             <View style={styles.menuRight}>
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </View>
@@ -381,7 +381,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
                 color={colors.text}
               />
             </View>
-            <AppText style={styles.menuItemText}>
+            <AppText variant="body1" style={styles.menuItemText}>
               {mode === 'dark' ? 'Dark Mode' : 'Light Mode'}
             </AppText>
             <View style={styles.menuRight}>
@@ -398,7 +398,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={20} color={colors.primary} />
-          <AppText style={styles.logoutText}>Log Out</AppText>
+          <AppText variant="buttonMd" style={styles.logoutText}>Log Out</AppText>
         </TouchableOpacity>
       </ScrollView>
     </Screen>

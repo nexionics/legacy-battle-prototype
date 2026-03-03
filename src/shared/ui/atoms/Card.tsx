@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing, radii } from '../../theme';
+import { colors, spacing, radii } from '@/shared/theme';
 
 type CardProps = {
   children: React.ReactNode;

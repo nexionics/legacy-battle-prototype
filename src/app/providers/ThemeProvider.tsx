@@ -1,10 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getThemeColors, type ThemeColors, type ThemeMode } from '@/shared/theme';
+import {
+  theme as staticTheme,
+  getThemeColors,
+  type Theme,
+  type ThemeColors,
+  type ThemeMode,
+} from '@/shared/theme';
 
 type ThemeContextValue = {
   mode: ThemeMode;
   colors: ThemeColors;
+  toggleTheme: () => void;
+};
+
+/** Full theme: static tokens + mode-aware colors + mode and toggle. Use this hook for theme in components. */
+export type AppTheme = Omit<Theme, 'colors'> & {
+  colors: ThemeColors;
+  mode: ThemeMode;
   toggleTheme: () => void;
 };
 
@@ -42,6 +55,17 @@ export const useAppTheme = () => {
     throw new Error('useAppTheme must be used within ThemeProvider');
   }
   return ctx;
+};
+
+/** Single source for theme in components: static tokens + mode-aware colors + mode and toggle. */
+export const useTheme = (): AppTheme => {
+  const { mode, colors, toggleTheme } = useAppTheme();
+  return {
+    ...staticTheme,
+    colors,
+    mode,
+    toggleTheme,
+  };
 };
 
 export const useThemeColors = () => useAppTheme().colors;

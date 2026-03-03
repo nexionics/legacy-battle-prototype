@@ -1,58 +1,38 @@
-import { colors, fontSizes, lineHeights, FontFamily } from '@/shared/theme';
-import { Text, TextStyle, TextProps } from 'react-native';
+import type { TextProps } from 'react-native';
+import { Text } from 'react-native';
+import {
+  colors,
+  typography,
+  type TypographyVariant,
+} from '@/shared/theme';
 
-type Variant = 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'label';
-
-type AppTextProps = TextProps & {
-  variant?: Variant;
+export interface AppTextProps extends Omit<TextProps, 'style'> {
+  variant?: TypographyVariant;
+  /** Text color (e.g. colors.text, colors.textMuted). Defaults to colors.text. */
   color?: string;
-};
+  style?: TextProps['style'];
+}
 
-const variantStyles: Record<Variant, TextStyle> = {
-  h1: {
-    fontFamily: FontFamily.montserratBold,
-    fontSize: fontSizes.xxl,
-    lineHeight: lineHeights.xxl,
-  },
-  h2: {
-    fontFamily: FontFamily.montserratBold,
-    fontSize: fontSizes.xl,
-    lineHeight: lineHeights.xl,
-  },
-  h3: {
-    fontFamily: FontFamily.montserratSemiBold,
-    fontSize: fontSizes.lg,
-    lineHeight: lineHeights.lg,
-  },
-  body: {
-    fontFamily: FontFamily.montserratRegular,
-    fontSize: fontSizes.md,
-    lineHeight: lineHeights.md,
-  },
-  caption: {
-    fontFamily: FontFamily.montserratRegular,
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
-  },
-  label: {
-    fontFamily: FontFamily.montserratSemiBold,
-    fontSize: fontSizes.sm,
-    lineHeight: lineHeights.sm,
-  },
-};
+const DEFAULT_VARIANT: TypographyVariant = 'body1';
 
 export function AppText({
-  variant = 'body',
+  variant = DEFAULT_VARIANT,
   color,
   style,
   allowFontScaling = true,
   ...rest
 }: AppTextProps) {
+  const tokenStyle = typography[variant];
+
   return (
     <Text
       accessibilityRole="text"
       allowFontScaling={allowFontScaling}
-      style={[{ color: color ?? colors.text }, variantStyles[variant], style]}
+      style={[
+        { color: color ?? colors.text },
+        tokenStyle,
+        style,
+      ]}
       {...rest}
     />
   );

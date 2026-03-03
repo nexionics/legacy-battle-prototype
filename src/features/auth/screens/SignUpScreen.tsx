@@ -84,14 +84,14 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           <AppText variant="h2" style={styles.title}>
             Welcome, Legend-In-The-Making!
           </AppText>
-          <AppText variant="body" color={colors.textSecondary} style={styles.subtitle}>
+          <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
             Create An Account To Start Battling
           </AppText>
         </View>
 
         <View style={styles.form}>
           <View style={styles.inputContainer}>
-            <AppText variant="caption" color={colors.textSecondary} style={styles.inputLabel}>
+            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
               Email Address
             </AppText>
             <View style={styles.inputWrapper}>
@@ -109,7 +109,7 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           </View>
 
           <View style={styles.inputContainer}>
-            <AppText variant="caption" color={colors.textSecondary} style={styles.inputLabel}>
+            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
               Enter Password
             </AppText>
             <View style={styles.inputWrapper}>
@@ -133,7 +133,7 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           </View>
 
           <View style={styles.inputContainer}>
-            <AppText variant="caption" color={colors.textSecondary} style={styles.inputLabel}>
+            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
               Confirm Password
             </AppText>
             <View style={styles.inputWrapper}>
@@ -156,13 +156,13 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
             </View>
           </View>
 
-          <AppText variant="caption" color={colors.textSecondary} style={styles.termsText}>
+          <AppText variant="captionSm" color={colors.textSecondary} style={styles.termsText}>
             By Continuing You Agree To Our{' '}
-            <AppText variant="caption" color={colors.primary} style={styles.termsLink}>
+            <AppText variant="captionSm" color={colors.primary} style={styles.termsLink}>
               Terms
             </AppText>{' '}
             And{' '}
-            <AppText variant="caption" color={colors.primary} style={styles.termsLink}>
+            <AppText variant="captionSm" color={colors.primary} style={styles.termsLink}>
               Conditions
             </AppText>
           </AppText>
@@ -176,7 +176,7 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
               <ActivityIndicator color={colors.white} />
             ) : (
               <>
-                <AppText variant="body" color={colors.white} style={styles.signUpButtonText}>
+                <AppText variant="body1" color={colors.white} style={styles.signUpButtonText}>
                   Sign Up
                 </AppText>
                 <Ionicons name="arrow-forward" size={20} color={colors.white} />
@@ -186,7 +186,7 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
 
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
-            <AppText variant="caption" color={colors.textSecondary} style={styles.dividerText}>
+            <AppText variant="captionSm" color={colors.textSecondary} style={styles.dividerText}>
               Or
             </AppText>
             <View style={styles.dividerLine} />
@@ -200,17 +200,17 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
               source={{ uri: 'https://www.google.com/favicon.ico' }}
               style={styles.googleIcon}
             />
-            <AppText variant="body" style={styles.googleButtonText}>
+            <AppText variant="body1" style={styles.googleButtonText}>
               Continue With Google
             </AppText>
           </TouchableOpacity>
 
           <View style={styles.loginContainer}>
-            <AppText variant="body" color={colors.textSecondary} style={styles.loginText}>
+            <AppText variant="body1" color={colors.textSecondary} style={styles.loginText}>
               Already have an account?{' '}
             </AppText>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AppText variant="body" color={colors.text} style={styles.loginLink}>
+              <AppText variant="body1" color={colors.text} style={styles.loginLink}>
                 Log in
               </AppText>
             </TouchableOpacity>

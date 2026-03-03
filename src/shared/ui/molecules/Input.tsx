@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
-import { colors, spacing, radii, fontSizes } from '../../theme';
+import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText } from '../atoms';
 
 type InputProps = TextInputProps & {
@@ -12,7 +12,7 @@ export function Input({ label, error, style, ...rest }: InputProps) {
   return (
     <View style={styles.container}>
       {label ? (
-        <AppText variant="caption" color={colors.textSecondary}>
+        <AppText variant="label" color={colors.textSecondary}>
           {label}
         </AppText>
       ) : null}
@@ -22,7 +22,7 @@ export function Input({ label, error, style, ...rest }: InputProps) {
         {...rest}
       />
       {error ? (
-        <AppText variant="caption" color={colors.error}>
+        <AppText variant="error" color={colors.error}>
           {error}
         </AppText>
       ) : null}

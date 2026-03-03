@@ -1,4 +1,14 @@
-export { spacing, radii, fontSizes, lineHeights, shadows, zIndex } from './tokens';
+export {
+  spacing,
+  radii,
+  fontSizes,
+  lineHeights,
+  shadows,
+  zIndex,
+  typography,
+  type TypographyVariant,
+  type TypographyStyle,
+} from './tokens';
 export {
   theme,
   colors,
@@ -17,7 +27,9 @@ export {
   Sizes,
 } from './theme';
 export type { Theme } from './theme';
-export { useTheme } from './useTheme';
+
+/** Single source for theme in components: use useTheme() from @/app/providers. */
+
 export {
   DARK_COLORS,
   LIGHT_COLORS,

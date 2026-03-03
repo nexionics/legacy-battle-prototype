@@ -1,6 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import { colors } from '@/shared/theme';
 
 type SplashVideoProps = {
   onFinish: () => void;
@@ -37,7 +38,7 @@ export const SplashVideo: React.FC<SplashVideoProps> = ({ onFinish }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: colors.background,
   },
   video: {
     flex: 1,

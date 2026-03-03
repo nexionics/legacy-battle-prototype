@@ -5,21 +5,26 @@ import {
   moderateScale,
 } from 'react-native-size-matters';
 import { getThemeColors } from './colors';
-import { spacing, radii, fontSizes, lineHeights, shadows, zIndex } from './tokens';
+import { spacing, radii, fontSizes, lineHeights, shadows, zIndex, typography } from './tokens';
 
-/** Default (dark) palette. For theme-aware colors (auto dark/light), use useThemeColors() or useAppTheme().colors. */
+/** Default (dark) palette. For theme-aware colors (auto dark/light), use useTheme() from @/app/providers. */
 export const colors = getThemeColors('dark');
 
 /** Alias for consumers. Same as colors. */
 export const Colors = colors;
 
-/** Default (dark) theme. For theme-aware colors in components, use useAppTheme().colors or useThemeColors(). */
+/**
+ * Static theme bundle (layout, typography, shadows, etc.).
+ * Prefer typography for text styling (e.g. AppText variant); fontSizes/lineHeights are for legacy or non-text use (e.g. TextInput).
+ * For mode-aware colors in components, use useTheme() from @/app/providers.
+ */
 export const theme = {
   colors,
   spacing,
   radii,
   fontSizes,
   lineHeights,
+  typography,
   shadows,
   zIndex,
 } as const;
@@ -57,12 +62,12 @@ export const FontFamily = {
   montserratMedium: 'Montserrat_500Medium',
   montserratSemiBold: 'Montserrat_600SemiBold',
   montserratBold: 'Montserrat_700Bold',
-  geistThin: 'Geist_100Thin',
-  geistLight: 'Geist_300Light',
-  geistRegular: 'Geist_400Regular',
-  geistMedium: 'Geist_500Medium',
-  geistSemiBold: 'Geist_600SemiBold',
-  geistBold: 'Geist_700Bold',
+  robotoThin: 'Roboto_100Thin',
+  robotoLight: 'Roboto_300Light',
+  robotoRegular: 'Roboto_400Regular',
+  robotoMedium: 'Roboto_500Medium',
+  robotoSemiBold: 'Roboto_500Medium',
+  robotoBold: 'Roboto_700Bold',
 } as const;
 
 export const Sizes = {

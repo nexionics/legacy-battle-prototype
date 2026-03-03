@@ -1,6 +1,119 @@
-import { moderateScale } from 'react-native-size-matters';
+import { moderateScale, verticalScale } from 'react-native-size-matters';
 
 const scale = (n: number, factor = 0.5) => moderateScale(n, factor);
+
+/* --------------- Typography (design token scale) --------------- */
+
+export type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'body1'
+  | 'body2'
+  | 'buttonLg'
+  | 'buttonMd'
+  | 'label'
+  | 'inputValue'
+  | 'helper'
+  | 'error'
+  | 'captionLg'
+  | 'captionSm';
+
+export interface TypographyStyle {
+  fontSize: number;
+  lineHeight: number;
+  fontFamily: string;
+}
+
+const ms = (n: number, factor = 0.5) => moderateScale(n, factor);
+const vh = (n: number) => verticalScale(n);
+
+/** Headings → Montserrat; Body/UI → Roboto. All sizes/lineHeights scaled. */
+export const typography: Record<TypographyVariant, TypographyStyle> = {
+  h1: {
+    fontSize: ms(32, 0.4),
+    lineHeight: vh(45),
+    fontFamily: 'Montserrat_700Bold',
+  },
+  h2: {
+    fontSize: ms(24, 0.4),
+    lineHeight: vh(34),
+    fontFamily: 'Montserrat_600SemiBold',
+  },
+  h3: {
+    fontSize: ms(20, 0.4),
+    lineHeight: vh(28),
+    fontFamily: 'Montserrat_500Medium',
+  },
+  h4: {
+    fontSize: ms(18),
+    lineHeight: vh(25),
+    fontFamily: 'Montserrat_500Medium',
+  },
+  h5: {
+    fontSize: ms(16, 0.7),
+    lineHeight: vh(22),
+    fontFamily: 'Montserrat_500Medium',
+  },
+  h6: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Montserrat_500Medium',
+  },
+  body1: {
+    fontSize: ms(16, 0.7),
+    lineHeight: vh(24),
+    fontFamily: 'Roboto_400Regular',
+  },
+  body2: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Roboto_400Regular',
+  },
+  buttonLg: {
+    fontSize: ms(16, 0.7),
+    lineHeight: vh(24),
+    fontFamily: 'Roboto_700Bold',
+  },
+  buttonMd: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Roboto_700Bold',
+  },
+  label: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Roboto_500Medium',
+  },
+  inputValue: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Roboto_700Bold',
+  },
+  helper: {
+    fontSize: ms(12, 0.5),
+    lineHeight: vh(16),
+    fontFamily: 'Roboto_400Regular',
+  },
+  error: {
+    fontSize: ms(12, 0.5),
+    lineHeight: vh(16),
+    fontFamily: 'Roboto_400Regular',
+  },
+  captionLg: {
+    fontSize: ms(14, 0.5),
+    lineHeight: vh(20),
+    fontFamily: 'Roboto_500Medium',
+  },
+  captionSm: {
+    fontSize: ms(12, 0.5),
+    lineHeight: vh(16),
+    fontFamily: 'Roboto_400Regular',
+  },
+};
 
 export const spacing = {
   0: 0,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { colors, spacing, radii } from '../../theme';
+import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms';
 
 type ErrorStateProps = {
@@ -15,10 +15,10 @@ export function ErrorState({ title = 'Something went wrong', message, onRetry }:
       <AppText variant="h3" style={styles.title}>
         {title}
       </AppText>
-      {message ? <AppText style={styles.message}>{message}</AppText> : null}
+      {message ? <AppText variant="body2" style={styles.message}>{message}</AppText> : null}
       {onRetry ? (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-          <AppText style={styles.retryText}>Try Again</AppText>
+          <AppText variant="buttonMd" color={colors.white} style={styles.retryText}>Try Again</AppText>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -47,8 +47,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[5],
     borderRadius: radii.md,
   },
-  retryText: {
-    color: colors.white,
-    fontWeight: '600',
-  },
+  retryText: {},
 });

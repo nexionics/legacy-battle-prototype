@@ -95,7 +95,7 @@ export const Toast: React.FC<ToastProps> = ({ type, message, visible, onClose })
           <AppText variant="label" color={colors.text}>
             {config.label}
           </AppText>
-          <AppText variant="caption" color={colors.textSecondary}>
+          <AppText variant="body2" color={colors.textSecondary}>
             {message}
           </AppText>
         </View>

@@ -9,13 +9,12 @@ import {
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
 import {
-  Geist_100Thin,
-  Geist_300Light,
-  Geist_400Regular,
-  Geist_500Medium,
-  Geist_600SemiBold,
-  Geist_700Bold,
-} from '@expo-google-fonts/geist';
+  Roboto_100Thin,
+  Roboto_300Light,
+  Roboto_400Regular,
+  Roboto_500Medium,
+  Roboto_700Bold,
+} from '@expo-google-fonts/roboto';
 
 export type UseCachedResourcesResult = {
   isLoaded: boolean;
@@ -31,12 +30,11 @@ export const useCachedResources = (): UseCachedResourcesResult => {
     Montserrat_500Medium,
     Montserrat_600SemiBold,
     Montserrat_700Bold,
-    Geist_100Thin,
-    Geist_300Light,
-    Geist_400Regular,
-    Geist_500Medium,
-    Geist_600SemiBold,
-    Geist_700Bold,
+    Roboto_100Thin,
+    Roboto_300Light,
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
   });
 
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);

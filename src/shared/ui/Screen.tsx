@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StatusBar, StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../theme';
+import { colors } from '@/shared/theme';
 import { screenPadding } from '../lib/layout';
 
 type ScreenProps = {

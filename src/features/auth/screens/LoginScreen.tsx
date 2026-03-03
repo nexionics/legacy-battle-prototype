@@ -48,7 +48,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       <View style={styles.backgroundPattern}>
         {[...Array(20)].map((_, i) => (
           <View key={i} style={styles.patternItem}>
-            <AppText style={styles.patternText}>LB</AppText>
+            <AppText variant="body1" style={styles.patternText}>LB</AppText>
           </View>
         ))}
       </View>
@@ -69,7 +69,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
               Battle
             </AppText>
           </AppText>
-          <AppText variant="body" color={colors.textSecondary} style={styles.subtitle}>
+          <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
             Create Battle And Win Challenges
           </AppText>
         </View>
@@ -82,7 +82,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                 onPress={() => handleSocialLogin('Apple')}
               >
                 <Ionicons name="logo-apple" size={20} color={colors.text} />
-                <AppText variant="body" style={styles.socialButtonText}>
+                <AppText variant="body1" style={styles.socialButtonText}>
                   Continue With Apple
                 </AppText>
               </TouchableOpacity>
@@ -92,7 +92,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                 onPress={() => handleSocialLogin('Facebook')}
               >
                 <FontAwesome name="facebook" size={20} color="#1877F2" />
-                <AppText variant="body" style={styles.socialButtonText}>
+                <AppText variant="body1" style={styles.socialButtonText}>
                   Continue With Facebook
                 </AppText>
               </TouchableOpacity>
@@ -105,14 +105,14 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                   source={{ uri: 'https://www.google.com/favicon.ico' }}
                   style={styles.googleIcon}
                 />
-                <AppText variant="body" style={styles.socialButtonText}>
+                <AppText variant="body1" style={styles.socialButtonText}>
                   Continue With Google
                 </AppText>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.socialButton} onPress={() => setShowEmailLogin(true)}>
                 <Ionicons name="mail-outline" size={20} color={colors.text} />
-                <AppText variant="body" style={styles.socialButtonText}>
+                <AppText variant="body1" style={styles.socialButtonText}>
                   Continue With Email
                 </AppText>
               </TouchableOpacity>
@@ -121,7 +121,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                 style={styles.createAccountButton}
                 onPress={() => navigation.navigate('SignUp')}
               >
-                <AppText variant="body" color={colors.white} style={styles.createAccountText}>
+                <AppText variant="body1" color={colors.white} style={styles.createAccountText}>
                   Create Account
                 </AppText>
               </TouchableOpacity>
@@ -167,7 +167,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                 {loading ? (
                   <ActivityIndicator color={colors.white} />
                 ) : (
-                  <AppText variant="body" color={colors.white} style={styles.createAccountText}>
+                  <AppText variant="body1" color={colors.white} style={styles.createAccountText}>
                     Log In
                   </AppText>
                 )}
@@ -181,7 +181,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                   setPassword('');
                 }}
               >
-                <AppText variant="body" color={colors.textSecondary}>
+                <AppText variant="body1" color={colors.textSecondary}>
                   Back to login options
                 </AppText>
               </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
                 style={styles.createAccountLink}
                 onPress={() => navigation.navigate('SignUp')}
               >
-                <AppText variant="body" color={colors.textSecondary}>
+                <AppText variant="body1" color={colors.textSecondary}>
                   Don't have an account?{' '}
                   <AppText variant="label" color={colors.text}>
                     Sign Up

@@ -1,11 +1,5 @@
 import { supabase } from '@/shared/lib/supabaseClient';
-import type {
-  AuthUser,
-  UserData,
-  SessionSnapshot,
-  SignUpParams,
-  SignInParams,
-} from '@/shared/types';
+import type { AuthUser, SessionSnapshot, SignUpParams, SignInParams } from '@/shared/types';
 
 export type { SignUpParams, SignInParams };
 
@@ -40,15 +34,12 @@ export async function getSessionWithToken(): Promise<SessionSnapshot> {
 }
 
 export function subscribeToAuthChanges(
-  onSession: (user: AuthUser | null, accessToken: string | null) => void
+  onSession: (user: AuthUser | null, accessToken: string | null) => void,
 ): () => void {
   const {
     data: { subscription },
   } = supabase.auth.onAuthStateChange((_event, session) => {
-    onSession(
-      mapSessionUser(session?.user ?? null),
-      session?.access_token ?? null
-    );
+    onSession(mapSessionUser(session?.user ?? null), session?.access_token ?? null);
   });
   return () => subscription.unsubscribe();
 }

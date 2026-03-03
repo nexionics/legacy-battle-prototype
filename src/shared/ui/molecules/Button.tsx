@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { TouchableOpacity, ActivityIndicator, StyleSheet, ViewStyle, Insets } from 'react-native';
-import { colors, spacing, radii } from '../../theme';
+import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
@@ -50,7 +50,7 @@ export function Button({
         <ActivityIndicator color={variant === 'ghost' ? colors.primary : colors.white} />
       ) : typeof children === 'string' ? (
         <AppText
-          variant="label"
+          variant="buttonMd"
           color={variant === 'ghost' ? colors.primary : colors.white}
           style={styles.text}
         >
@@ -75,9 +75,7 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.7,
   },
-  text: {
-    fontWeight: 'bold',
-  },
+  text: {},
 });
 
 const variantStyles: Record<Variant, ViewStyle> = {

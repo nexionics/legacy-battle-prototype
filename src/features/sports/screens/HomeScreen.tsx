@@ -33,14 +33,14 @@ const UpcomingGameCard = ({ event, onJoin }: { event: SportsEvent; onJoin: () =>
   <View style={styles.battleCard}>
     <View style={styles.battleCardLeft}>
       <View style={styles.battleIcon}>
-        <AppText style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
+        <AppText variant="body2" style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
       </View>
       <View style={styles.battleInfo}>
-        <AppText style={styles.battleTitle} numberOfLines={1}>
+        <AppText variant="h6" style={styles.battleTitle} numberOfLines={1}>
           {event.strHomeTeam.split(' ').pop()} vs {event.strAwayTeam.split(' ').pop()}
         </AppText>
-        <AppText style={styles.battleSubtitle}>{event.strLeague}</AppText>
-        <AppText style={styles.battleTime}>{formatEventTime(event)}</AppText>
+        <AppText variant="body2" style={styles.battleSubtitle}>{event.strLeague}</AppText>
+        <AppText variant="body2" style={styles.battleTime}>{formatEventTime(event)}</AppText>
       </View>
     </View>
     <View style={styles.battleCardRight}>
@@ -53,7 +53,7 @@ const UpcomingGameCard = ({ event, onJoin }: { event: SportsEvent; onJoin: () =>
         )}
       </View>
       <TouchableOpacity style={styles.joinButton} onPress={onJoin}>
-        <AppText style={styles.joinButtonText}>Battle</AppText>
+        <AppText variant="buttonMd" style={styles.joinButtonText}>Battle</AppText>
       </TouchableOpacity>
     </View>
   </View>
@@ -64,17 +64,17 @@ const RecentResultCard = ({ event }: { event: SportsEvent }) => (
     <View style={styles.myBattleHeader}>
       <View style={styles.myBattleLeft}>
         <View style={styles.battleIcon}>
-          <AppText style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
+          <AppText variant="body2" style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
         </View>
         <View style={styles.battleInfo}>
-          <AppText style={styles.battleTitle} numberOfLines={1}>
+          <AppText variant="h6" style={styles.battleTitle} numberOfLines={1}>
             {event.strHomeTeam.split(' ').pop()} vs {event.strAwayTeam.split(' ').pop()}
           </AppText>
           <AppText style={styles.battleSubtitle}>{event.strLeague}</AppText>
         </View>
       </View>
       <View style={[styles.statusBadge, styles.statusCompleted]}>
-        <AppText style={styles.statusText}>Final</AppText>
+        <AppText variant="captionSm" style={styles.statusText}>Final</AppText>
       </View>
     </View>
     <View style={styles.myBattleDetails}>
@@ -82,7 +82,7 @@ const RecentResultCard = ({ event }: { event: SportsEvent }) => (
         {event.strHomeTeamBadge && (
           <Image source={{ uri: event.strHomeTeamBadge }} style={styles.smallBadge} />
         )}
-        <AppText style={styles.scoreText}>
+        <AppText variant="h5" style={styles.scoreText}>
           {event.intHomeScore || '0'} - {event.intAwayScore || '0'}
         </AppText>
         {event.strAwayTeamBadge && (
@@ -91,17 +91,17 @@ const RecentResultCard = ({ event }: { event: SportsEvent }) => (
       </View>
       <View style={styles.timeInfo}>
         <Ionicons name="location-outline" size={14} color={colors.textSecondary} />
-        <AppText style={styles.timeText} numberOfLines={1}>
-          {event.strVenue || 'TBD'}
-        </AppText>
+          <AppText variant="body2" style={styles.timeText} numberOfLines={1}>
+            {event.strVenue || 'TBD'}
+          </AppText>
       </View>
     </View>
     <View style={styles.myBattleFooter}>
       <View style={styles.statDuelBadge}>
-        <AppText style={styles.statDuelText}>{event.strSport}</AppText>
+        <AppText variant="captionLg" style={styles.statDuelText}>{event.strSport}</AppText>
       </View>
       <TouchableOpacity style={styles.viewButton}>
-        <AppText style={styles.viewButtonText}>View</AppText>
+        <AppText variant="buttonMd" style={styles.viewButtonText}>View</AppText>
       </TouchableOpacity>
     </View>
   </View>
@@ -168,12 +168,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           <View style={styles.headerLeft}>
             <View style={styles.avatarContainer}>
               <View style={styles.avatar}>
-                <AppText style={styles.avatarText}>LB</AppText>
+                <AppText variant="body1" style={styles.avatarText}>LB</AppText>
               </View>
             </View>
             <View style={styles.welcomeContainer}>
-              <AppText style={styles.welcomeText}>Welcome Back</AppText>
-              <AppText style={styles.usernameText}>Champion</AppText>
+              <AppText variant="captionLg" style={styles.welcomeText}>Welcome Back</AppText>
+              <AppText variant="h4" style={styles.usernameText}>Champion</AppText>
             </View>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
@@ -186,16 +186,16 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <View style={styles.statsCard}>
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <AppText style={styles.statLabel}>Total XP</AppText>
-              <AppText style={styles.statValue}>1,247 XP</AppText>
+              <AppText variant="label" style={styles.statLabel}>Total XP</AppText>
+              <AppText variant="h4" style={styles.statValue}>1,247 XP</AppText>
             </View>
             <View style={styles.statItem}>
-              <AppText style={styles.statLabel}>Battle Coins</AppText>
-              <AppText style={styles.statValue}>2,000 BC</AppText>
+              <AppText variant="label" style={styles.statLabel}>Battle Coins</AppText>
+              <AppText variant="h4" style={styles.statValue}>2,000 BC</AppText>
             </View>
           </View>
           <TouchableOpacity style={styles.inviteBanner}>
-            <AppText style={styles.inviteText}>Live sports data from TheSportsDB</AppText>
+            <AppText variant="captionSm" style={styles.inviteText}>Live sports data from TheSportsDB</AppText>
             <Ionicons name="arrow-forward" size={16} color={colors.white} />
           </TouchableOpacity>
         </View>
@@ -203,12 +203,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* Quick Picks */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>Quick Picks</AppText>
+            <AppText variant="h3" style={styles.sectionTitle}>Quick Picks</AppText>
             <TouchableOpacity
               style={styles.seeAllButton}
               onPress={() => navigation.navigate('Battles')}
             >
-              <AppText style={styles.seeAllText}>View All</AppText>
+              <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
               <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -225,19 +225,19 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                       <Ionicons name="flash" size={20} color={colors.primary} />
                     </View>
                     <View style={[styles.statusBadge, styles.statusOpen]}>
-                      <AppText style={styles.statusText}>Open</AppText>
+                      <AppText variant="captionSm" style={styles.statusText}>Open</AppText>
                     </View>
                   </View>
-                  <AppText style={styles.quickPickTitle} numberOfLines={2}>
+                  <AppText variant="h6" style={styles.quickPickTitle} numberOfLines={2}>
                     {battle.title}
                   </AppText>
                   <View style={styles.quickPickFooter}>
-                    <AppText style={styles.quickPickStake}>{battle.stake} BC</AppText>
+                    <AppText variant="label" style={styles.quickPickStake}>{battle.stake} BC</AppText>
                     <TouchableOpacity
                       style={styles.quickPickJoin}
                       onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
                     >
-                      <AppText style={styles.quickPickJoinText}>Join</AppText>
+                      <AppText variant="buttonMd" style={styles.quickPickJoinText}>Join</AppText>
                     </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
@@ -251,12 +251,12 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* My Battles */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>My Battles</AppText>
+            <AppText variant="h3" style={styles.sectionTitle}>My Battles</AppText>
             <TouchableOpacity
               style={styles.seeAllButton}
               onPress={() => navigation.navigate('Battles')}
             >
-              <AppText style={styles.seeAllText}>View All</AppText>
+              <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
               <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -272,10 +272,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                     <Ionicons name="trophy" size={20} color={colors.primary} />
                   </View>
                   <View style={styles.myBattleItemInfo}>
-                    <AppText style={styles.myBattleItemTitle} numberOfLines={1}>
+                    <AppText variant="h6" style={styles.myBattleItemTitle} numberOfLines={1}>
                       {battle.title}
                     </AppText>
-                    <AppText style={styles.myBattleItemStake}>{battle.stake} BC</AppText>
+                    <AppText variant="captionLg" style={styles.myBattleItemStake}>{battle.stake} BC</AppText>
                   </View>
                 </View>
                 <View
@@ -284,7 +284,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                     battle.status === 'active' ? styles.statusActive : styles.statusCompleted,
                   ]}
                 >
-                  <AppText style={styles.statusText}>
+                  <AppText variant="captionSm" style={styles.statusText}>
                     {battle.status === 'active' ? 'Active' : 'Completed'}
                   </AppText>
                 </View>
@@ -301,17 +301,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         {/* Upcoming Games */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>Upcoming Games</AppText>
+            <AppText variant="h3" style={styles.sectionTitle}>Upcoming Games</AppText>
             <View style={styles.headerButtons}>
               <TouchableOpacity style={styles.seeAllButton} onPress={loadAllData}>
                 <Ionicons name="refresh-outline" size={14} color={colors.textSecondary} />
-                <AppText style={styles.seeAllText}>Refresh</AppText>
+                <AppText variant="captionLg" style={styles.seeAllText}>Refresh</AppText>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.seeAllButton}
                 onPress={() => navigation.navigate('AllUpcomingGames')}
               >
-                <AppText style={styles.seeAllText}>View All</AppText>
+                <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
                 <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
@@ -319,7 +319,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.primary} />
-              <AppText style={styles.loadingText}>Loading live sports data...</AppText>
+                <AppText variant="body2" style={styles.loadingText}>Loading live sports data...</AppText>
             </View>
           ) : upcomingGames.length > 0 ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -340,7 +340,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             </ScrollView>
           ) : (
             <View style={styles.emptyContainer}>
-              <AppText style={styles.emptyText}>No upcoming games found</AppText>
+              <AppText variant="body2" style={styles.emptyText}>No upcoming games found</AppText>
             </View>
           )}
         </View>
@@ -350,19 +350,19 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           style={styles.startBattleButton}
           onPress={() => navigation.navigate('BattleType')}
         >
-          <AppText style={styles.startBattleText}>Start Battle Now</AppText>
+          <AppText variant="buttonLg" style={styles.startBattleText}>Start Battle Now</AppText>
           <Ionicons name="flash" size={20} color={colors.white} />
         </TouchableOpacity>
 
         {/* Recent Results */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>Recent Results</AppText>
+            <AppText variant="h3" style={styles.sectionTitle}>Recent Results</AppText>
             <TouchableOpacity
               style={styles.seeAllButton}
               onPress={() => navigation.navigate('AllResults')}
             >
-              <AppText style={styles.seeAllText}>See All</AppText>
+              <AppText variant="captionLg" style={styles.seeAllText}>See All</AppText>
               <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -374,7 +374,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             recentResults.map((event) => <RecentResultCard key={event.idEvent} event={event} />)
           ) : (
             <View style={styles.emptyContainer}>
-              <AppText style={styles.emptyText}>No recent results</AppText>
+              <AppText variant="body2" style={styles.emptyText}>No recent results</AppText>
             </View>
           )}
         </View>
