@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useAuthStore } from '@/features/auth';
+import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 

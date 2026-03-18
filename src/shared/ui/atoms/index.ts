@@ -1,2 +1,6 @@
 export * from './AppText'
 export * from './Card'
+export * from './Avatar'
+export * from './StatusBadge'
+export * from './IconCircle'
+export * from './Divider'

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useAuthStore } from '@/features/auth';
-import * as authApi from '@/features/auth/api/auth';
+import { useAuthStore } from '@/features/auth/data/store/auth.store';
+import * as authApi from '@/features/auth/data/api/auth.api';
 import type { AuthUser } from '@/shared/types';
 
 function syncSessionToStore(

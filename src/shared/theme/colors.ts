@@ -6,6 +6,7 @@
 export type ThemeColors = {
   primary: string;
   primaryDark: string;
+  primaryTint: string;
   secondary: string;
   background: string;
   backgroundLight: string;
@@ -18,12 +19,18 @@ export type ThemeColors = {
   red: string;
   gray: string;
   success: string;
+  successTint: string;
   warning: string;
+  warningTint: string;
   error: string;
+  info: string;
+  infoTint: string;
+  gold: string;
   white: string;
   black: string;
   transparent: string;
   overlay: string;
+  overlayHeavy: string;
   inputBackground: string;
   inputBorder: string;
 };
@@ -31,6 +38,7 @@ export type ThemeColors = {
 export const DARK_COLORS: ThemeColors = {
   primary: '#E53935',
   primaryDark: '#C62828',
+  primaryTint: 'rgba(229, 57, 53, 0.1)',
   secondary: '#1B2B1B',
   background: '#121212',
   backgroundLight: '#1E1E1E',
@@ -43,12 +51,18 @@ export const DARK_COLORS: ThemeColors = {
   red: '#F44336',
   gray: '#666666',
   success: '#4CAF50',
+  successTint: 'rgba(76, 175, 80, 0.1)',
   warning: '#FFC107',
+  warningTint: 'rgba(245, 158, 11, 0.1)',
   error: '#F44336',
+  info: '#2196F3',
+  infoTint: 'rgba(33, 150, 243, 0.1)',
+  gold: '#FFD700',
   white: '#FFFFFF',
   black: '#000000',
   transparent: 'transparent',
   overlay: 'rgba(0, 0, 0, 0.5)',
+  overlayHeavy: 'rgba(0, 0, 0, 0.7)',
   inputBackground: '#2A2A2A',
   inputBorder: '#404040',
 };
@@ -56,6 +70,7 @@ export const DARK_COLORS: ThemeColors = {
 export const LIGHT_COLORS: ThemeColors = {
   primary: '#E53935',
   primaryDark: '#C62828',
+  primaryTint: 'rgba(229, 57, 53, 0.08)',
   secondary: '#1B2B1B',
   background: '#F5F5F5',
   backgroundLight: '#FFFFFF',
@@ -68,12 +83,18 @@ export const LIGHT_COLORS: ThemeColors = {
   red: '#F44336',
   gray: '#999999',
   success: '#4CAF50',
+  successTint: 'rgba(76, 175, 80, 0.08)',
   warning: '#FFC107',
+  warningTint: 'rgba(245, 158, 11, 0.08)',
   error: '#F44336',
+  info: '#2196F3',
+  infoTint: 'rgba(33, 150, 243, 0.08)',
+  gold: '#FFD700',
   white: '#FFFFFF',
   black: '#000000',
   transparent: 'transparent',
   overlay: 'rgba(0, 0, 0, 0.3)',
+  overlayHeavy: 'rgba(0, 0, 0, 0.6)',
   inputBackground: '#F0F0F0',
   inputBorder: '#D0D0D0',
 };

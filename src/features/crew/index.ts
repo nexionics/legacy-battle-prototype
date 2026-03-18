@@ -1,3 +1,3 @@
 export * from './api';
-export { default as FriendsScreen } from './screens/FriendsScreen';
-export { default as AddFriendScreen } from './screens/AddFriendScreen';
+export { default as FriendsScreen } from './ui/screens/FriendsScreen';
+export { default as AddFriendScreen } from './ui/screens/AddFriendScreen';

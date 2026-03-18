@@ -8,7 +8,11 @@ interface ToastContextProps {
 export const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [toast, setToast] = useState({
+  const [toast, setToast] = useState<{
+    visible: boolean;
+    type: 'success' | 'fail';
+    message: string;
+  }>({
     visible: false,
     type: 'success',
     message: '',
