@@ -1,14 +1,7 @@
-import { View, TextInput, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
-
-interface SearchInputProps {
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  onSubmit?: () => void;
-  style?: ViewStyle;
-}
+import type { SearchInputProps } from '@/shared/types';
 
 export function SearchInput({
   value,

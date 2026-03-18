@@ -1,35 +1,10 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
-
-interface StartBattleScreenProps {
-  navigation: any;
-}
-
-type SportType = 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'SKILLS';
-
-interface Sport {
-  id: SportType;
-  name: string;
-  icon: string;
-  color: string;
-}
-
-interface BattleCategory {
-  id: string;
-  name: string;
-  description: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  enabled: boolean;
-}
+import type { StartBattleScreenProps, Sport, BattleCategory } from '@/shared/types';
 
 const SPORTS: Sport[] = [
   { id: 'NFL', name: 'Football', icon: '🏈', color: '#013369' },
@@ -67,7 +42,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
   const selectedSport = useBattlesStore((s) => s.selectedSport);
   const setSelectedSport = useBattlesStore((s) => s.setSelectedSport);
 
-  const handleSportSelect = (sport: SportType) => {
+  const handleSportSelect = (sport: Sport['id']) => {
     setSelectedSport(sport);
   };
 
@@ -180,7 +155,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                     !category.enabled && styles.categoryIconDisabled,
                   ]}>
                     <Ionicons
-                      name={category.icon}
+                      name={category.icon as keyof typeof Ionicons.glyphMap}
                       size={28}
                       color={category.enabled ? colors.primary : colors.textSecondary}
                     />

@@ -3,10 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-
-interface WalletCardProps {
-  walletBalance: string;
-}
+import type { WalletCardProps } from '@/shared/types';
 
 export function WalletCard({ walletBalance }: WalletCardProps) {
   return (

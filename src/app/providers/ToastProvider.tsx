@@ -1,9 +1,6 @@
 import { Toast } from '@/shared/ui';
 import React, { createContext, useState, ReactNode } from 'react';
-
-interface ToastContextProps {
-  showToast: (type: 'success' | 'fail', message: string) => void;
-}
+import type { ToastContextProps } from '@/shared/types';
 
 export const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 

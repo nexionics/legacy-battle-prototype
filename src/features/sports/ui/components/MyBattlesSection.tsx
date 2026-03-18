@@ -3,13 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, EmptyState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { Battle } from '@/shared/types';
-
-type MyBattlesSectionProps = {
-  myBattles: Battle[];
-  onViewAll: () => void;
-  onBattlePress: (battleId: string) => void;
-};
+import type { MyBattlesSectionProps } from '@/shared/types';
 
 export const MyBattlesSection = ({ myBattles, onViewAll, onBattlePress }: MyBattlesSectionProps) => (
   <View style={styles.section}>

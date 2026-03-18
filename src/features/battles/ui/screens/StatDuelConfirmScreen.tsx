@@ -12,11 +12,7 @@ import { AppText, Screen, ScreenHeader, ProgressBar } from '@/shared/ui';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
 import { getBattleModeLabel } from '@/shared/utils';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-
-interface StatDuelConfirmScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { StatDuelConfirmScreenProps } from '@/shared/types';
 
 export default function StatDuelConfirmScreen({ navigation, route }: StatDuelConfirmScreenProps) {
   const {

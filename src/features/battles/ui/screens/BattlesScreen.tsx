@@ -18,13 +18,12 @@ import {
 import { getStatusColor, formatRelativeDate } from '@/shared/utils';
 import { useBattles } from '@/features/battles/ui/hooks';
 import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
+import type { TabType } from '@/shared/types';
 
 type BattlesScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'Battles'>,
   NativeStackScreenProps<AppStackParamList>
 >;
-
-type TabType = 'open' | 'active' | 'completed';
 
 const TABS = [
   { key: 'open', label: 'Open' },

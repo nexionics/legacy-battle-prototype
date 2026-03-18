@@ -1,12 +1,6 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors } from '@/shared/theme';
-
-interface IconCircleProps {
-  size?: number;
-  backgroundColor?: string;
-  children: React.ReactNode;
-  style?: ViewStyle;
-}
+import type { IconCircleProps } from '@/shared/types';
 
 export function IconCircle({
   size = 40,

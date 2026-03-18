@@ -2,12 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { BattleStats } from '@/shared/types';
-
-interface StatsGridProps {
-  battleStats: BattleStats;
-  walletBalance: string;
-}
+import type { StatsGridProps } from '@/shared/types';
 
 export function StatsGrid({ battleStats, walletBalance }: StatsGridProps) {
   return (

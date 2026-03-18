@@ -2,10 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
 import { colors } from '@/shared/theme';
-
-type SplashVideoProps = {
-  onFinish: () => void;
-};
+import type { SplashVideoProps } from '@/shared/types';
 
 export const SplashVideo: React.FC<SplashVideoProps> = ({ onFinish }) => {
   const videoRef = useRef<Video>(null);

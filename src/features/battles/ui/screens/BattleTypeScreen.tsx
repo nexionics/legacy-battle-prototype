@@ -4,24 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
-
-interface BattleTypeScreenProps {
-  navigation: any;
-}
-
-type BattleType = 'GAME_DUEL' | 'STAT_DUEL' | 'SKILL_BATTLE';
-
-interface BattleTypeOption {
-  id: BattleType;
-  name: string;
-  description: string;
-  icon: string;
-  iconColor: string;
-  badge: string;
-  badgeColor: string;
-  features: { icon: keyof typeof Ionicons.glyphMap; text: string }[];
-  enabled: boolean;
-}
+import type { BattleTypeScreenProps, BattleTypeOption } from '@/shared/types';
 
 const BATTLE_TYPES: BattleTypeOption[] = [
   {
@@ -162,7 +145,7 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
           <View style={styles.featuresList}>
             {type.features.map((feature, index) => (
               <View key={index} style={styles.featureItem}>
-                <Ionicons name={feature.icon} size={14} color={colors.primary} />
+                <Ionicons name={feature.icon as keyof typeof Ionicons.glyphMap} size={14} color={colors.primary} />
                 <AppText variant="body2" color={colors.textSecondary}>
                   {feature.text}
                 </AppText>

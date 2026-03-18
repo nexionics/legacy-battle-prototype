@@ -1,11 +1,7 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from './AppText';
-
-interface DividerProps {
-  label?: string;
-  style?: ViewStyle;
-}
+import type { DividerProps } from '@/shared/types';
 
 export function Divider({ label, style }: DividerProps) {
   if (!label) {

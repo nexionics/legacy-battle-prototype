@@ -86,3 +86,5 @@ export type ExploreBattle = Battle & { participant_count?: number };
 export type ExploreBattleRow = ExploreBattle & {
   battle_participants?: { count: number }[];
 };
+
+export type CrewMemberWithStatus = CrewMember & { requestStatus?: string };

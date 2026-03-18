@@ -1,13 +1,7 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
-
-interface ProgressBarProps {
-  /** Progress between 0 and 1 */
-  progress: number;
-  label?: string;
-  style?: ViewStyle;
-}
+import type { ProgressBarProps } from '@/shared/types';
 
 export function ProgressBar({ progress, label, style }: ProgressBarProps) {
   const clampedProgress = Math.min(1, Math.max(0, progress));

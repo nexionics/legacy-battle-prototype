@@ -4,12 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
 import { formatFullDate } from '@/shared/utils';
-import type { BattleParticipant } from '@/shared/types';
-
-interface ParticipantsListProps {
-  participants: BattleParticipant[];
-  currentUserId?: string;
-}
+import type { ParticipantsListProps } from '@/shared/types';
 
 export function ParticipantsList({ participants, currentUserId }: ParticipantsListProps) {
   return (

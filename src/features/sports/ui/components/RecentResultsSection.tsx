@@ -3,14 +3,8 @@ import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { SportsEvent } from '@/shared/types';
 import { RecentResultCard } from './RecentResultCard';
-
-type RecentResultsSectionProps = {
-  recentResults: SportsEvent[];
-  loading: boolean;
-  onViewAll: () => void;
-};
+import type { RecentResultsSectionProps } from '@/shared/types';
 
 export const RecentResultsSection = ({
   recentResults,

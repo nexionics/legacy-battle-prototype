@@ -11,11 +11,7 @@ import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { getInitials } from '@/shared/utils';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-
-interface StatDuelOpponentScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { StatDuelOpponentScreenProps } from '@/shared/types';
 
 const MOCK_OPPONENTS = [
   { id: '1', username: 'player1', display_name: 'Alex Johnson' },

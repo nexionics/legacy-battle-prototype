@@ -3,16 +3,8 @@ import { View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } fro
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { SportsEvent } from '@/shared/types';
 import { UpcomingGameCard } from './UpcomingGameCard';
-
-type UpcomingGamesSectionProps = {
-  upcomingGames: SportsEvent[];
-  loading: boolean;
-  onRefresh: () => void;
-  onViewAll: () => void;
-  onJoin: (event: SportsEvent) => void;
-};
+import type { UpcomingGamesSectionProps } from '@/shared/types';
 
 export const UpcomingGamesSection = ({
   upcomingGames,

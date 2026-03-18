@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-
-export type ConnectionStatus = 'idle' | 'ok' | 'error' | 'testing';
+import type { ConnectionStatus } from '@/shared/types';
 
 interface ProfileStore {
   displayName: string;

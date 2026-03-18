@@ -3,7 +3,8 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { supabase } from '@/shared/lib/supabaseClient';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useProfileStore, type ConnectionStatus } from '@/features/profile/data/store/profile.store';
+import { useProfileStore } from '@/features/profile/data/store/profile.store';
+import type { ConnectionStatus } from '@/shared/types';
 
 export default function DevDebugScreen({ navigation }: { navigation: any }) {
   const connectionStatus = useProfileStore((s) => s.connectionStatus);

@@ -3,15 +3,7 @@ import { View, TouchableOpacity, Switch, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, MenuRow } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-
-interface ProfileMenuProps {
-  crewCount: number;
-  pendingCrewCount: number;
-  themeMode: 'dark' | 'light';
-  onToggleTheme: () => void;
-  onCrewPress: () => void;
-  onLogout: () => void;
-}
+import type { ProfileMenuProps } from '@/shared/types';
 
 function Badge({ count, variant = 'default' }: { count: number; variant?: 'default' | 'pending' }) {
   return (

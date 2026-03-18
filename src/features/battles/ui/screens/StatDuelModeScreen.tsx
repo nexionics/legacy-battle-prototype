@@ -1,29 +1,10 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-
-interface StatDuelModeScreenProps {
-  navigation: any;
-  route: any;
-}
-
-type BattleMode = 'STANDARD' | 'FANTASY' | 'BOTH_PICKS';
-
-interface BattleModeOption {
-  id: BattleMode;
-  name: string;
-  description: string;
-  features: { color: string; text: string }[];
-  borderColor: string;
-}
+import type { StatDuelModeScreenProps, BattleModeOption, BattleMode } from '@/shared/types';
 
 const BATTLE_MODES: BattleModeOption[] = [
   {

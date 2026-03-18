@@ -1,3 +1,4 @@
+/** Re-export battle types from shared. Feature-specific types live in @/shared/types. */
 export type {
   Battle,
   BattleParticipant,
@@ -5,8 +6,8 @@ export type {
   BattleWithParticipants,
   ExploreBattle,
   ExploreBattleRow,
+  JoinBattleParams,
+  CreateBattleParams,
+  TabType,
+  ExploreTab,
 } from '@/shared/types';
-export type { JoinBattleParams, CreateBattleParams } from '@/shared/types';
-
-export type TabType = 'open' | 'active' | 'completed';
-export type ExploreTab = 'Trending' | 'Ending Soon' | 'New' | 'High Activity';

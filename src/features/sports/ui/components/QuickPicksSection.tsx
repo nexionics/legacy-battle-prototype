@@ -3,13 +3,7 @@ import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, EmptyState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { Battle } from '@/shared/types';
-
-type QuickPicksSectionProps = {
-  quickPicks: Battle[];
-  onViewAll: () => void;
-  onPickPress: (battleId: string) => void;
-};
+import type { QuickPicksSectionProps } from '@/shared/types';
 
 export const QuickPicksSection = ({ quickPicks, onViewAll, onPickPress }: QuickPicksSectionProps) => (
   <View style={styles.section}>

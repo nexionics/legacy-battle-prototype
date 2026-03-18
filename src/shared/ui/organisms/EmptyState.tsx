@@ -2,12 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms';
-
-type EmptyStateProps = {
-  title: string;
-  message?: string;
-  children?: React.ReactNode;
-};
+import type { EmptyStateProps } from '@/shared/types';
 
 export function EmptyState({ title, message, children }: EmptyStateProps) {
   return (

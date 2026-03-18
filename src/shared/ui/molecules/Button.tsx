@@ -1,19 +1,8 @@
 import React, { useRef, useCallback } from 'react';
-import { TouchableOpacity, ActivityIndicator, StyleSheet, ViewStyle, Insets } from 'react-native';
+import { TouchableOpacity, ActivityIndicator, StyleSheet, Insets, ViewStyle } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms';
-
-type Variant = 'primary' | 'secondary' | 'ghost';
-
-type ButtonProps = {
-  variant?: Variant;
-  loading?: boolean;
-  disabled?: boolean;
-  onPress: () => void;
-  children: React.ReactNode;
-  style?: ViewStyle;
-  hitSlop?: Insets | number;
-};
+import type { ButtonVariant, ButtonProps } from '@/shared/types';
 
 const DEFAULT_HIT_SLOP: Insets = { top: 8, bottom: 8, left: 8, right: 8 };
 
@@ -78,7 +67,7 @@ const styles = StyleSheet.create({
   text: {},
 });
 
-const variantStyles: Record<Variant, ViewStyle> = {
+const variantStyles: Record<ButtonVariant, ViewStyle> = {
   primary: {
     backgroundColor: colors.primary,
   },

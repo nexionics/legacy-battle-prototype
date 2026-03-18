@@ -2,10 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms';
-
-type LoadingStateProps = {
-  message?: string;
-};
+import type { LoadingStateProps } from '@/shared/types';
 
 export function LoadingState({ message = 'Loading...' }: LoadingStateProps) {
   return (

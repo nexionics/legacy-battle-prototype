@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { crewKeys } from '../keys';
 import { searchUsers, getRequestStatus } from '../api/crew.api';
-import type { CrewMember } from '@/shared/types';
-
-export type CrewMemberWithStatus = CrewMember & { requestStatus?: string };
+import type { CrewMemberWithStatus } from '@/shared/types';
 
 export function useSearchUsersQuery(query: string, userId: string | undefined) {
   return useQuery({

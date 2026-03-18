@@ -5,10 +5,7 @@ import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
 import { Screen, AppText, ScreenHeader } from '@/shared/ui';
 import { colors, spacing, radii, fontSizes, verticalScale, horizontalScale } from '@/shared/theme';
 import { IconCircle } from '@/shared/ui';
-
-interface OTPVerificationScreenProps {
-  navigation: { goBack: () => void; navigate: (screen: string) => void };
-}
+import type { OTPVerificationScreenProps } from '@/shared/types';
 
 export default function OTPVerificationScreen({ navigation }: OTPVerificationScreenProps) {
   const { otp, setOtpDigit } = useAuthFormStore();

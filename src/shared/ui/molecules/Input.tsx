@@ -1,12 +1,8 @@
 import React from 'react';
-import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText } from '../atoms';
-
-type InputProps = TextInputProps & {
-  label?: string;
-  error?: string;
-};
+import type { InputProps } from '@/shared/types';
 
 export function Input({ label, error, style, ...rest }: InputProps) {
   return (

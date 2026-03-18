@@ -3,12 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { SportsEvent } from '@/shared/types';
 import { getSportIcon } from '@/features/sports/data/api/sports.api';
-
-type RecentResultCardProps = {
-  event: SportsEvent;
-};
+import type { RecentResultCardProps } from '@/shared/types';
 
 export const RecentResultCard = ({ event }: RecentResultCardProps) => (
   <View style={styles.myBattleCard}>

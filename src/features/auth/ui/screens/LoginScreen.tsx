@@ -13,10 +13,7 @@ import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
 import { Screen, AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-
-interface LoginScreenProps {
-  navigation: any;
-}
+import type { LoginScreenProps } from '@/shared/types';
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
   const { signIn } = useAuth();

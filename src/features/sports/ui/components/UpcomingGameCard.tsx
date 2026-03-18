@@ -2,13 +2,8 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { SportsEvent } from '@/shared/types';
 import { formatEventTime, getSportIcon } from '@/features/sports/data/api/sports.api';
-
-type UpcomingGameCardProps = {
-  event: SportsEvent;
-  onJoin: () => void;
-};
+import type { UpcomingGameCardProps } from '@/shared/types';
 
 export const UpcomingGameCard = ({ event, onJoin }: UpcomingGameCardProps) => (
   <View style={styles.battleCard}>

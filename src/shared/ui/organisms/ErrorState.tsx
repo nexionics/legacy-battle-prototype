@@ -2,12 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms';
-
-type ErrorStateProps = {
-  title?: string;
-  message?: string;
-  onRetry?: () => void;
-};
+import type { ErrorStateProps } from '@/shared/types';
 
 export function ErrorState({ title = 'Something went wrong', message, onRetry }: ErrorStateProps) {
   return (

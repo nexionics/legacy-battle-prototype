@@ -1,20 +1,10 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-
-interface StatDuelDetailsScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { StatDuelDetailsScreenProps } from '@/shared/types';
 
 const SPORTS = [
   { id: 'NFL', name: 'NFL', icon: '🏈' },

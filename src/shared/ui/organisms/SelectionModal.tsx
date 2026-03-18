@@ -1,30 +1,10 @@
-import {
-  Modal,
-  View,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { Modal, View, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
+import type { SelectionOption, SelectionModalProps } from '@/shared/types';
 
-export interface SelectionOption<T extends string = string> {
-  key: T;
-  label: string;
-  subtitle?: string;
-}
-
-interface SelectionModalProps<T extends string = string> {
-  visible: boolean;
-  title: string;
-  options: SelectionOption<T>[];
-  selectedKey?: T;
-  onSelect: (key: T) => void;
-  onClose: () => void;
-  style?: ViewStyle;
-}
+export type { SelectionOption };
 
 export function SelectionModal<T extends string = string>({
   visible,

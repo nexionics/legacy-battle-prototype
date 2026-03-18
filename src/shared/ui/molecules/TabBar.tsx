@@ -1,19 +1,7 @@
-import { View, TouchableOpacity, StyleSheet, ViewStyle, ScrollView } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
-
-interface Tab {
-  key: string;
-  label: string;
-}
-
-interface TabBarProps {
-  tabs: Tab[];
-  activeTab: string;
-  onTabChange: (key: string) => void;
-  scrollable?: boolean;
-  style?: ViewStyle;
-}
+import type { TabBarProps } from '@/shared/types';
 
 export function TabBar({
   tabs,

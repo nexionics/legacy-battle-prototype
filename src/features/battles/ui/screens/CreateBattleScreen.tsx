@@ -14,18 +14,10 @@ import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { deriveTeamsFromTitle } from '@/shared/utils';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
-import { useBattlesStore, type OutcomeType } from '@/features/battles/data/store/battles.store';
+import { useBattlesStore } from '@/features/battles/data/store/battles.store';
+import type { OutcomeType } from '@/shared/types';
 import { useCreateBattle } from '@/features/battles/data/mutations/useCreateBattle';
-
-interface CreateBattleScreenProps {
-  navigation: any;
-  route: any;
-}
-
-interface DropdownOption {
-  label: string;
-  value: string;
-}
+import type { CreateBattleScreenProps, DropdownOption } from '@/shared/types';
 
 export default function CreateBattleScreen({ navigation, route }: CreateBattleScreenProps) {
   const { user } = useAuth();

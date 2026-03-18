@@ -2,12 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-import type { SportsEvent } from '@/shared/types';
-
-interface ScoreDisplayProps {
-  gameScore: SportsEvent;
-  isCompleted: boolean;
-}
+import type { ScoreDisplayProps } from '@/shared/types';
 
 export function ScoreDisplay({ gameScore, isCompleted }: ScoreDisplayProps) {
   return (

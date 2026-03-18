@@ -1,21 +1,13 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-  colors,
-  Sizes,
-  horizontalScale,
-  verticalScale,
-} from '@/shared/theme';
+import { colors, Sizes, horizontalScale, verticalScale } from '@/shared/theme';
 import { AppText } from '@/shared/ui/atoms/AppText';
-
-interface Props {
-  focused?: boolean;
-}
+import type { BattleNowCurvedLabelProps } from '@/shared/types';
 
 const radius = Sizes.xxxl;
 const yOffset = verticalScale(8);
 
-export function BattleNowCurvedLabel({ focused }: Props) {
+export function BattleNowCurvedLabel({ focused }: BattleNowCurvedLabelProps) {
   const text = 'BATTLE NOW';
   const startAngle = -50;
   const endAngle = 50;

@@ -12,12 +12,8 @@ import { AppText, Screen, ScreenHeader, ProgressBar, Avatar, SearchInput } from 
 import { SelectionModal, type SelectionOption } from '@/shared/ui';
 import { colors, spacing, radii, fontSizes, verticalScale, horizontalScale } from '@/shared/theme';
 import { getInitials } from '@/shared/utils';
-import { useStatDuelStore, type StatDuelPlayer, type StatDuelStatCategory } from '@/features/battles/data/store/statDuel.store';
-
-interface StatDuelChampionScreenProps {
-  navigation: any;
-  route: any;
-}
+import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
+import type { StatDuelChampionScreenProps, StatDuelPlayer, StatDuelStatCategory } from '@/shared/types';
 
 const MOCK_PLAYERS = [
   { id: '1', name: 'Patrick Mahomes', team: 'Kansas City Chiefs', position: 'Quarterback', positionCode: 'QB', sport: 'NFL' },

@@ -1,16 +1,8 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import { Avatar } from '../atoms/Avatar';
-
-interface UserRowProps {
-  initials: string;
-  name: string;
-  subtitle?: string;
-  avatarSize?: 'sm' | 'md' | 'lg';
-  rightSlot?: React.ReactNode;
-  style?: ViewStyle;
-}
+import type { UserRowProps } from '@/shared/types';
 
 export function UserRow({
   initials,

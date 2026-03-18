@@ -4,12 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, StatusBadge } from '@/shared/ui';
 import { getStatusColor, formatFullDate } from '@/shared/utils';
-import type { Battle } from '@/shared/types';
-
-interface BattleInfoCardProps {
-  battle: Battle;
-  isCreator: boolean;
-}
+import type { BattleInfoCardProps } from '@/shared/types';
 
 export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
   return (

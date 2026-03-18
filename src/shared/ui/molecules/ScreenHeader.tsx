@@ -1,15 +1,8 @@
-import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, verticalScale } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
-
-interface ScreenHeaderProps {
-  title?: string;
-  onBack?: () => void;
-  rightSlot?: React.ReactNode;
-  centerIcon?: React.ReactNode;
-  style?: ViewStyle;
-}
+import type { ScreenHeaderProps } from '@/shared/types';
 
 export function ScreenHeader({ title, onBack, rightSlot, centerIcon, style }: ScreenHeaderProps) {
   return (

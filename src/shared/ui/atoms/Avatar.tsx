@@ -1,9 +1,8 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors } from '@/shared/theme';
 import { AppText } from './AppText';
 import type { TypographyVariant } from '@/shared/theme';
-
-type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
+import type { AvatarSize, AvatarProps } from '@/shared/types';
 
 const SIZE_MAP: Record<AvatarSize, number> = {
   sm: 36,
@@ -18,15 +17,6 @@ const VARIANT_MAP: Record<AvatarSize, TypographyVariant> = {
   lg: 'h4',
   xl: 'h1',
 };
-
-interface AvatarProps {
-  initials: string;
-  size?: AvatarSize;
-  backgroundColor?: string;
-  borderColor?: string;
-  textColor?: string;
-  style?: ViewStyle;
-}
 
 export function Avatar({
   initials,

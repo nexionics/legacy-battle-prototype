@@ -3,13 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-import type { Battle } from '@/shared/types';
-
-interface WinnerCardProps {
-  battle: Battle;
-  winnerName: string;
-  pendingResolution: boolean;
-}
+import type { WinnerCardProps } from '@/shared/types';
 
 export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCardProps) {
   return (

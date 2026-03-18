@@ -1,16 +1,8 @@
-import { TouchableOpacity, View, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
-
-interface DropdownFieldProps {
-  label: string;
-  value?: string;
-  placeholder?: string;
-  onPress: () => void;
-  required?: boolean;
-  style?: ViewStyle;
-}
+import type { DropdownFieldProps } from '@/shared/types';
 
 export function DropdownField({
   label,

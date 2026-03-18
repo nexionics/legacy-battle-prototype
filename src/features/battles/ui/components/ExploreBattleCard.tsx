@@ -3,19 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-
-type ExploreBattleCardProps = {
-  battle: {
-    id: string;
-    title: string;
-    status: string;
-    created_at: string;
-    stake: number;
-    event_id: string | null;
-    participant_count?: number;
-  };
-  activeTab: string;
-};
+import type { ExploreBattleCardProps } from '@/shared/types';
 
 export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps) {
   return (

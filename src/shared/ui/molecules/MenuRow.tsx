@@ -1,17 +1,9 @@
-import { TouchableOpacity, View, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import { IconCircle } from '../atoms/IconCircle';
-
-interface MenuRowProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  onPress?: () => void;
-  rightSlot?: React.ReactNode;
-  showChevron?: boolean;
-  style?: ViewStyle;
-}
+import type { MenuRowProps } from '@/shared/types';
 
 export function MenuRow({
   icon,
@@ -29,7 +21,7 @@ export function MenuRow({
       {...(onPress ? { onPress } : {})}
     >
       <IconCircle size={40} backgroundColor={colors.background}>
-        <Ionicons name={icon} size={22} color={colors.text} />
+        <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={22} color={colors.text} />
       </IconCircle>
       <AppText variant="body1" style={styles.label}>
         {label}

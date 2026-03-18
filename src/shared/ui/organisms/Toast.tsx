@@ -11,13 +11,7 @@ import {
   shadows,
 } from '@/shared/theme';
 import { AppText } from '@/shared/ui/atoms/AppText';
-
-interface ToastProps {
-  type: 'success' | 'fail';
-  message: string;
-  visible: boolean;
-  onClose: () => void;
-}
+import type { ToastProps } from '@/shared/types';
 
 const TOAST_DURATION = 5000;
 

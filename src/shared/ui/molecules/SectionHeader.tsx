@@ -1,14 +1,8 @@
-import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
-
-interface SectionHeaderProps {
-  title: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  style?: ViewStyle;
-}
+import type { SectionHeaderProps } from '@/shared/types';
 
 export function SectionHeader({
   title,

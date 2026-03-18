@@ -1,24 +1,5 @@
 import { create } from 'zustand';
-
-export interface StatDuelPlayer {
-  id: string;
-  name: string;
-  team: string;
-  position: string;
-  positionCode: string;
-  sport: string;
-}
-
-export interface StatDuelStatCategory {
-  id: string;
-  name: string;
-}
-
-export interface StatDuelOpponent {
-  id: string;
-  display_name: string;
-  username?: string;
-}
+import type { StatDuelPlayer, StatDuelStatCategory, StatDuelOpponent } from '@/shared/types';
 
 interface StatDuelState {
   visibility: 'public' | 'private' | 'crew' | null;

@@ -16,7 +16,7 @@ import { AppText, Screen, Avatar } from '@/shared/ui';
 import { getInitials } from '@/shared/utils';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAddFriend } from '../hooks/useAddFriend';
-import type { CrewMemberWithStatus } from '@/features/crew/data/queries/useSearchUsersQuery';
+import type { CrewMemberWithStatus } from '@/shared/types';
 
 export default function AddFriendScreen({ navigation }: any) {
   const { user } = useAuth();

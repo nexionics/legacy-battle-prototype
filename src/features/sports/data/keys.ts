@@ -1,5 +1,6 @@
-export type SportFilter = 'ALL' | 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL';
+import type { SportFilter } from '@/shared/types';
 
+export type { SportFilter };
 export const sportsKeys = {
   all: ['sports'] as const,
   upcoming: () => [...sportsKeys.all, 'upcoming'] as const,

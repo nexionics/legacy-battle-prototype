@@ -2,12 +2,7 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-
-type CategoryPillsProps<T extends string> = {
-  tabs: T[];
-  activeTab: T;
-  onTabChange: (tab: T) => void;
-};
+import type { CategoryPillsProps } from '@/shared/types';
 
 export function CategoryPills<T extends string>({
   tabs,

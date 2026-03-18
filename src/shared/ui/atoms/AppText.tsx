@@ -1,20 +1,10 @@
-import type { TextProps } from 'react-native';
 import { Text } from 'react-native';
-import {
-  colors,
-  typography,
-  type TypographyVariant,
-} from '@/shared/theme';
-
-export interface AppTextProps extends Omit<TextProps, 'style'> {
-  variant?: TypographyVariant;
-  /** Text color (e.g. colors.text, colors.textMuted). Defaults to colors.text. */
-  color?: string;
-  style?: TextProps['style'];
-}
+import { colors, typography, type TypographyVariant } from '@/shared/theme';
+import type { AppTextProps } from '@/shared/types';
 
 const DEFAULT_VARIANT: TypographyVariant = 'body1';
 
+export type { AppTextProps };
 export function AppText({
   variant = DEFAULT_VARIANT,
   color,

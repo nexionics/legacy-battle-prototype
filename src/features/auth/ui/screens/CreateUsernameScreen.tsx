@@ -4,10 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
 import { Screen, AppText, ScreenHeader } from '@/shared/ui';
 import { colors, spacing, radii, fontSizes, verticalScale, horizontalScale } from '@/shared/theme';
-
-interface CreateUsernameScreenProps {
-  navigation: { goBack: () => void; navigate: (screen: string) => void };
-}
+import type { CreateUsernameScreenProps } from '@/shared/types';
 
 export default function CreateUsernameScreen({ navigation }: CreateUsernameScreenProps) {
   const { username, setUsername } = useAuthFormStore();

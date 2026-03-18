@@ -1,9 +1,4 @@
-export interface LevelInfo {
-  level: string;
-  nextLevel: string;
-  progress: number;
-  nextXp: number;
-}
+import type { LevelInfo } from '@/shared/types';
 
 export function getLevelInfo(xp: number): LevelInfo {
   if (xp >= 3000) return { level: 'Legend', nextLevel: 'Legend', progress: 100, nextXp: 3000 };

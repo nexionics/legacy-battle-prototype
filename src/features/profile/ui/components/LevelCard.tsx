@@ -3,12 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import type { LevelInfo } from '@/features/profile/helpers/level';
-
-interface LevelCardProps {
-  levelInfo: LevelInfo;
-  xp: number;
-}
+import type { LevelCardProps } from '@/shared/types';
 
 export function LevelCard({ levelInfo, xp }: LevelCardProps) {
   return (

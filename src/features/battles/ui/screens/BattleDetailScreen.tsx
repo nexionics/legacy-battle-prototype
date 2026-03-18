@@ -18,11 +18,7 @@ import { ScoreDisplay } from '@/features/battles/ui/components/ScoreDisplay';
 import { WinnerCard } from '@/features/battles/ui/components/WinnerCard';
 import { ParticipantsList } from '@/features/battles/ui/components/ParticipantsList';
 import { JoinBattleSection } from '@/features/battles/ui/components/JoinBattleSection';
-
-interface BattleDetailScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { BattleDetailScreenProps } from '@/shared/types';
 
 export default function BattleDetailScreen({ navigation, route }: BattleDetailScreenProps) {
   const { user } = useAuth();

@@ -1,8 +1,5 @@
 import { create } from 'zustand';
-import type { TabType, ExploreTab } from '../types';
-
-export type BattleType = 'head_to_head' | 'stat_duel' | 'GAME_DUEL' | 'STAT_DUEL' | 'SKILL_BATTLE';
-export type OutcomeType = 'WIN' | 'LOSE';
+import type { TabType, ExploreTab, BattleType, OutcomeType } from '@/shared/types';
 
 interface BattlesStore {
   listActiveTab: TabType;

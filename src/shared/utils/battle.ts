@@ -1,8 +1,13 @@
 import { getThemeColors } from '@/shared/theme';
+import type {
+  BattleStatus as DomainBattleStatus,
+  BattleMode as DomainBattleMode,
+} from '@/shared/types';
 
 const defaultColors = getThemeColors('dark');
 
-export type BattleStatus = 'open' | 'active' | 'completed' | 'canceled' | string;
+/** Battle status for utils (allows string for flexibility) */
+export type BattleStatus = DomainBattleStatus | string;
 
 /**
  * Returns a semantic color associated with a battle status.
@@ -59,7 +64,8 @@ export function deriveTeamsFromTitle(
   return { home: undefined, away: undefined };
 }
 
-export type BattleMode = 'STANDARD' | 'FANTASY' | 'BOTH_PICKS' | string;
+/** Battle mode for utils (allows string for flexibility) */
+export type BattleMode = DomainBattleMode | string;
 
 /**
  * Converts an internal battle mode value into a human-readable label.

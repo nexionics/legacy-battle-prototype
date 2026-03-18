@@ -1,13 +1,7 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { spacing, radii } from '@/shared/theme';
 import { AppText } from './AppText';
-
-interface StatusBadgeProps {
-  label: string;
-  color: string;
-  textColor?: string;
-  style?: ViewStyle;
-}
+import type { StatusBadgeProps } from '@/shared/types';
 
 export function StatusBadge({
   label,

@@ -3,22 +3,7 @@ import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-
-interface JoinBattleSectionProps {
-  canJoin: boolean;
-  alreadyJoined: boolean;
-  isCreator: boolean;
-  isHeadToHeadBattle: boolean;
-  isHeadToHeadReady: boolean;
-  creatorWinningTeam?: string | null;
-  joinerWinningTeam: string | null;
-  homeTeamName?: string;
-  awayTeamName?: string;
-  pick: string;
-  onPickChange: (pick: string) => void;
-  joining: boolean;
-  onJoin: () => void;
-}
+import type { JoinBattleSectionProps } from '@/shared/types';
 
 export function JoinBattleSection({
   canJoin,

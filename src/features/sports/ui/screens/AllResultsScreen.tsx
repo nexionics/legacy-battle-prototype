@@ -15,11 +15,8 @@ import { formatShortDate } from '@/shared/utils';
 import type { SportsEvent } from '@/shared/types';
 import { getSportIcon, AVAILABLE_SPORTS } from '@/features/sports/data/api/sports.api';
 import { useAllResults } from '../hooks/useAllResults';
-import type { SportFilter } from '@/features/sports/data/keys';
-
-interface AllResultsScreenProps {
-  navigation: any;
-}
+import type { SportFilter } from '@/shared/types';
+import type { AllResultsScreenProps } from '@/shared/types';
 
 const ResultCard = ({ event }: { event: SportsEvent }) => {
   return (

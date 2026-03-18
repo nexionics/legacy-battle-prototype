@@ -4,13 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes } from '@/shared/theme';
 import { getLevelInfo, getLevelNumber } from '@/features/profile/helpers/level';
-
-interface ProfileHeaderProps {
-  displayName: string | undefined;
-  username: string | undefined;
-  email: string | undefined;
-  xp: number;
-}
+import type { ProfileHeaderProps } from '@/shared/types';
 
 export function ProfileHeader({ displayName, username, email, xp }: ProfileHeaderProps) {
   const avatarInitials = (displayName || username || email || 'U')

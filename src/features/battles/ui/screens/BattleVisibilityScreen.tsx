@@ -7,11 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-
-interface BattleVisibilityScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { BattleVisibilityScreenProps } from '@/shared/types';
 
 export default function BattleVisibilityScreen({ navigation, route }: BattleVisibilityScreenProps) {
   const { prefillTitle, prefillEventId, homeTeam, awayTeam } = route?.params || {};

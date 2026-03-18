@@ -19,12 +19,8 @@ import {
   AVAILABLE_SPORTS,
 } from '@/features/sports/data/api/sports.api';
 import { useAllUpcomingGames } from '../hooks/useAllUpcomingGames';
-import type { SportFilter } from '@/features/sports/data/keys';
-
-interface AllUpcomingGamesScreenProps {
-  navigation: any;
-  route: any;
-}
+import type { SportFilter } from '@/shared/types';
+import type { AllUpcomingGamesScreenProps } from '@/shared/types';
 
 const UpcomingGameCard = ({ event, onBattle }: { event: SportsEvent; onBattle: () => void }) => {
   return (
