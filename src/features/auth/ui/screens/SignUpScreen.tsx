@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   Image,
   Alert,
@@ -12,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText } from '@/shared/ui';
+import { Screen, AppText, Input } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 import type { SignUpScreenProps } from '@/shared/types';
 
@@ -96,38 +95,25 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
         </View>
 
         <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
-              Email Address
-            </AppText>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="mail-outline" size={20} color={colors.textSecondary} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Email"
-                placeholderTextColor={colors.muted}
-                value={signUpEmail}
-                onChangeText={setSignUpEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-          </View>
+          <Input
+            label="Email Address"
+            value={signUpEmail}
+            onChangeText={setSignUpEmail}
+            placeholder="Enter Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            leftComponent={<Ionicons name="mail-outline" size={20} color={colors.textSecondary} />}
+            containerStyle={styles.inputContainer}
+          />
 
-          <View style={styles.inputContainer}>
-            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
-              Enter Password
-            </AppText>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Password"
-                placeholderTextColor={colors.muted}
-                value={signUpPassword}
-                onChangeText={setSignUpPassword}
-                secureTextEntry={!showSignUpPassword}
-              />
+          <Input
+            label="Enter Password"
+            value={signUpPassword}
+            onChangeText={setSignUpPassword}
+            placeholder="Enter Password"
+            secureTextEntry={!showSignUpPassword}
+            leftComponent={<Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />}
+            rightComponent={
               <TouchableOpacity onPress={() => setShowSignUpPassword(!showSignUpPassword)}>
                 <Ionicons
                   name={showSignUpPassword ? 'eye-outline' : 'eye-off-outline'}
@@ -135,23 +121,18 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
                   color={colors.textSecondary}
                 />
               </TouchableOpacity>
-            </View>
-          </View>
+            }
+            containerStyle={styles.inputContainer}
+          />
 
-          <View style={styles.inputContainer}>
-            <AppText variant="label" color={colors.textSecondary} style={styles.inputLabel}>
-              Confirm Password
-            </AppText>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Password"
-                placeholderTextColor={colors.muted}
-                value={signUpConfirmPassword}
-                onChangeText={setSignUpConfirmPassword}
-                secureTextEntry={!showSignUpConfirmPassword}
-              />
+          <Input
+            label="Confirm Password"
+            value={signUpConfirmPassword}
+            onChangeText={setSignUpConfirmPassword}
+            placeholder="Enter Password"
+            secureTextEntry={!showSignUpConfirmPassword}
+            leftComponent={<Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />}
+            rightComponent={
               <TouchableOpacity onPress={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}>
                 <Ionicons
                   name={showSignUpConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
@@ -159,8 +140,9 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
                   color={colors.textSecondary}
                 />
               </TouchableOpacity>
-            </View>
-          </View>
+            }
+            containerStyle={styles.inputContainer}
+          />
 
           <AppText variant="captionSm" color={colors.textSecondary} style={styles.termsText}>
             By Continuing You Agree To Our{' '}
@@ -271,25 +253,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     gap: spacing[2],
-  },
-  inputLabel: {
-    fontSize: fontSizes.xs,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.inputBackground,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    paddingHorizontal: spacing[4],
-    gap: spacing[2],
-  },
-  input: {
-    flex: 1,
-    color: colors.text,
-    fontSize: fontSizes.md,
-    paddingVertical: spacing[4],
   },
   termsText: {
     fontSize: fontSizes.xs,

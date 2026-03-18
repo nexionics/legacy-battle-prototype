@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
@@ -11,8 +10,8 @@ import {
   Share,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
-import { AppText, Screen, Avatar } from '@/shared/ui';
+import { colors, spacing, radii } from '@/shared/theme';
+import { AppText, Screen, Avatar, SearchInput } from '@/shared/ui';
 import { getInitials } from '@/shared/utils';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAddFriend } from '../hooks/useAddFriend';
@@ -98,25 +97,13 @@ export default function AddFriendScreen({ navigation }: any) {
           </AppText>
 
           <View style={styles.searchContainer}>
-            <View style={styles.searchInputWrapper}>
-              <Ionicons name="search-outline" size={20} color={colors.textSecondary} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Enter username"
-                placeholderTextColor={colors.textMuted}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onSubmitEditing={handleSearch}
-                returnKeyType="search"
-              />
-              {searchQuery.length > 0 && (
-                <TouchableOpacity onPress={() => setSearchQuery('')}>
-                  <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
-                </TouchableOpacity>
-              )}
-            </View>
+            <SearchInput
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Enter username"
+              onSubmit={handleSearch}
+              style={styles.searchInputWrapper}
+            />
             <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
               <AppText variant="buttonMd" color={colors.white}>
                 Search
@@ -261,20 +248,6 @@ const styles = StyleSheet.create({
   },
   searchInputWrapper: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.inputBackground,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    paddingHorizontal: spacing[4],
-    gap: spacing[2],
-  },
-  searchInput: {
-    flex: 1,
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    paddingVertical: spacing[4],
   },
   searchButton: {
     backgroundColor: colors.primary,

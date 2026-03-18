@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText, ScreenHeader } from '@/shared/ui';
-import { colors, spacing, radii, fontSizes, verticalScale, horizontalScale } from '@/shared/theme';
+import { Screen, AppText, ScreenHeader, Input } from '@/shared/ui';
+import { colors, spacing, radii, verticalScale, horizontalScale } from '@/shared/theme';
 import type { CreateUsernameScreenProps } from '@/shared/types';
 
 export default function CreateUsernameScreen({ navigation }: CreateUsernameScreenProps) {
@@ -29,23 +29,23 @@ export default function CreateUsernameScreen({ navigation }: CreateUsernameScree
         </View>
 
         <View style={styles.inputContainer}>
-          <AppText variant="label" color={colors.textSecondary}>Enter Username</AppText>
-          <View style={[styles.inputWrapper, isAvailable && styles.inputWrapperValid]}>
-            <Ionicons name="person-outline" size={20} color={colors.textSecondary} />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Username"
-              placeholderTextColor={colors.muted}
-              value={username}
-              onChangeText={setUsername}
-              autoCapitalize="none"
-            />
-            {isAvailable ? (
-              <View style={styles.checkIcon}>
-                <Ionicons name="checkmark" size={16} color={colors.white} />
-              </View>
-            ) : null}
-          </View>
+          <Input
+            label="Enter Username"
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Enter Username"
+            autoCapitalize="none"
+            leftComponent={<Ionicons name="person-outline" size={20} color={colors.textSecondary} />}
+            rightComponent={
+              isAvailable ? (
+                <View style={styles.checkIcon}>
+                  <Ionicons name="checkmark" size={16} color={colors.white} />
+                </View>
+              ) : undefined
+            }
+            showSuccessBorder={isAvailable}
+            containerStyle={styles.inputWrapperContainer}
+          />
           {isAvailable ? (
             <AppText variant="helper" color={colors.success} style={styles.availableText}>
               Username Is Available
@@ -92,25 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(32),
     gap: spacing[2],
   },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.inputBackground,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    paddingHorizontal: spacing[4],
-    gap: spacing[2],
-  },
-  inputWrapperValid: {
-    borderColor: colors.success,
-  },
-  input: {
-    flex: 1,
-    color: colors.text,
-    fontSize: fontSizes.md,
-    paddingVertical: spacing[4],
-  },
+  inputWrapperContainer: {},
   checkIcon: {
     width: 24,
     height: 24,

@@ -4,14 +4,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  TextInput,
   Alert,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText } from '@/shared/ui';
+import { Screen, AppText, Input } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 import type { LoginScreenProps } from '@/shared/types';
 
@@ -133,36 +132,26 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
             </>
           ) : (
             <>
-              <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Ionicons name="mail-outline" size={20} color={colors.textSecondary} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor={colors.muted}
-                    value={loginEmail}
-                    onChangeText={setLoginEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    editable={!loginLoading}
-                  />
-                </View>
-              </View>
+              <Input
+                value={loginEmail}
+                onChangeText={setLoginEmail}
+                placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!loginLoading}
+                leftComponent={<Ionicons name="mail-outline" size={20} color={colors.textSecondary} />}
+                containerStyle={styles.inputContainer}
+              />
 
-              <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    placeholderTextColor={colors.muted}
-                    value={loginPassword}
-                    onChangeText={setLoginPassword}
-                    secureTextEntry
-                    editable={!loginLoading}
-                  />
-                </View>
-              </View>
+              <Input
+                value={loginPassword}
+                onChangeText={setLoginPassword}
+                placeholder="Password"
+                secureTextEntry
+                editable={!loginLoading}
+                leftComponent={<Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />}
+                containerStyle={styles.inputContainer}
+              />
 
               <TouchableOpacity
                 style={[styles.createAccountButton, loginLoading && styles.buttonDisabled]}
@@ -293,22 +282,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     gap: spacing[2],
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.inputBackground,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    paddingHorizontal: spacing[4],
-    gap: spacing[2],
-  },
-  input: {
-    flex: 1,
-    color: colors.text,
-    fontSize: fontSizes.md,
-    paddingVertical: spacing[4],
   },
   buttonDisabled: {
     opacity: 0.7,

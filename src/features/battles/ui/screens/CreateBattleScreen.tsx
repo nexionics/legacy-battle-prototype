@@ -4,14 +4,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
   Alert,
   ActivityIndicator,
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
-import { AppText, Screen } from '@/shared/ui';
+import { AppText, Screen, Input } from '@/shared/ui';
 import { deriveTeamsFromTitle } from '@/shared/utils';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
@@ -185,17 +184,17 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
         </View>
 
         <View style={styles.form}>
-          <View style={styles.inputGroup}>
-            <AppText variant="label" style={styles.label}>Title *</AppText>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g., Chiefs vs Bills - Who wins?"
-              placeholderTextColor={colors.textSecondary}
-              value={title}
-              onChangeText={setTitle}
-              maxLength={100}
-            />
-          </View>
+          <Input
+            label="Title"
+            value={title}
+            onChangeText={setTitle}
+            placeholder="e.g., Chiefs vs Bills - Who wins?"
+            placeholderTextColor={colors.textSecondary}
+            maxLength={100}
+            required
+            containerStyle={styles.inputGroup}
+            inputTextStyle={styles.inputFont}
+          />
 
           {teamOptions.length > 0 && (
             <View style={styles.inputGroup}>
@@ -231,27 +230,28 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
           )}
 
           <View style={styles.inputGroup}>
-            <AppText variant="label" style={styles.label}>Game/Event ID</AppText>
-            <TextInput
-              style={[styles.input, eventId && styles.inputDisabled]}
-              placeholder="Sports event ID"
-              placeholderTextColor={colors.textSecondary}
+            <Input
+              label="Game/Event ID"
               value={eventId}
               onChangeText={setEventId}
+              placeholder="Sports event ID"
+              placeholderTextColor={colors.textSecondary}
               editable={!prefillEventId}
+              wrapperStyle={eventId ? styles.inputDisabled : undefined}
+              inputTextStyle={styles.inputFont}
             />
-            {eventId && <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>Linked to live game data</AppText>}
+            {eventId ? <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>Linked to live game data</AppText> : null}
           </View>
 
           <View style={styles.inputGroup}>
-            <AppText variant="label" style={styles.label}>Stake (BC)</AppText>
-            <TextInput
-              style={styles.input}
-              placeholder="0"
-              placeholderTextColor={colors.textSecondary}
+            <Input
+              label="Stake (BC)"
               value={stake}
               onChangeText={(text) => setStake(text.replace(/[^0-9]/g, ''))}
+              placeholder="0"
+              placeholderTextColor={colors.textSecondary}
               keyboardType="numeric"
+              inputTextStyle={styles.inputFont}
             />
             <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>Battle Coins to wager (optional)</AppText>
           </View>
@@ -323,14 +323,8 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: spacing[2],
   },
-  input: {
-    backgroundColor: colors.inputBackground,
-    borderRadius: radii.lg,
-    padding: spacing[4],
-    color: colors.text,
+  inputFont: {
     fontSize: fontSizes.sm,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
   },
   textArea: {
     minHeight: 100,

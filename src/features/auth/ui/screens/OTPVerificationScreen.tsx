@@ -1,15 +1,15 @@
 import React, { useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import type { TextInput as RNTextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText, ScreenHeader } from '@/shared/ui';
-import { colors, spacing, radii, fontSizes, verticalScale, horizontalScale } from '@/shared/theme';
-import { IconCircle } from '@/shared/ui';
+import { Screen, AppText, ScreenHeader, Input, IconCircle } from '@/shared/ui';
+import { colors, spacing, radii, verticalScale, horizontalScale } from '@/shared/theme';
 import type { OTPVerificationScreenProps } from '@/shared/types';
 
 export default function OTPVerificationScreen({ navigation }: OTPVerificationScreenProps) {
   const { otp, setOtpDigit } = useAuthFormStore();
-  const inputRefs = useRef<TextInput[]>([]);
+  const inputRefs = useRef<(RNTextInput | null)[]>([]);
 
   const handleOtpChange = (value: string, index: number) => {
     setOtpDigit(index, value);
@@ -39,19 +39,19 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
 
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
-            <View key={index} style={styles.otpInputWrapper}>
-              <TextInput
-                ref={(ref) => {
-                  if (ref) inputRefs.current[index] = ref;
-                }}
-                style={styles.otpInput}
-                value={digit}
-                onChangeText={(value) => handleOtpChange(value, index)}
-                keyboardType="number-pad"
-                maxLength={1}
-                selectTextOnFocus
-              />
-            </View>
+            <Input
+              key={index}
+              ref={(ref) => {
+                inputRefs.current[index] = ref;
+              }}
+              value={digit}
+              onChangeText={(value) => handleOtpChange(value, index)}
+              keyboardType="number-pad"
+              maxLength={1}
+              selectTextOnFocus
+              wrapperStyle={styles.otpInputWrapper}
+              inputTextStyle={styles.otpInput}
+            />
           ))}
         </View>
 
@@ -105,17 +105,15 @@ const styles = StyleSheet.create({
     borderRadius: radii.lg,
     borderWidth: 2,
     borderColor: colors.primary,
-    backgroundColor: colors.inputBackground,
+    paddingHorizontal: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   otpInput: {
-    fontSize: fontSizes.xl,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
     textAlign: 'center',
-    width: '100%',
-    height: '100%',
+    paddingVertical: 0,
   },
   resendContainer: {
     flexDirection: 'row',

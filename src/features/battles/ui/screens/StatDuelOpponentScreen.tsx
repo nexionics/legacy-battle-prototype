@@ -1,7 +1,7 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
-import { AppText, Screen } from '@/shared/ui';
+import { colors, spacing, radii } from '@/shared/theme';
+import { AppText, Screen, SearchInput } from '@/shared/ui';
 import { getInitials } from '@/shared/utils';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import type { StatDuelOpponentScreenProps } from '@/shared/types';
@@ -80,19 +80,13 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
 
         {visibility === 'private' ? (
           <>
-            <AppText variant="captionSm" color={colors.textSecondary} style={styles.inputLabel}>
-              Add Opponent
-            </AppText>
-            <View style={styles.searchContainer}>
-              <Ionicons name="search-outline" size={20} color={colors.textSecondary} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="search opponent"
-                placeholderTextColor={colors.textMuted}
-                value={opponentSearchQuery}
-                onChangeText={setOpponentSearchQuery}
-              />
-            </View>
+            <SearchInput
+              value={opponentSearchQuery}
+              onChangeText={setOpponentSearchQuery}
+              placeholder="search opponent"
+              label="Add Opponent"
+              style={styles.searchInput}
+            />
 
             {opponentSearchQuery.length > 0 && (
               <View style={styles.searchResults}>
@@ -259,25 +253,8 @@ const styles = StyleSheet.create({
   titleSection: {
     marginBottom: spacing[4],
   },
-  inputLabel: {
-    marginBottom: spacing[2],
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.inputBorder,
-    paddingHorizontal: spacing[4],
-    gap: spacing[2],
-    marginBottom: spacing[4],
-  },
   searchInput: {
-    flex: 1,
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    paddingVertical: spacing[4],
+    marginBottom: spacing[4],
   },
   searchResults: {
     backgroundColor: colors.card,

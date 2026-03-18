@@ -1,7 +1,7 @@
 import type { TextInputProps, TextProps, ViewStyle } from 'react-native';
 import type { TypographyVariant } from '@/shared/theme';
 import type { SportsEvent } from './domain';
-import type { ExploreBattle, BattleStats } from './interface';
+import type { BattleStats } from './interface';
 import type { Battle, BattleParticipant } from './domain';
 import type { LevelInfo } from './profile';
 
@@ -64,7 +64,24 @@ export type ButtonProps = {
 
 export type InputProps = TextInputProps & {
   label?: string;
+  /** Error message; when set, border shows error color and message is rendered below */
   error?: string;
+  /** Show asterisk after label when true */
+  required?: boolean;
+  /** Left slot (e.g. icon) inside the input row */
+  leftComponent?: React.ReactNode;
+  /** Right slot (e.g. icon, clear button, password toggle) inside the input row */
+  rightComponent?: React.ReactNode;
+  /** Style for the outer container (label + input row + error) */
+  containerStyle?: ViewStyle;
+  /** Style for the inner input row wrapper (the box around leftComponent + input + rightComponent) */
+  wrapperStyle?: ViewStyle;
+  /** Style applied to the TextInput */
+  inputTextStyle?: TextInputProps['style'];
+  /** When true and value is non-empty, apply success border (e.g. green check) */
+  showSuccessBorder?: boolean;
+  /** Controlled focus state; can be used to style border on focus */
+  isFocused?: boolean;
 };
 
 export interface ScreenHeaderProps {
@@ -113,6 +130,11 @@ export interface SearchInputProps {
   placeholder?: string;
   onSubmit?: () => void;
   style?: ViewStyle;
+  leftIcon?: React.ReactNode | null;
+  rightSlot?: React.ReactNode | null;
+  showClearButton?: boolean;
+  variant?: 'default' | 'compact';
+  label?: string;
 }
 
 export interface Tab {
