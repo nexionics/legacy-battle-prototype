@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
@@ -14,24 +8,11 @@ import { CategoryPills } from '@/features/battles/ui/components/CategoryPills';
 import { ExploreBattleCard } from '@/features/battles/ui/components/ExploreBattleCard';
 import { CategoriesSection } from '@/features/battles/ui/components/CategoriesSection';
 import { TopPlayersSection } from '@/features/battles/ui/components/TopPlayersSection';
-import type { ExploreTab } from '@/features/battles/data/types';
-
-const TABS: ExploreTab[] = ['Trending', 'Ending Soon', 'New', 'High Activity'];
-
-const TAB_SUBTITLES: Record<ExploreTab, string> = {
-  Trending: 'Trending Battles',
-  'Ending Soon': 'Challenges That Are About To End',
-  New: 'Battle That Are New',
-  'High Activity': 'All New Battle Created',
-};
+import { EXPLORE_TABS, EXPLORE_TAB_SUBTITLES } from '@/shared/constants';
 
 export default function ExploreScreen() {
-  const {
-    exploreActiveTab,
-    exploreBattles,
-    exploreLoading,
-    setExploreActiveTab,
-  } = useExploreBattles();
+  const { exploreActiveTab, exploreBattles, exploreLoading, setExploreActiveTab } =
+    useExploreBattles();
 
   return (
     <Screen scroll padding={spacing[4]}>
@@ -63,12 +44,16 @@ export default function ExploreScreen() {
         </TouchableOpacity>
       </View>
 
-      <CategoryPills tabs={TABS} activeTab={exploreActiveTab} onTabChange={setExploreActiveTab} />
+      <CategoryPills
+        tabs={EXPLORE_TABS}
+        activeTab={exploreActiveTab}
+        onTabChange={setExploreActiveTab}
+      />
 
       <View style={styles.sectionTitleContainer}>
         <AppText variant="h4">{exploreActiveTab}.</AppText>
         <AppText variant="captionSm" color={colors.textSecondary}>
-          {TAB_SUBTITLES[exploreActiveTab]}
+          {EXPLORE_TAB_SUBTITLES[exploreActiveTab]}
         </AppText>
       </View>
 

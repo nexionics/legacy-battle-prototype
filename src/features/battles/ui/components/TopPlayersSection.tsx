@@ -3,13 +3,7 @@ import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
-
-const PLAYERS = [
-  { name: 'Champion', xp: 5000 },
-  { name: 'Legend', xp: 4500 },
-  { name: 'Pro', xp: 4000 },
-  { name: 'Master', xp: 3500 },
-] as const;
+import { TOP_PLAYERS } from '@/shared/constants';
 
 export function TopPlayersSection() {
   return (
@@ -22,7 +16,7 @@ export function TopPlayersSection() {
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {PLAYERS.map((player, index) => (
+        {TOP_PLAYERS.map((player, index) => (
           <View key={player.name} style={styles.topPlayerCard}>
             <View style={styles.topPlayerAvatar}>
               <AppText variant="h4" color={colors.white}>{index + 1}</AppText>

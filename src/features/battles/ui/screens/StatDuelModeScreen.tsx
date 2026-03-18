@@ -5,36 +5,18 @@ import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import type { StatDuelModeScreenProps, BattleModeOption, BattleMode } from '@/shared/types';
+import { BATTLE_MODES_RAW } from '@/shared/constants';
 
-const BATTLE_MODES: BattleModeOption[] = [
-  {
-    id: 'STANDARD',
-    name: 'Standard',
-    description: 'Both Players Pick Athletes From The Same Game.',
-    features: [
-      { color: colors.primary, text: 'Pick From The Same Game' },
-      { color: colors.gold, text: 'Locks At Game Kickoff' },
-    ],
-    borderColor: colors.text,
-  },
-  {
-    id: 'FANTASY',
-    name: 'Fantasy Mode',
-    description: 'Both Players Can Pick Athletes From Different Games, Same Week.',
-    features: [
-      { color: colors.primary, text: 'Any Match This Week' },
-      { color: colors.gold, text: 'Locks At Earliest Kickoff' },
-    ],
-    borderColor: colors.text,
-  },
-  {
-    id: 'BOTH_PICKS',
-    name: 'Both Picks',
-    description: 'Both Players Pick Athletes From The Same Game And Battle On A Specific Stat.',
-    features: [],
-    borderColor: colors.primary,
-  },
-];
+const BATTLE_MODES: BattleModeOption[] = BATTLE_MODES_RAW.map((m) => ({
+  id: m.id,
+  name: m.name,
+  description: m.description,
+  features: m.features.map((f) => ({
+    color: (colors as Record<string, string>)[f.colorKey] ?? f.colorKey,
+    text: f.text,
+  })),
+  borderColor: (colors as Record<string, string>)[m.borderColorKey] ?? m.borderColorKey,
+}));
 
 export default function StatDuelModeScreen({ navigation, route }: StatDuelModeScreenProps) {
   const { visibility } = route?.params || {};

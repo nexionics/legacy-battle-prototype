@@ -1,62 +1,15 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
+import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import type { StatDuelDetailsScreenProps } from '@/shared/types';
-
-const SPORTS = [
-  { id: 'NFL', name: 'NFL', icon: '🏈' },
-  { id: 'NBA', name: 'NBA', icon: '🏀' },
-  { id: 'MLB', name: 'MLB', icon: '⚾' },
-  { id: 'NHL', name: 'NHL', icon: '🏒' },
-];
-
-const MOCK_GAMES = [
-  { id: '1', name: 'Chiefs vs Bills, Week 5', sport: 'NFL', homeTeam: 'Chiefs', awayTeam: 'Bills' },
-  { id: '2', name: 'Cowboys vs Eagles, Week 5', sport: 'NFL', homeTeam: 'Cowboys', awayTeam: 'Eagles' },
-  { id: '3', name: 'Lakers vs Celtics', sport: 'NBA', homeTeam: 'Lakers', awayTeam: 'Celtics' },
-  { id: '4', name: 'Warriors vs Suns', sport: 'NBA', homeTeam: 'Warriors', awayTeam: 'Suns' },
-];
-
-const POSITIONS_BY_SPORT: Record<string, { id: string; name: string }[]> = {
-  NFL: [
-    { id: 'QB', name: 'Quarterback (QB)' },
-    { id: 'RB', name: 'Running Back (RB)' },
-    { id: 'WR', name: 'Wide Receiver (WR)' },
-    { id: 'TE', name: 'Tight End (TE)' },
-    { id: 'K', name: 'Kicker (K)' },
-    { id: 'DEF', name: 'Defense (DEF)' },
-  ],
-  NBA: [
-    { id: 'PG', name: 'Point Guard (PG)' },
-    { id: 'SG', name: 'Shooting Guard (SG)' },
-    { id: 'SF', name: 'Small Forward (SF)' },
-    { id: 'PF', name: 'Power Forward (PF)' },
-    { id: 'C', name: 'Center (C)' },
-  ],
-  MLB: [
-    { id: 'P', name: 'Pitcher (P)' },
-    { id: 'C', name: 'Catcher (C)' },
-    { id: '1B', name: 'First Base (1B)' },
-    { id: '2B', name: 'Second Base (2B)' },
-    { id: 'SS', name: 'Shortstop (SS)' },
-    { id: '3B', name: 'Third Base (3B)' },
-    { id: 'OF', name: 'Outfield (OF)' },
-  ],
-  NHL: [
-    { id: 'C', name: 'Center (C)' },
-    { id: 'LW', name: 'Left Wing (LW)' },
-    { id: 'RW', name: 'Right Wing (RW)' },
-    { id: 'D', name: 'Defenseman (D)' },
-    { id: 'G', name: 'Goalie (G)' },
-  ],
-};
+import { STAT_DUEL_SPORTS, MOCK_GAMES, POSITIONS_BY_SPORT } from '@/shared/constants';
 
 export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDetailsScreenProps) {
   const { visibility, battleMode: routeBattleMode } = route?.params || {};
-  
+
   const battleMode = useStatDuelStore((s) => s.battleMode);
   const selectedSport = useStatDuelStore((s) => s.selectedSport);
   const selectedGame = useStatDuelStore((s) => s.selectedGame);
@@ -84,15 +37,15 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
     if (routeBattleMode) setBattleMode(routeBattleMode);
   }, [visibility, routeBattleMode]);
 
-  const filteredGames = selectedSport 
-    ? MOCK_GAMES.filter(g => g.sport === selectedSport)
-    : MOCK_GAMES;
+  const filteredGames = selectedSport
+    ? MOCK_GAMES.filter((g) => g.sport === selectedSport)
+    : [...MOCK_GAMES];
 
   const availablePositions = selectedSport ? POSITIONS_BY_SPORT[selectedSport] || [] : [];
 
-  const selectedSportData = SPORTS.find(s => s.id === selectedSport);
-  const selectedGameData = MOCK_GAMES.find(g => g.id === selectedGame);
-  const selectedPositionData = availablePositions.find(p => p.id === selectedPosition);
+  const selectedSportData = STAT_DUEL_SPORTS.find((s) => s.id === selectedSport);
+  const selectedGameData = MOCK_GAMES.find((g) => g.id === selectedGame);
+  const selectedPositionData = availablePositions.find((p) => p.id === selectedPosition);
 
   const handleContinue = () => {
     navigation.navigate('StatDuelChampion', {
@@ -105,9 +58,9 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
     });
   };
 
-  const canContinue = isStandardMode 
-    ? (selectedSport && selectedGame && selectedPosition)
-    : (selectedSport && selectedPosition);
+  const canContinue = isStandardMode
+    ? selectedSport && selectedGame && selectedPosition
+    : selectedSport && selectedPosition;
 
   const handleBack = () => {
     if (navigation.canGoBack()) {
@@ -118,21 +71,23 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
   };
 
   const DropdownButton = ({
-    label, 
-    value, 
-    placeholder, 
+    label,
+    value,
+    placeholder,
     onPress,
     required = false,
-  }: { 
-    label: string; 
-    value: string | null; 
+  }: {
+    label: string;
+    value: string | null;
     placeholder: string;
     onPress: () => void;
     required?: boolean;
   }) => (
     <View style={styles.dropdownContainer}>
       <AppText variant="captionSm" color={colors.textSecondary}>
-        {label}{required && ' *'} <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
+        {label}
+        {required && ' *'}{' '}
+        <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
       </AppText>
       <TouchableOpacity style={styles.dropdown} onPress={onPress}>
         <AppText variant="body2" color={value ? colors.text : colors.textMuted}>
@@ -147,10 +102,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={handleBack}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </View>
@@ -176,16 +128,20 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.titleSection}>
           <AppText variant="h3">Create Battle</AppText>
           <AppText variant="body2" color={colors.textSecondary}>
-            {isFantasyMode 
+            {isFantasyMode
               ? 'Select Sport And Position For Fantasy Battle'
-              : 'Select Event And Position For Standard Battle'
-            }
+              : 'Select Event And Position For Standard Battle'}
           </AppText>
         </View>
 
         <View style={styles.modeIndicator}>
           <AppText variant="captionSm" style={{ fontWeight: '600' }}>
-            Mode: {effectiveBattleMode === 'STANDARD' ? 'Standard' : effectiveBattleMode === 'FANTASY' ? 'Fantasy' : 'Both Picks'}
+            Mode:{' '}
+            {effectiveBattleMode === 'STANDARD'
+              ? 'Standard'
+              : effectiveBattleMode === 'FANTASY'
+                ? 'Fantasy'
+                : 'Both Picks'}
           </AppText>
         </View>
 
@@ -239,31 +195,36 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.lockTimeContainer}>
           <Ionicons name="lock-closed" size={16} color={colors.primary} />
           <AppText variant="captionSm">
-            {isStandardMode 
+            {isStandardMode
               ? 'Lock Time: Locks At Game Kickoff'
-              : 'Lock Time: Locks At Earliest Kickoff This Week'
-            }
+              : 'Lock Time: Locks At Earliest Kickoff This Week'}
           </AppText>
         </View>
 
         {isFantasyMode && (
           <View style={styles.infoBox}>
             <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
-            <AppText variant="captionSm" color={colors.textSecondary} style={{ flex: 1, lineHeight: 18 }}>
-              In Fantasy Mode, you can pick any player from the selected sport and position. 
-              Your opponent can also pick any player of the same sport and position.
+            <AppText
+              variant="captionSm"
+              color={colors.textSecondary}
+              style={{ flex: 1, lineHeight: 18 }}
+            >
+              In Fantasy Mode, you can pick any player from the selected sport and position. Your
+              opponent can also pick any player of the same sport and position.
             </AppText>
           </View>
         )}
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
           onPress={handleContinue}
           disabled={!canContinue}
         >
-          <AppText variant="buttonLg" color={colors.white}>Continue</AppText>
+          <AppText variant="buttonLg" color={colors.white}>
+            Continue
+          </AppText>
           <View style={styles.continueIcon}>
             <AppText style={styles.continueIconText}>⚔</AppText>
           </View>
@@ -279,7 +240,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                 <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
             </View>
-            {SPORTS.map((sport) => (
+            {STAT_DUEL_SPORTS.map((sport) => (
               <TouchableOpacity
                 key={sport.id}
                 style={styles.modalOption}
@@ -291,7 +252,9 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                 }}
               >
                 <AppText style={styles.modalOptionIcon}>{sport.icon}</AppText>
-                <AppText variant="body2" style={{ flex: 1 }}>{sport.name}</AppText>
+                <AppText variant="body2" style={{ flex: 1 }}>
+                  {sport.name}
+                </AppText>
                 {selectedSport === sport.id && (
                   <Ionicons name="checkmark" size={20} color={colors.primary} />
                 )}
@@ -320,14 +283,18 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                     setShowGameModal(false);
                   }}
                 >
-                  <AppText variant="body2" style={{ flex: 1 }}>{game.name}</AppText>
+                  <AppText variant="body2" style={{ flex: 1 }}>
+                    {game.name}
+                  </AppText>
                   {selectedGame === game.id && (
                     <Ionicons name="checkmark" size={20} color={colors.primary} />
                   )}
                 </TouchableOpacity>
               ))
             ) : (
-              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>Select a sport first</AppText>
+              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
+                Select a sport first
+              </AppText>
             )}
           </View>
         </View>
@@ -352,14 +319,18 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                     setShowPositionModal(false);
                   }}
                 >
-                  <AppText variant="body2" style={{ flex: 1 }}>{position.name}</AppText>
+                  <AppText variant="body2" style={{ flex: 1 }}>
+                    {position.name}
+                  </AppText>
                   {selectedPosition === position.id && (
                     <Ionicons name="checkmark" size={20} color={colors.primary} />
                   )}
                 </TouchableOpacity>
               ))
             ) : (
-              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>Select a sport first</AppText>
+              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
+                Select a sport first
+              </AppText>
             )}
           </View>
         </View>

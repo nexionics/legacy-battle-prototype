@@ -12,8 +12,7 @@ import {
 } from '@/shared/theme';
 import { AppText } from '@/shared/ui/atoms/AppText';
 import type { ToastProps } from '@/shared/types';
-
-const TOAST_DURATION = 5000;
+import { TOAST_DURATION_MS } from '@/shared/constants';
 
 const typeConfig = {
   success: { label: 'Success!', color: colors.success } as const,
@@ -55,7 +54,7 @@ export const Toast: React.FC<ToastProps> = ({ type, message, visible, onClose })
     progressAnim.setValue(0);
     Animated.timing(progressAnim, {
       toValue: 1,
-      duration: TOAST_DURATION,
+      duration: TOAST_DURATION_MS,
       useNativeDriver: false,
     }).start(() => {
       onClose();

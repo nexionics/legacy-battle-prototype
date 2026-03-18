@@ -1,42 +1,11 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
+import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
 import type { StartBattleScreenProps, Sport, BattleCategory } from '@/shared/types';
-
-const SPORTS: Sport[] = [
-  { id: 'NFL', name: 'Football', icon: '🏈', color: '#013369' },
-  { id: 'NBA', name: 'Basketball', icon: '🏀', color: '#C9082A' },
-  { id: 'MLB', name: 'Baseball', icon: '⚾', color: '#002D72' },
-  { id: 'NHL', name: 'Hockey', icon: '🏒', color: '#000000' },
-  { id: 'SKILLS', name: 'Skills Battle', icon: '⚡', color: '#E53935' },
-];
-
-const BATTLE_CATEGORIES: BattleCategory[] = [
-  {
-    id: 'GAME_WINNER',
-    name: 'Game Winner',
-    description: 'Pick which team will win the game',
-    icon: 'trophy',
-    enabled: true,
-  },
-  {
-    id: 'OVER_UNDER',
-    name: 'Over/Under',
-    description: 'Predict if the total score will be over or under',
-    icon: 'stats-chart',
-    enabled: false,
-  },
-  {
-    id: 'STATS_BATTLE',
-    name: 'Stats Battle',
-    description: 'Compare player statistics',
-    icon: 'bar-chart',
-    enabled: false,
-  },
-];
+import { SPORTS, BATTLE_CATEGORIES } from '@/shared/constants';
 
 export default function StartBattleScreen({ navigation }: StartBattleScreenProps) {
   const selectedSport = useBattlesStore((s) => s.selectedSport);
@@ -48,7 +17,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
 
   const handleCategorySelect = (category: BattleCategory) => {
     if (!category.enabled || !selectedSport) return;
-    
+
     navigation.navigate('AllUpcomingGames', {
       initialSport: selectedSport,
       mode: category.id,
@@ -70,7 +39,11 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <AppText variant="h4">
-          {selectedSport === 'SKILLS' ? 'Skills Battle' : selectedSport ? 'Select Battle Type' : 'Select a Sport'}
+          {selectedSport === 'SKILLS'
+            ? 'Skills Battle'
+            : selectedSport
+              ? 'Select Battle Type'
+              : 'Select a Sport'}
         </AppText>
         <View style={styles.placeholder} />
       </View>
@@ -88,7 +61,9 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                   <AppText style={styles.sportIcon}>{sport.icon}</AppText>
                 </View>
                 <AppText variant="label">{sport.name}</AppText>
-                <AppText variant="captionSm" color={colors.textSecondary}>{sport.id === 'SKILLS' ? '' : sport.id}</AppText>
+                <AppText variant="captionSm" color={colors.textSecondary}>
+                  {sport.id === 'SKILLS' ? '' : sport.id}
+                </AppText>
               </TouchableOpacity>
             ))}
           </View>
@@ -97,36 +72,47 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
             <View style={styles.skillsCard}>
               <View style={styles.skillsBadge}>
                 <Ionicons name="videocam" size={14} color={colors.primary} />
-                <AppText variant="captionSm" color={colors.primary} style={{ fontWeight: '600' }}>Neutral Attester Verifies</AppText>
+                <AppText variant="captionSm" color={colors.primary} style={{ fontWeight: '600' }}>
+                  Neutral Attester Verifies
+                </AppText>
               </View>
-              
+
               <View style={styles.skillsHeader}>
                 <View style={styles.skillsIconContainer}>
                   <AppText style={styles.skillsIcon}>⚡</AppText>
                 </View>
                 <View style={styles.skillsInfo}>
                   <AppText variant="h4">Skill Battle</AppText>
-                  <AppText variant="captionSm" color={colors.textSecondary}>Showcase Your Skills With Proof</AppText>
+                  <AppText variant="captionSm" color={colors.textSecondary}>
+                    Showcase Your Skills With Proof
+                  </AppText>
                 </View>
               </View>
-              
+
               <View style={styles.skillsFeatures}>
                 <View style={styles.skillsFeature}>
                   <Ionicons name="videocam-outline" size={16} color={colors.textSecondary} />
-                  <AppText variant="body2" color={colors.textSecondary}>Video Evidence Needed</AppText>
+                  <AppText variant="body2" color={colors.textSecondary}>
+                    Video Evidence Needed
+                  </AppText>
                 </View>
                 <View style={styles.skillsFeature}>
                   <Ionicons name="people-outline" size={16} color={colors.textSecondary} />
-                  <AppText variant="body2" color={colors.textSecondary}>3 Neutral Attesters</AppText>
+                  <AppText variant="body2" color={colors.textSecondary}>
+                    3 Neutral Attesters
+                  </AppText>
                 </View>
               </View>
             </View>
-            
+
             <View style={styles.comingSoonCard}>
               <Ionicons name="construct-outline" size={48} color={colors.primary} />
-              <AppText variant="h4" style={styles.comingSoonTitle}>Coming Soon</AppText>
+              <AppText variant="h4" style={styles.comingSoonTitle}>
+                Coming Soon
+              </AppText>
               <AppText variant="body2" color={colors.textSecondary} style={styles.comingSoonText}>
-                Skills Battles will let you challenge friends with video proof of your skills. Neutral attesters will verify the winner.
+                Skills Battles will let you challenge friends with video proof of your skills.
+                Neutral attesters will verify the winner.
               </AppText>
             </View>
           </View>
@@ -134,26 +120,25 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
           <View style={styles.categoriesContainer}>
             <View style={styles.selectedSportBadge}>
               <AppText style={styles.selectedSportIcon}>
-                {SPORTS.find(s => s.id === selectedSport)?.icon}
+                {SPORTS.find((s) => s.id === selectedSport)?.icon}
               </AppText>
               <AppText variant="h4">{selectedSport}</AppText>
             </View>
-            
+
             <View style={styles.categoriesList}>
               {BATTLE_CATEGORIES.map((category) => (
                 <TouchableOpacity
                   key={category.id}
-                  style={[
-                    styles.categoryCard,
-                    !category.enabled && styles.categoryCardDisabled,
-                  ]}
+                  style={[styles.categoryCard, !category.enabled && styles.categoryCardDisabled]}
                   onPress={() => handleCategorySelect(category)}
                   disabled={!category.enabled}
                 >
-                  <View style={[
-                    styles.categoryIconContainer,
-                    !category.enabled && styles.categoryIconDisabled,
-                  ]}>
+                  <View
+                    style={[
+                      styles.categoryIconContainer,
+                      !category.enabled && styles.categoryIconDisabled,
+                    ]}
+                  >
                     <Ionicons
                       name={category.icon as keyof typeof Ionicons.glyphMap}
                       size={28}

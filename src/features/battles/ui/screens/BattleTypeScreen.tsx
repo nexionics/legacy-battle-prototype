@@ -5,51 +5,16 @@ import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
 import type { BattleTypeScreenProps, BattleTypeOption } from '@/shared/types';
+import { BATTLE_TYPES } from '@/shared/constants';
 
-const BATTLE_TYPES: BattleTypeOption[] = [
-  {
-    id: 'GAME_DUEL',
-    name: 'Game Duel',
-    description: 'Head-to-Head On Any Game.',
-    icon: '🏆',
-    iconColor: colors.gold,
-    badge: 'Oracle Verifies',
-    badgeColor: colors.primary,
-    features: [
-      { icon: 'checkmark-circle', text: 'Official Game Results' },
-      { icon: 'flash', text: 'Instant Results' },
-    ],
-    enabled: true,
-  },
-  {
-    id: 'STAT_DUEL',
-    name: 'Stat Duel',
-    description: 'Compete Using Real World Stats.',
-    icon: '📊',
-    iconColor: colors.info,
-    badge: 'Oracle Verifies',
-    badgeColor: colors.primary,
-    features: [
-      { icon: 'stats-chart', text: 'Official Stats' },
-      { icon: 'flash', text: 'Instant Results' },
-    ],
-    enabled: true,
-  },
-  {
-    id: 'SKILL_BATTLE',
-    name: 'Skill Battle',
-    description: 'Showcase Your Skills With Proof.',
-    icon: '⚡',
-    iconColor: colors.primary,
-    badge: 'Neutral Attester Verifies',
-    badgeColor: '#9C27B0',
-    features: [
-      { icon: 'videocam', text: 'Video Evidence Needed' },
-      { icon: 'people', text: '3 Neutral Attesters' },
-    ],
-    enabled: false,
-  },
-];
+const resolveBattleTypes = (): BattleTypeOption[] =>
+  BATTLE_TYPES.map((t) => ({
+    ...t,
+    iconColor: t.iconColor in colors ? (colors as Record<string, string>)[t.iconColor] : t.iconColor,
+    badgeColor: t.badgeColor in colors ? (colors as Record<string, string>)[t.badgeColor] : t.badgeColor,
+  })) as BattleTypeOption[];
+
+const BATTLE_TYPES_RESOLVED = resolveBattleTypes();
 
 export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) {
   const selectedType = useBattlesStore((s) => s.selectedType);
@@ -101,7 +66,7 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
         </AppText>
       </View>
 
-      {BATTLE_TYPES.map((type) => (
+      {BATTLE_TYPES_RESOLVED.map((type) => (
         <TouchableOpacity
           key={type.id}
           style={[

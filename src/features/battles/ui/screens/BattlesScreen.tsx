@@ -19,17 +19,12 @@ import { getStatusColor, formatRelativeDate } from '@/shared/utils';
 import { useBattles } from '@/features/battles/ui/hooks';
 import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
 import type { TabType } from '@/shared/types';
+import { BATTLES_LIST_TABS } from '@/shared/constants';
 
 type BattlesScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'Battles'>,
   NativeStackScreenProps<AppStackParamList>
 >;
-
-const TABS = [
-  { key: 'open', label: 'Open' },
-  { key: 'active', label: 'Active' },
-  { key: 'completed', label: 'Completed' },
-];
 
 export default function BattlesScreen({ navigation }: BattlesScreenProps) {
   const {
@@ -73,7 +68,7 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
         />
 
         <TabBar
-          tabs={TABS}
+          tabs={BATTLES_LIST_TABS}
           activeTab={listActiveTab}
           onTabChange={(key) => setListActiveTab(key as TabType)}
         />

@@ -7,6 +7,7 @@ import {
   type ThemeColors,
   type ThemeMode,
 } from '@/shared/theme';
+import { THEME_STORAGE_KEY } from '@/shared/constants';
 
 type ThemeContextValue = {
   mode: ThemeMode;
@@ -20,8 +21,6 @@ export type AppTheme = Omit<Theme, 'colors'> & {
   mode: ThemeMode;
   toggleTheme: () => void;
 };
-
-const THEME_STORAGE_KEY = '@lb_theme_mode';
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
