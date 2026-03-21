@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@expo-google-fonts/montserrat": "^0.4.2",
-    "@hookform/resolvers": "^3.9.1",
     "@expo-google-fonts/roboto": "^0.4.3",
     "@expo/vector-icons": "^15.0.3",
+    "@hookform/resolvers": "^3.9.1",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.8.12",
     "@react-navigation/native": "^7.1.25",
@@ -25,6 +25,7 @@
     "axios": "^1.13.5",
     "expo": "~54.0.33",
     "expo-av": "~16.0.8",
+    "expo-clipboard": "~8.0.8",
     "expo-font": "~14.0.11",
     "expo-linear-gradient": "^15.0.8",
     "expo-splash-screen": "~31.0.13",

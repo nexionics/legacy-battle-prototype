@@ -13,8 +13,7 @@ export type UseOtpVerificationReturn = {
   resendDisabled: boolean;
   cooldownSec: number;
   displayEmail: string;
-  onDigitChange: (index: number, value: string) => void;
-  digitAt: (index: number) => string;
+  onCodeChange: (code: string) => void;
   loginScreenStrings: typeof loginScreenStrings;
   otpVerificationScreenStrings: typeof otpVerificationScreenStrings;
 };

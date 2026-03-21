@@ -73,16 +73,9 @@ export function EmailLoginScreen({
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder={loginScreenStrings.emailLoginForm.passwordPlaceholder}
-                secureTextEntry
+                isPassword
                 editable={!isSubmitting}
                 error={errors.password?.message}
-                leftComponent={
-                  <Ionicons
-                    name="lock-closed-outline"
-                    size={sizes.icon20}
-                    color={colors.textSecondary}
-                  />
-                }
                 containerStyle={styles.inputContainer}
               />
             )}

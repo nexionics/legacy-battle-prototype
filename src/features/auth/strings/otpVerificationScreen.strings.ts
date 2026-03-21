@@ -8,7 +8,9 @@ export const otpVerificationScreenStrings = {
   },
   resend: {
     prompt: "Didn't receive the email?",
-    cta: 'Click To Resend',
+    /** Shown while countdown is active; timer (MM:SS) is rendered next to this. */
+    availableIn: 'Resend available in',
+    cta: 'Resend code',
     successToast: 'A new code has been sent',
   },
   primaryCta: {

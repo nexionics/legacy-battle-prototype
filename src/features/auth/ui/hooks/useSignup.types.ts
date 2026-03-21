@@ -9,10 +9,6 @@ export type UseSignupReturn = {
   errors: FieldErrors<SignUpFormValues>;
   isValid: boolean;
   isSubmitting: boolean;
-  showPassword: boolean;
-  setShowPassword: (v: boolean) => void;
-  showConfirmPassword: boolean;
-  setShowConfirmPassword: (v: boolean) => void;
   onGooglePress: () => void;
   onFooterLinkPress: () => void;
   loginScreenStrings: typeof loginScreenStrings;

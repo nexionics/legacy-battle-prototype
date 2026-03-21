@@ -1,6 +1,13 @@
-import React, { forwardRef } from 'react';
-import { View, TextInput, StyleSheet, type TextInput as RNTextInput } from 'react-native';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
+import React, { forwardRef, useState } from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  type TextInput as RNTextInput,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors, spacing, radii, fontSizes, sizes } from '@/shared/theme';
 import { AppText } from '../atoms';
 import type { InputProps } from '@/shared/types';
 
@@ -9,6 +16,7 @@ const InputComponent = (
     label,
     error,
     required,
+    isPassword,
     leftComponent,
     rightComponent,
     containerStyle,
@@ -17,10 +25,12 @@ const InputComponent = (
     showSuccessBorder,
     isFocused,
     style: _style,
+    secureTextEntry: secureTextEntryProp,
     ...rest
   }: InputProps,
   ref: React.Ref<RNTextInput>
 ) => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const hasError = Boolean(error);
   const showSuccess = Boolean(showSuccessBorder && rest.value && rest.value.length > 0);
 
@@ -33,6 +43,31 @@ const InputComponent = (
         ].filter(Boolean)
       : [];
 
+  const secureTextEntry = isPassword ? !passwordVisible : secureTextEntryProp;
+
+  const resolvedLeft = isPassword ? (
+    <Ionicons name="lock-closed-outline" size={sizes.icon20} color={colors.textSecondary} />
+  ) : (
+    leftComponent
+  );
+
+  const resolvedRight = isPassword ? (
+    <TouchableOpacity
+      accessibilityRole="button"
+      accessibilityLabel={passwordVisible ? 'Hide password' : 'Show password'}
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      onPress={() => setPasswordVisible((v) => !v)}
+    >
+      <Ionicons
+        name={passwordVisible ? 'eye-outline' : 'eye-off-outline'}
+        size={sizes.icon20}
+        color={colors.textSecondary}
+      />
+    </TouchableOpacity>
+  ) : (
+    rightComponent
+  );
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label != null && label !== '' ? (
@@ -42,14 +77,15 @@ const InputComponent = (
         </AppText>
       ) : null}
       <View style={[styles.wrapper, ...wrapperDynamic, wrapperStyle]}>
-        {leftComponent != null ? <View style={styles.slot}>{leftComponent}</View> : null}
+        {resolvedLeft != null ? <View style={styles.slot}>{resolvedLeft}</View> : null}
         <TextInput
           ref={ref}
           style={[styles.input, inputTextStyle]}
           placeholderTextColor={colors.muted}
           {...rest}
+          secureTextEntry={secureTextEntry}
         />
-        {rightComponent != null ? <View style={styles.slot}>{rightComponent}</View> : null}
+        {resolvedRight != null ? <View style={styles.slot}>{resolvedRight}</View> : null}
       </View>
       {hasError ? (
         <AppText variant="error" color={colors.error} style={styles.errorText}>

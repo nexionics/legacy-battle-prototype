@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,7 +11,8 @@ import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
 import { otpSchema, type OtpFormValues } from './useOtp.validation';
 
-const RESEND_COOLDOWN_SEC = 120;
+/** Resend OTP allowed only after this many seconds (2 minutes). */
+export const RESEND_OTP_COOLDOWN_SEC = 120;
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 type OtpRoute = RouteProp<AuthStackParamList, 'OTPVerification'>;
@@ -25,7 +26,7 @@ export function useOtpVerification() {
   const verifyMutation = useVerifyOtpMutation();
   const resendMutation = useResendOtpMutation();
 
-  const [cooldownSec, setCooldownSec] = useState(0);
+  const [cooldownSec, setCooldownSec] = useState(RESEND_OTP_COOLDOWN_SEC);
   const missingSessionHandled = useRef(false);
 
   const email = route.params?.email ?? '';
@@ -34,10 +35,8 @@ export function useOtpVerification() {
   const form = useForm<OtpFormValues>({
     resolver: yupResolver(otpSchema),
     mode: 'onChange',
-    defaultValues: { code: '' },
+    defaultValues: { otp: '' },
   });
-
-  const code = useWatch({ control: form.control, name: 'code' }) ?? '';
 
   useEffect(() => {
     if (missingSessionHandled.current) return;
@@ -54,24 +53,18 @@ export function useOtpVerification() {
     return () => clearInterval(id);
   }, [cooldownSec]);
 
-  const onDigitChange = useCallback(
-    (index: number, value: string) => {
-      const cur = form.getValues('code') ?? '';
-      const digits = cur.replace(/\D/g, '').padEnd(6, ' ').split('').slice(0, 6);
-      const nextChar = value.replace(/\D/g, '').slice(-1) ?? '';
-      digits[index] = nextChar;
-      const merged = digits.join('').replace(/\s/g, '').slice(0, 6);
-      form.setValue('code', merged, { shouldValidate: true, shouldDirty: true });
+  const onCodeChange = useCallback(
+    (next: string) => {
+      const merged = next.replace(/\D/g, '').slice(0, 5);
+      form.setValue('otp', merged, { shouldValidate: true, shouldDirty: true });
     },
     [form],
   );
 
-  const digitAt = (index: number) => code.replace(/\D/g, '')[index] ?? '';
-
   const onValidSubmit = async (data: OtpFormValues) => {
     const result = await verifyMutation.mutateAsync({
       reference,
-      code: data.code,
+      otp: data.otp,
     });
 
     if (!result.success) {
@@ -87,7 +80,7 @@ export function useOtpVerification() {
   const onResend = async () => {
     if (cooldownSec > 0 || resendMutation.isPending) return;
 
-    const result = await resendMutation.mutateAsync({ reference });
+    const result = await resendMutation.mutateAsync({ email });
 
     if (!result.success) {
       showToast('fail', result.error.message);
@@ -95,7 +88,7 @@ export function useOtpVerification() {
     }
 
     showToast('success', otpVerificationScreenStrings.resend.successToast);
-    setCooldownSec(RESEND_COOLDOWN_SEC);
+    setCooldownSec(RESEND_OTP_COOLDOWN_SEC);
   };
 
   return {
@@ -109,8 +102,7 @@ export function useOtpVerification() {
     resendDisabled: cooldownSec > 0 || resendMutation.isPending,
     cooldownSec,
     displayEmail: email,
-    onDigitChange,
-    digitAt,
+    onCodeChange,
     loginScreenStrings,
     otpVerificationScreenStrings,
   };

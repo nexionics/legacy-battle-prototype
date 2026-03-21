@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -24,10 +24,6 @@ export function SignUpScreen({
   errors,
   isValid,
   isSubmitting,
-  showPassword,
-  setShowPassword,
-  showConfirmPassword,
-  setShowConfirmPassword,
   onGooglePress,
   onFooterLinkPress,
   loginScreenStrings,
@@ -82,25 +78,9 @@ export function SignUpScreen({
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder={signUpScreenStrings.form.passwordPlaceholder}
-                secureTextEntry={!showPassword}
+                isPassword
                 editable={!isSubmitting}
                 error={errors.password?.message}
-                leftComponent={
-                  <Ionicons
-                    name="lock-closed-outline"
-                    size={sizes.icon20}
-                    color={colors.textSecondary}
-                  />
-                }
-                rightComponent={
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                    <Ionicons
-                      name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-                      size={sizes.icon20}
-                      color={colors.textSecondary}
-                    />
-                  </TouchableOpacity>
-                }
                 containerStyle={styles.inputContainer}
               />
             )}
@@ -116,25 +96,9 @@ export function SignUpScreen({
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder={signUpScreenStrings.form.passwordPlaceholder}
-                secureTextEntry={!showConfirmPassword}
+                isPassword
                 editable={!isSubmitting}
                 error={errors.confirmPassword?.message}
-                leftComponent={
-                  <Ionicons
-                    name="lock-closed-outline"
-                    size={sizes.icon20}
-                    color={colors.textSecondary}
-                  />
-                }
-                rightComponent={
-                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                    <Ionicons
-                      name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
-                      size={sizes.icon20}
-                      color={colors.textSecondary}
-                    />
-                  </TouchableOpacity>
-                }
                 containerStyle={styles.inputContainer}
               />
             )}

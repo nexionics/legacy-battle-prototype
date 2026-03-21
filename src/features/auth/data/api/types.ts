@@ -24,6 +24,7 @@ export interface LoginRequest {
   password: string;
 }
 
+/** Normalized login success payload (see `normalizeLoginResponse` in authApi). */
 export type LoginResponseData =
   | { outcome: 'AUTHENTICATED'; accessToken: string; refreshToken: string }
   | { outcome: 'PENDING_VERIFICATION'; reference: string; email: string };
@@ -40,7 +41,7 @@ export interface SignupResponseData {
 
 export interface VerifyOtpRequest {
   reference: string;
-  code: string;
+  otp: string;
 }
 
 export interface VerifyOtpResponseData {
@@ -49,7 +50,7 @@ export interface VerifyOtpResponseData {
 }
 
 export interface ResendOtpRequest {
-  reference: string;
+  email: string;
 }
 
 export interface ResendOtpResponseData {

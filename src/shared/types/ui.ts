@@ -71,6 +71,8 @@ export type InputProps = TextInputProps & {
   label?: string;
   error?: string;
   required?: boolean;
+  /** Lock icon + visibility toggle; internal state per field. Ignores `leftComponent` / `rightComponent` / `secureTextEntry`. */
+  isPassword?: boolean;
   leftComponent?: React.ReactNode;
   rightComponent?: React.ReactNode;
   containerStyle?: ViewStyle;

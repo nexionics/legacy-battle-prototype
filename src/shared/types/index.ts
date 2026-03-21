@@ -75,6 +75,7 @@ export type {
 } from './navigation';
 export type { LevelInfo, ConnectionStatus } from './profile';
 export type { SportFilter } from './sports';
+export type { OTPInputProps, UseOTPInputOptions, UseOTPInputReturn } from './otp';
 export type {
   CardProps,
   AvatarSize,

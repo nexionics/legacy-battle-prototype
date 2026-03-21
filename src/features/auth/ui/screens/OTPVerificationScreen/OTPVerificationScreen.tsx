@@ -1,37 +1,38 @@
-import { useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import type { TextInput as RNTextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Screen,
   AppText,
   ScreenHeader,
-  Input,
   IconCircle,
   PatternBackground,
   SVGWrapper,
   Button,
+  OTPInput,
 } from '@/shared/ui';
 import {
   colors,
   spacing,
-  radii,
+  sizes,
   fontSizes,
   fontWeights,
-  borderWidths,
-  sizes,
 } from '@/shared/constants/theme';
 import type { OTPVerificationScreenProps } from '@/shared/types';
 import type { UseOtpVerificationReturn } from '@/features/auth/ui/hooks/useOtpVerification.types';
 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = 5;
+
+function formatMmSs(totalSeconds: number): string {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
 export type OTPVerificationViewProps = OTPVerificationScreenProps & UseOtpVerificationReturn;
 
 export function OTPVerificationScreen({
   navigation,
-  onDigitChange,
-  digitAt,
+  onCodeChange,
   onSubmit,
   errors,
   isValid,
@@ -43,16 +44,6 @@ export function OTPVerificationScreen({
   loginScreenStrings,
   otpVerificationScreenStrings,
 }: OTPVerificationViewProps) {
-  const inputRefs = useRef<(RNTextInput | null)[]>([]);
-
-  const handleDigitChange = (index: number, value: string) => {
-    onDigitChange(index, value);
-    const last = value.replace(/\D/g, '').slice(-1) ?? '';
-    if (last && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
@@ -76,40 +67,43 @@ export function OTPVerificationScreen({
           </AppText>
         </View>
 
-        <View style={styles.otpContainer}>
-          {Array.from({ length: OTP_LENGTH }, (_, index) => (
-            <Input
-              key={index}
-              ref={(ref) => {
-                inputRefs.current[index] = ref;
-              }}
-              value={digitAt(index)}
-              onChangeText={(v) => handleDigitChange(index, v)}
-              keyboardType="number-pad"
-              maxLength={1}
-              selectTextOnFocus
-              wrapperStyle={styles.otpInputWrapper}
-              inputTextStyle={styles.otpInput}
-            />
-          ))}
+        <View style={styles.otpSection}>
+          <OTPInput
+            length={OTP_LENGTH}
+            onChange={onCodeChange}
+            onComplete={() => {
+              void onSubmit();
+            }}
+            errors={errors.otp?.message}
+            disabled={isSubmitting}
+          />
         </View>
-        {errors.code?.message ? (
-          <AppText variant="error" color={colors.error} style={styles.codeError}>
-            {errors.code.message}
-          </AppText>
-        ) : null}
 
-        <View style={styles.resendContainer}>
-          <AppText variant="body2" color={colors.textSecondary}>
-            {otpVerificationScreenStrings.resend.prompt}{' '}
+        <View style={styles.resendBlock}>
+          <AppText variant="body2" color={colors.textSecondary} style={styles.resendPrompt}>
+            {otpVerificationScreenStrings.resend.prompt}
           </AppText>
-          <TouchableOpacity onPress={onResend} disabled={resendDisabled}>
-            <AppText variant="label" color={resendDisabled ? colors.textSecondary : colors.primary}>
-              {cooldownSec > 0
-                ? `${otpVerificationScreenStrings.resend.cta} (${cooldownSec}s)`
-                : otpVerificationScreenStrings.resend.cta}
-            </AppText>
-          </TouchableOpacity>
+          {cooldownSec > 0 ? (
+            <View style={styles.countdownRow} accessibilityLiveRegion="polite">
+              <AppText variant="body2" color={colors.textSecondary}>
+                {otpVerificationScreenStrings.resend.availableIn}{' '}
+              </AppText>
+              <AppText
+                variant="body1"
+                color={colors.primary}
+                style={styles.countdownDigits}
+                accessibilityLabel={`Resend available in ${formatMmSs(cooldownSec)}`}
+              >
+                {formatMmSs(cooldownSec)}
+              </AppText>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={onResend} disabled={resendDisabled} style={styles.resendCta}>
+              <AppText variant="label" color={resendDisabled ? colors.textSecondary : colors.primary}>
+                {otpVerificationScreenStrings.resend.cta}
+              </AppText>
+            </TouchableOpacity>
+          )}
         </View>
 
         <Button
@@ -144,38 +138,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing[2],
   },
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: spacing[2],
+  otpSection: {
     marginBottom: spacing[6],
   },
-  otpInputWrapper: {
-    width: sizes.otpInputWidth,
-    height: sizes.otpInputHeight,
-    borderRadius: radii.lg,
-    borderWidth: borderWidths.thick,
-    borderColor: colors.primary,
-    paddingHorizontal: 0,
-    justifyContent: 'center',
+  resendBlock: {
     alignItems: 'center',
-  },
-  otpInput: {
-    fontSize: fontSizes.xl,
-    fontWeight: fontWeights.bold,
-    textAlign: 'center',
-    paddingVertical: 0,
-  },
-  resendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
     marginBottom: spacing[6],
+    gap: spacing[2],
+  },
+  resendPrompt: {
+    textAlign: 'center',
+  },
+  countdownRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  countdownDigits: {
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.semibold,
+    fontVariant: ['tabular-nums'],
+  },
+  resendCta: {
+    paddingVertical: spacing[1],
   },
   verifyButton: {
     marginTop: spacing[2],
-  },
-  codeError: {
-    textAlign: 'center',
-    marginBottom: spacing[4],
   },
 });

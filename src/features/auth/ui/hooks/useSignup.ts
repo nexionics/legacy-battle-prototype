@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
@@ -16,8 +15,6 @@ export function useSignup() {
   const navigation = useNavigation<AuthNav>();
   const { showToast } = useToast();
   const signupMutation = useSignupMutation();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<SignUpFormValues>({
     resolver: yupResolver(signUpSchema),
@@ -61,10 +58,6 @@ export function useSignup() {
     errors: form.formState.errors,
     isValid: form.formState.isValid,
     isSubmitting: form.formState.isSubmitting || signupMutation.isPending,
-    showPassword,
-    setShowPassword,
-    showConfirmPassword,
-    setShowConfirmPassword,
     onGooglePress,
     onFooterLinkPress,
     loginScreenStrings,
