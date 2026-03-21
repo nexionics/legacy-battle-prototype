@@ -70,28 +70,27 @@ export function Button({
       </AppText>
     ) : null;
 
-  const inner =
-    loading ? (
-      <ActivityIndicator color={spinnerColor(variant)} />
-    ) : typeof children === 'string' ? (
-      hasIcons ? (
-        <View style={styles.contentRow}>
-          {leftIcon != null ? <View style={styles.iconSlot}>{leftIcon}</View> : null}
-          {stringLabel}
-          {rightIcon != null ? <View style={styles.iconSlot}>{rightIcon}</View> : null}
-        </View>
-      ) : (
-        stringLabel
-      )
-    ) : hasIcons ? (
+  const inner = loading ? (
+    <ActivityIndicator color={spinnerColor(variant)} />
+  ) : typeof children === 'string' ? (
+    hasIcons ? (
       <View style={styles.contentRow}>
         {leftIcon != null ? <View style={styles.iconSlot}>{leftIcon}</View> : null}
-        <View style={styles.childGrow}>{children}</View>
+        {stringLabel}
         {rightIcon != null ? <View style={styles.iconSlot}>{rightIcon}</View> : null}
       </View>
     ) : (
-      children
-    );
+      stringLabel
+    )
+  ) : hasIcons ? (
+    <View style={styles.contentRow}>
+      {leftIcon != null ? <View style={styles.iconSlot}>{leftIcon}</View> : null}
+      <View style={styles.childGrow}>{children}</View>
+      {rightIcon != null ? <View style={styles.iconSlot}>{rightIcon}</View> : null}
+    </View>
+  ) : (
+    children
+  );
 
   return (
     <TouchableOpacity

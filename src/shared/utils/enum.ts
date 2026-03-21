@@ -9,9 +9,10 @@
  */
 
 export enum IconNameEnum {
-    BattleHand = 'BattleHand',
-    ChatBubble = "ChatBubble",
-    LegacyBattleLogo = 'LegacyBattleLogo',
+  BattleHand = 'BattleHand',
+  CheckValid = "CheckValid",
+  ChatBubble = "ChatBubble",
+  LegacyBattleLogo = 'LegacyBattleLogo',
 }
 
 export enum AuthHeaderVariant {

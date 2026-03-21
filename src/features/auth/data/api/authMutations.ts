@@ -1,9 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { postLogin, postResendOtp, postSignup, postVerifyOtp } from './authApi';
+import { postLogin, postRefreshToken, postResendOtp, postSignup, postVerifyOtp } from './authApi';
 import type {
   ApiResponse,
   LoginRequest,
   LoginResponseData,
+  RefreshTokenRequest,
+  RefreshTokenResponseData,
   ResendOtpRequest,
   ResendOtpResponseData,
   SignupRequest,
@@ -33,5 +35,11 @@ export function useVerifyOtpMutation() {
 export function useResendOtpMutation() {
   return useMutation<ApiResponse<ResendOtpResponseData>, Error, ResendOtpRequest>({
     mutationFn: (payload: ResendOtpRequest) => postResendOtp(payload),
+  });
+}
+
+export function useRefreshTokenMutation() {
+  return useMutation<ApiResponse<RefreshTokenResponseData>, Error, RefreshTokenRequest>({
+    mutationFn: (payload: RefreshTokenRequest) => postRefreshToken(payload),
   });
 }

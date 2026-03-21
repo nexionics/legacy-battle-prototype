@@ -9,6 +9,8 @@ import type {
 } from '@/shared/types';
 import type { SelectionOption } from '@/shared/types';
 
+export const TIMEOUT_DEFAULT_DELAY = 2000;
+
 // ─── Battles list tabs ─────────────────────────────────────────────────────
 
 export const BATTLES_LIST_TABS: { key: string; label: string }[] = [

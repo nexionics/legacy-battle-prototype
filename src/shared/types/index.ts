@@ -1,3 +1,5 @@
+export type { ApiSuccess, ApiErrorBody, ApiError, ApiResponse } from './apiEnvelope';
+export type { LoginRequest, LoginResponseData } from './authLoginApi';
 export type {
   UserProfile,
   Battle,

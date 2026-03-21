@@ -1,33 +1,10 @@
-/** Standard API envelope (success). */
-export interface ApiSuccess<T> {
-  success: true;
-  data: T;
-}
-
-/** Standard API envelope (failure). */
-export interface ApiErrorBody {
-  statusCode: number;
-  message: string;
-  timestamp: string;
-  path: string;
-}
-
-export interface ApiError {
-  success: false;
-  error: ApiErrorBody;
-}
-
-export type ApiResponse<T> = ApiSuccess<T> | ApiError;
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-/** Normalized login success payload (see `normalizeLoginResponse` in authApi). */
-export type LoginResponseData =
-  | { outcome: 'AUTHENTICATED'; accessToken: string; refreshToken: string }
-  | { outcome: 'PENDING_VERIFICATION'; reference: string; email: string };
+export type {
+  ApiSuccess,
+  ApiErrorBody,
+  ApiError,
+  ApiResponse,
+} from '@/shared/types/apiEnvelope';
+export type { LoginRequest, LoginResponseData } from '@/shared/types/authLoginApi';
 
 export interface SignupRequest {
   email: string;
@@ -55,4 +32,18 @@ export interface ResendOtpRequest {
 
 export interface ResendOtpResponseData {
   sent: boolean;
+}
+
+export interface CheckUsernameResponseData {
+  message: string;
+  available: boolean;
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponseData {
+  accessToken: string;
+  refreshToken: string;
 }

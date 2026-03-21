@@ -5,7 +5,7 @@ import { SvgXml } from 'react-native-svg';
 
 export default function Whatsapp({ fill = '#fff', ...props }: IconProps): JSX.Element {
   const svgMarkup = `
-  <svg width="73" height="73" width=${moderateScale(32)} height=${moderateScale(37)} viewBox="0 0 73 73" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width=${moderateScale(73)} height=${moderateScale(73)} viewBox="0 0 73 73" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="18.2012" width="56" height="56" rx="12" transform="rotate(15 18.2012 0)" fill="#FF0000"/>
   <foreignObject x="-16" y="0.292969" width="88" height="88"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(8px);clip-path:url(#bgblur_0_658_3642_clip_path);height:100%;width:100%"></div></foreignObject><g data-figma-bg-blur-radius="16">
   <rect y="16.293" width="56" height="56" rx="12" fill="white" fill-opacity="0.6"/>

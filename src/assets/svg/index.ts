@@ -14,5 +14,6 @@ import LegacyBattleLogo from './logo.svg';
 export default {
   BattleHand: BattleHand,
   ChatBubble: require('./ChatBubble').default,
+  CheckValid: require('./CheckValid').default,
   LegacyBattleLogo: LegacyBattleLogo,
 };

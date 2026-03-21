@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Platform, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { HomeScreen } from '@/features/sports';
 import { BattlesScreen, ExploreScreen } from '@/features/battles';
@@ -13,15 +15,18 @@ import {
   FontFamily,
 } from '@/shared/theme';
 import type {
+  RootStackParamList,
   TabStackParamList,
   TabScreenProps,
-  CustomTabBarButtonProps,
-  MainTabsScreenProps,
 } from './types';
 
 const Tab = createBottomTabNavigator<TabStackParamList>();
 
-function CustomTabBarButton({ onPress }: CustomTabBarButtonProps) {
+type BattleNowButtonProps = {
+  onPress: () => void;
+};
+
+function CustomTabBarButton({ onPress }: BattleNowButtonProps) {
   return (
     <TouchableOpacity style={tabStyles.customTabButton} onPress={onPress}>
       <Image
@@ -37,11 +42,18 @@ function BattleNowPlaceholder() {
   return null;
 }
 
-export function MainTabs({ navigation }: MainTabsScreenProps) {
+export function MainTabs() {
+  const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const onBattleNowPress = useCallback(() => {
+    rootNavigation.navigate('BattleVisibility');
+  }, [rootNavigation]);
+
   return (
     <Tab.Navigator
+      detachInactiveScreens={false}
       screenOptions={{
         headerShown: false,
+        freezeOnBlur: false,
         tabBarStyle: tabStyles.tabBar,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
@@ -69,16 +81,10 @@ export function MainTabs({ navigation }: MainTabsScreenProps) {
       <Tab.Screen
         name="BattleNow"
         component={BattleNowPlaceholder}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            navigation.navigate('BattleVisibility');
-          },
-        }}
         options={{
           tabBarLabel: () => null,
           tabBarIcon: () => null,
-          tabBarButton: (props) => <CustomTabBarButton {...props} />,
+          tabBarButton: () => <CustomTabBarButton onPress={onBattleNowPress} />,
         }}
       />
       <Tab.Screen
@@ -108,8 +114,8 @@ const tabStyles = StyleSheet.create({
     backgroundColor: colors.background,
     borderTopColor: colors.inputBorder,
     borderTopWidth: 1,
-    height: verticalScale(70),
-    paddingBottom: verticalScale(10),
+    height: Platform.OS === 'android' ? verticalScale(66) : verticalScale(70),
+    paddingBottom: Platform.OS === 'android' ? verticalScale(6) : verticalScale(10),
     paddingTop: verticalScale(10),
   },
   tabBarLabel: {

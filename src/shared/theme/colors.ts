@@ -38,7 +38,7 @@ export type ThemeColors = {
 };
 
 export const DARK_COLORS: ThemeColors = {
-  primary: '#E53935',
+  primary: '#FF0000',
   primaryDark: '#C62828',
   primaryTint: 'rgba(229, 57, 53, 0.1)',
   secondary: '#1B2B1B',
@@ -52,7 +52,7 @@ export const DARK_COLORS: ThemeColors = {
   muted: '#666666',
   red: '#F44336',
   gray: '#666666',
-  success: '#4CAF50',
+  success: '#17B26A',
   successTint: 'rgba(76, 175, 80, 0.1)',
   warning: '#FFC107',
   warningTint: 'rgba(245, 158, 11, 0.1)',

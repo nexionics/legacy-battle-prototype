@@ -43,6 +43,11 @@ export function useLogin() {
 
     if (result.data.outcome === 'AUTHENTICATED') {
       setAuthTokens(result.data.accessToken, result.data.refreshToken);
+      if (!result.data.hasUsername) {
+        setNeedsUsername(true);
+        navigation.navigate('CreateUsername');
+        return;
+      }
       setNeedsUsername(false);
     }
   };

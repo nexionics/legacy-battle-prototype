@@ -1,32 +1,52 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import { VideoView, useVideoPlayer } from 'expo-video';
 import { colors } from '@/shared/theme';
 import type { SplashVideoProps } from '@/shared/types';
 
 export const SplashVideo: React.FC<SplashVideoProps> = ({ onFinish }) => {
-  const videoRef = useRef<Video>(null);
+  const didFinishRef = useRef(false);
+  const finishOnce = useCallback(() => {
+    if (didFinishRef.current) return;
+    didFinishRef.current = true;
+    onFinish();
+  }, [onFinish]);
 
-  const handlePlaybackStatusUpdate = useCallback(
-    (status: AVPlaybackStatus) => {
-      if (status.isLoaded && status.didJustFinish) {
-        onFinish();
+  const player = useVideoPlayer(require('../../../assets/videos/splash-video.mp4'), (instance) => {
+    instance.loop = false;
+    instance.play();
+  });
+
+  useEffect(() => {
+    const endSub = player.addListener('playToEnd', () => {
+      finishOnce();
+    });
+
+    const statusSub = player.addListener('statusChange', ({ status }) => {
+      if (status === 'error') {
+        finishOnce();
       }
-    },
-    [onFinish],
-  );
+    });
+
+    // Safety net: never block app startup if playback events fail on a device.
+    const failSafe = setTimeout(() => {
+      finishOnce();
+    }, 9000);
+
+    return () => {
+      endSub.remove();
+      statusSub.remove();
+      clearTimeout(failSafe);
+    };
+  }, [finishOnce, player]);
 
   return (
     <View style={styles.container}>
-      <Video
-        ref={videoRef}
-        source={require('../../../assets/videos/splash-video.mp4')}
+      <VideoView
         style={styles.video}
-        resizeMode={ResizeMode.COVER}
-        shouldPlay
-        isLooping={false}
-        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-        onError={onFinish}
+        contentFit="cover"
+        player={player}
+        nativeControls={false}
       />
     </View>
   );

@@ -9,14 +9,19 @@ import {
   SignUpScreen,
   OTPVerificationScreen,
   CreateUsernameScreen,
+  useAuthStore,
 } from '@/features/auth';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 const headerOptions: NativeStackNavigationOptions = { headerShown: false };
 
 const AuthStack = () => {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const needsUsername = useAuthStore((s) => s.needsUsername);
+  const initialRouteName = accessToken && needsUsername ? 'CreateUsername' : 'Login';
+
   return (
-    <Stack.Navigator screenOptions={headerOptions}>
+    <Stack.Navigator initialRouteName={initialRouteName} screenOptions={headerOptions}>
       <Stack.Screen name="Login" component={LoginWelcomeScreen} />
       <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />

@@ -9,6 +9,10 @@ export type UseCreateUsernameReturn = {
   errors: FieldErrors<CreateUsernameFormValues>;
   isValid: boolean;
   isSubmitting: boolean;
+  isCheckingUsername: boolean;
+  isUsernameAvailable: boolean;
+  usernameStatusMessage: string;
+  onBackPress: () => void;
   createUsernameScreenStrings: typeof createUsernameScreenStrings;
   loginScreenStrings: typeof loginScreenStrings;
 };
