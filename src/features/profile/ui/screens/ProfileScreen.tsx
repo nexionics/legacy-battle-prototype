@@ -79,13 +79,13 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     );
   }
 
-  if (profileError) {
-    return (
-      <Screen>
-        <ErrorState message={profileError} onRetry={handleRetry} />
-      </Screen>
-    );
-  }
+  // if (profileError) {
+  //   return (
+  //     <Screen>
+  //       <ErrorState message={profileError} onRetry={handleRetry} />
+  //     </Screen>
+  //   );
+  // }
 
   return (
     <Screen padding={0}>

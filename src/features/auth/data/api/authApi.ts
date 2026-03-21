@@ -18,6 +18,8 @@ import type {
   SignupResponseData,
   VerifyOtpRequest,
   VerifyOtpResponseData,
+  SetUsernameRequest,
+  SetUsernameResponseData,
 } from './types';
 
 export async function postLogin(body: LoginRequest): Promise<ApiResponse<LoginResponseData>> {
@@ -73,6 +75,19 @@ export async function postRefreshToken(
     /** Bearer access token is required; `authenticatedHttp` attaches it from the store. */
     const res = await authenticatedHttp.post(path, body);
     return parseApiResponse<RefreshTokenResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postSetUsername(
+  body: SetUsernameRequest,
+): Promise<ApiResponse<SetUsernameResponseData>> {
+  const path = '/auth/set-username';
+  try {
+    const res = await authenticatedHttp.post(path, body);
+    return parseApiResponse<SetUsernameResponseData>(path, res.status, res.data as object);
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Network error';
     return networkFailure(path, message);

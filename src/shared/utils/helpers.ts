@@ -31,6 +31,20 @@ export const getOTPFromClipboard = async (length: number): Promise<string[]> => 
   }
 };
 
+/**
+ * Canonical username for API checks and set-username: lowercase, runs of whitespace → single `_`, trimmed.
+ *
+ * @example "The Legend Killer" → "the_legend_killer"
+ */
+export function formatUsernameForApi(raw: string): string {
+  return raw
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '');
+}
+
 /** Result of normalizing a check-username API `data` payload for UI and validation. */
 export type NormalizedCheckUsername = {
   available: boolean;

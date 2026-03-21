@@ -47,3 +47,11 @@ export interface RefreshTokenResponseData {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface SetUsernameRequest {
+  username: string;
+  displayName: string;
+}
+
+/** Backend may extend this; we only require success envelope handling. */
+export type SetUsernameResponseData = Record<string, unknown>;

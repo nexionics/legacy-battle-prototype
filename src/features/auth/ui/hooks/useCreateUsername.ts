@@ -4,15 +4,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
+import { useToast } from '@/app/providers/useToast';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import type { AuthStackParamList } from '@/shared/types';
-import { getCheckUsername } from '@/features/auth/data/api/authApi';
+import { getCheckUsername, postSetUsername } from '@/features/auth/data/api/authApi';
 import { createUsernameScreenStrings, loginScreenStrings } from '@/features/auth/strings';
 import { useDebounce } from '@/shared/hooks/useDebounce';
+import { formatUsernameForApi } from '@/shared/utils/helpers';
 import { createUsernameSchema, type CreateUsernameFormValues } from './useCreateUsername.validation';
 
 export function useCreateUsername() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const { showToast } = useToast();
   const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const logout = useAuthStore((s) => s.logout);
@@ -26,13 +29,14 @@ export function useCreateUsername() {
     defaultValues: { username: '' },
   });
   const username = useWatch({ control: form.control, name: 'username' }) ?? '';
-  const debouncedUsername = useDebounce(username.trim(), 500);
+  const trimmedUsername = username.trim();
+  const debouncedTrimmed = useDebounce(trimmedUsername, 500);
+  const formattedForCheck = formatUsernameForApi(debouncedTrimmed);
 
   useEffect(() => {
-    const value = debouncedUsername;
     let cancelled = false;
 
-    if (value.length < 3) {
+    if (formattedForCheck.length < 3) {
       setIsCheckingUsername(false);
       setIsUsernameAvailable(false);
       setUsernameStatusMessage('');
@@ -41,7 +45,7 @@ export function useCreateUsername() {
 
     const run = async () => {
       setIsCheckingUsername(true);
-      const result = await getCheckUsername(value);
+      const result = await getCheckUsername(formattedForCheck);
       if (cancelled) return;
 
       if (!result.success) {
@@ -60,9 +64,9 @@ export function useCreateUsername() {
     return () => {
       cancelled = true;
     };
-  }, [debouncedUsername]);
+  }, [formattedForCheck]);
 
-  const onValidSubmit = (data: CreateUsernameFormValues) => {
+  const onValidSubmit = async (data: CreateUsernameFormValues) => {
     if (!isUsernameAvailable) {
       form.setError('username', {
         type: 'manual',
@@ -70,7 +74,25 @@ export function useCreateUsername() {
       });
       return;
     }
-    setUser({ id: data.username, email: undefined });
+
+    const displayName = data.username.trim();
+    const canonicalUsername = formatUsernameForApi(displayName);
+
+    const result = await postSetUsername({
+      username: canonicalUsername,
+      displayName,
+    });
+
+    if (!result.success) {
+      form.setError('username', {
+        type: 'manual',
+        message: result.error.message,
+      });
+      return;
+    }
+
+    showToast('success', createUsernameScreenStrings.successToast);
+    setUser({ id: canonicalUsername, email: undefined });
     setNeedsUsername(false);
   };
 

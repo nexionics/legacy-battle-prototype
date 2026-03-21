@@ -12,4 +12,5 @@ export const createUsernameScreenStrings = {
     startBattle: 'Start Battle',
     decorativeSwordEmoji: '⚔',
   },
+  successToast: 'Your username was saved successfully.',
 } as const;
