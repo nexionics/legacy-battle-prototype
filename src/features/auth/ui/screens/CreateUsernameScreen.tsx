@@ -3,8 +3,10 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
-import { Screen, AppText, ScreenHeader, Input } from '@/shared/ui';
-import { colors, spacing, radii, verticalScale, horizontalScale } from '@/shared/theme';
+import { Screen, AppText, ScreenHeader, Input, AuthHeader, PatternBackground } from '@/shared/ui';
+import { colors, spacing, radii, sizes } from '@/shared/constants/theme';
+import { createUsernameScreenStrings, loginScreenStrings } from '@/features/auth/strings';
+import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { CreateUsernameScreenProps } from '@/shared/types';
 
 export default function CreateUsernameScreen({ navigation }: CreateUsernameScreenProps) {
@@ -19,35 +21,32 @@ export default function CreateUsernameScreen({ navigation }: CreateUsernameScree
   };
 
   return (
-    <Screen>
+    <Screen padding={0}>
+      <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
       <View style={styles.content}>
         <ScreenHeader onBack={() => navigation.goBack()} />
 
-        <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <AppText variant="h3" color={colors.white}>LB</AppText>
-          </View>
-        </View>
-
-        <View style={styles.titleContainer}>
-          <AppText variant="h2">Create A Username</AppText>
-          <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
-            Enter A Username To Start Your Legacy
-          </AppText>
-        </View>
+        <AuthHeader
+          variant={AuthHeaderVariant.Left}
+          style={styles.authHeader}
+          title={createUsernameScreenStrings.authHeader.screenTitle}
+          subtitle={createUsernameScreenStrings.authHeader.screenSubtitle}
+        />
 
         <View style={styles.inputContainer}>
           <Input
-            label="Enter Username"
+            label={createUsernameScreenStrings.form.usernameLabel}
             value={username}
             onChangeText={setUsername}
-            placeholder="Enter Username"
+            placeholder={createUsernameScreenStrings.form.usernamePlaceholder}
             autoCapitalize="none"
-            leftComponent={<Ionicons name="person-outline" size={20} color={colors.textSecondary} />}
+            leftComponent={
+              <Ionicons name="person-outline" size={sizes.icon20} color={colors.textSecondary} />
+            }
             rightComponent={
               isAvailable ? (
                 <View style={styles.checkIcon}>
-                  <Ionicons name="checkmark" size={16} color={colors.white} />
+                  <Ionicons name="checkmark" size={sizes.icon16} color={colors.white} />
                 </View>
               ) : undefined
             }
@@ -56,17 +55,16 @@ export default function CreateUsernameScreen({ navigation }: CreateUsernameScree
           />
           {isAvailable ? (
             <AppText variant="helper" color={colors.success} style={styles.availableText}>
-              Username Is Available
+              {createUsernameScreenStrings.form.availabilitySuccess}
             </AppText>
           ) : null}
         </View>
 
-        <TouchableOpacity
-          style={styles.startButton}
-          onPress={handleStartBattle}
-        >
-          <AppText variant="buttonLg" color={colors.white}>Start Battle</AppText>
-          <AppText variant="body1">⚔</AppText>
+        <TouchableOpacity style={styles.startButton} onPress={handleStartBattle}>
+          <AppText variant="buttonLg" color={colors.white}>
+            {createUsernameScreenStrings.primaryCta.startBattle}
+          </AppText>
+          <AppText variant="body1">{createUsernameScreenStrings.primaryCta.decorativeSwordEmoji}</AppText>
         </TouchableOpacity>
       </View>
     </Screen>
@@ -76,35 +74,20 @@ export default function CreateUsernameScreen({ navigation }: CreateUsernameScree
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingHorizontal: horizontalScale(24),
+    paddingHorizontal: spacing[5],
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: verticalScale(32),
-  },
-  logo: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  titleContainer: {
-    marginBottom: verticalScale(32),
-  },
-  subtitle: {
-    marginTop: verticalScale(8),
+  authHeader: {
+    marginBottom: spacing[6],
   },
   inputContainer: {
-    marginBottom: verticalScale(32),
+    marginBottom: spacing[6],
     gap: spacing[2],
   },
   inputWrapperContainer: {},
   checkIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: sizes.checkIcon,
+    height: sizes.checkIcon,
+    borderRadius: radii.iconBadge,
     backgroundColor: colors.success,
     justifyContent: 'center',
     alignItems: 'center',
@@ -115,7 +98,7 @@ const styles = StyleSheet.create({
   startButton: {
     flexDirection: 'row',
     backgroundColor: colors.primary,
-    paddingVertical: verticalScale(16),
+    paddingVertical: spacing[4],
     borderRadius: radii.lg,
     alignItems: 'center',
     justifyContent: 'center',

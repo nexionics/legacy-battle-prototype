@@ -1,4 +1,5 @@
 import type { TextInputProps, TextProps, ViewStyle } from 'react-native';
+import type { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { TypographyVariant } from '@/shared/theme';
 import type { SportsEvent } from './domain';
 import type { BattleStats } from './interface';
@@ -50,7 +51,7 @@ export interface AppTextProps extends Omit<TextProps, 'style'> {
 
 // ─── Shared UI Molecules ───────────────────────────────────────────────────
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline';
 
 export type ButtonProps = {
   variant?: ButtonVariant;
@@ -58,29 +59,22 @@ export type ButtonProps = {
   disabled?: boolean;
   onPress: () => void;
   children: React.ReactNode;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   style?: ViewStyle;
   hitSlop?: { top?: number; bottom?: number; left?: number; right?: number } | number;
 };
 
 export type InputProps = TextInputProps & {
   label?: string;
-  /** Error message; when set, border shows error color and message is rendered below */
   error?: string;
-  /** Show asterisk after label when true */
   required?: boolean;
-  /** Left slot (e.g. icon) inside the input row */
   leftComponent?: React.ReactNode;
-  /** Right slot (e.g. icon, clear button, password toggle) inside the input row */
   rightComponent?: React.ReactNode;
-  /** Style for the outer container (label + input row + error) */
   containerStyle?: ViewStyle;
-  /** Style for the inner input row wrapper (the box around leftComponent + input + rightComponent) */
   wrapperStyle?: ViewStyle;
-  /** Style applied to the TextInput */
   inputTextStyle?: TextInputProps['style'];
-  /** When true and value is non-empty, apply success border (e.g. green check) */
   showSuccessBorder?: boolean;
-  /** Controlled focus state; can be used to style border on focus */
   isFocused?: boolean;
 };
 
@@ -89,6 +83,39 @@ export interface ScreenHeaderProps {
   onBack?: () => void;
   rightSlot?: React.ReactNode;
   centerIcon?: React.ReactNode;
+  style?: ViewStyle;
+}
+
+export interface AuthHeaderProps {
+  variant: AuthHeaderVariant;
+  icon?: IconNameEnum;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  logoSize?: number;
+  canGoBack?: boolean;
+  disabled?: boolean;
+  /** Runs immediately before `navigation.goBack()` (e.g. reset form state). */
+  onBeforeBack?: () => void;
+  showTitleHand?: boolean;
+  titleHandSize?: number;
+  style?: ViewStyle;
+}
+
+/** Tiled watermark text behind auth (and similar) screens. */
+export interface PatternBackgroundProps {
+  text: string;
+  /** Number of repeated tiles (default 20). */
+  repeatCount?: number;
+  style?: ViewStyle;
+}
+
+export interface AuthOrGoogleFooterProps {
+  orLabel: string;
+  googleButtonLabel: string;
+  footerLeadText: string;
+  footerLinkLabel: string;
+  onGooglePress: () => void;
+  onFooterLinkPress: () => void;
   style?: ViewStyle;
 }
 

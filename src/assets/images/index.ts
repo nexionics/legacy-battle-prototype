@@ -9,5 +9,6 @@
  */
 
 export default {
+  battleHand: require('./battle-hand.png'),
   battleNowButton: require('./battle-now-button.png'),
 }

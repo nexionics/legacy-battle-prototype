@@ -8,6 +8,10 @@
  * Sort responsibly. Be kind to future eyes.
  */
 
+import BattleHand from './battle-hand.svg';
+import LegacyBattleLogo from './logo.svg';
+
 export default {
-    legacyBattleLogo: require('./logo.svg'),
-}
+  BattleHand: BattleHand,
+  LegacyBattleLogo: LegacyBattleLogo,
+};

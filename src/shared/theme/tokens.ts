@@ -129,7 +129,45 @@ export const radii = {
   sm: scale(4),
   md: scale(8),
   lg: scale(12),
+  /** Half of `sizes.touchTarget` — circular icon buttons (e.g. 40×40). */
+  pill: scale(20),
   xl: scale(24),
+  /** 12px radius — 24×24 circular badges / check icons. */
+  iconBadge: scale(12),
+} as const;
+
+/** Font weights for `StyleSheet` / `Text` (React Native string weights). */
+export const fontWeights = {
+  regular: '400',
+  medium: '500',
+  semibold: '600',
+  bold: '700',
+} as const;
+
+export const opacity = {
+  patternWash: 0.1,
+  disabled: 0.7,
+} as const;
+
+export const borderWidths = {
+  hairline: 1,
+  thick: 2,
+} as const;
+
+/** Common layout / icon dimensions (scaled). */
+export const sizes = {
+  icon16: scale(16),
+  icon20: scale(20),
+  icon24: scale(24),
+  icon40: scale(40),
+  touchTarget: scale(30),
+  googleIcon: scale(20),
+  patternCell: scale(60),
+  patternGridGap: scale(10),
+  otpInputWidth: scale(50),
+  otpInputHeight: scale(60),
+  checkIcon: scale(24),
+  iconHero: scale(80),
 } as const;
 
 export const fontSizes = {

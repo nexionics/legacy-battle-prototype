@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
 interface AuthFormState {
-  showEmailLogin: boolean;
   loginEmail: string;
   loginPassword: string;
   loginLoading: boolean;
@@ -18,7 +17,6 @@ interface AuthFormState {
 }
 
 interface AuthFormActions {
-  setShowEmailLogin: (v: boolean) => void;
   setLoginEmail: (v: string) => void;
   setLoginPassword: (v: string) => void;
   setLoginLoading: (v: boolean) => void;
@@ -43,7 +41,6 @@ interface AuthFormActions {
 }
 
 const INITIAL: AuthFormState = {
-  showEmailLogin: false,
   loginEmail: '',
   loginPassword: '',
   loginLoading: false,
@@ -60,13 +57,11 @@ const INITIAL: AuthFormState = {
 export const useAuthFormStore = create<AuthFormState & AuthFormActions>((set) => ({
   ...INITIAL,
 
-  setShowEmailLogin: (showEmailLogin) => set({ showEmailLogin }),
   setLoginEmail: (loginEmail) => set({ loginEmail }),
   setLoginPassword: (loginPassword) => set({ loginPassword }),
   setLoginLoading: (loginLoading) => set({ loginLoading }),
   resetLoginForm: () =>
     set({
-      showEmailLogin: false,
       loginEmail: '',
       loginPassword: '',
       loginLoading: false,

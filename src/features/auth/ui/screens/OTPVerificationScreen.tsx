@@ -3,8 +3,17 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import type { TextInput as RNTextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText, ScreenHeader, Input, IconCircle } from '@/shared/ui';
-import { colors, spacing, radii, verticalScale, horizontalScale } from '@/shared/theme';
+import { Screen, AppText, ScreenHeader, Input, IconCircle, PatternBackground } from '@/shared/ui';
+import {
+  colors,
+  spacing,
+  radii,
+  fontSizes,
+  fontWeights,
+  borderWidths,
+  sizes,
+} from '@/shared/constants/theme';
+import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
 import type { OTPVerificationScreenProps } from '@/shared/types';
 
 export default function OTPVerificationScreen({ navigation }: OTPVerificationScreenProps) {
@@ -19,21 +28,25 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
   };
 
   return (
-    <Screen>
+    <Screen padding={0}>
+      <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
       <View style={styles.content}>
         <ScreenHeader onBack={() => navigation.goBack()} />
 
         <View style={styles.iconContainer}>
-          <IconCircle size={80} backgroundColor={colors.card}>
-            <Ionicons name="chatbubble-outline" size={40} color={colors.primary} />
+          <IconCircle size={sizes.iconHero} backgroundColor={colors.card}>
+            <Ionicons name="chatbubble-outline" size={sizes.icon40} color={colors.primary} />
           </IconCircle>
         </View>
 
         <View style={styles.titleContainer}>
-          <AppText variant="h2">Verify Email</AppText>
+          <AppText variant="h2">{otpVerificationScreenStrings.headings.verifyEmail}</AppText>
           <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
-            We Sent A Verification Code To Your Email{'\n'}
-            <AppText variant="body1" color={colors.text}>Mike.Design@mail.com</AppText>
+            {otpVerificationScreenStrings.body.codeSentLeadIn}
+            {'\n'}
+            <AppText variant="body1" color={colors.text}>
+              {otpVerificationScreenStrings.body.mockRecipientEmail}
+            </AppText>
           </AppText>
         </View>
 
@@ -57,10 +70,12 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
 
         <View style={styles.resendContainer}>
           <AppText variant="body2" color={colors.textSecondary}>
-            Didn't receive the email?{' '}
+            {otpVerificationScreenStrings.resend.prompt}{' '}
           </AppText>
           <TouchableOpacity>
-            <AppText variant="label" color={colors.primary}>Click To Resend</AppText>
+            <AppText variant="label" color={colors.primary}>
+              {otpVerificationScreenStrings.resend.cta}
+            </AppText>
           </TouchableOpacity>
         </View>
 
@@ -68,8 +83,10 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
           style={styles.verifyButton}
           onPress={() => navigation.navigate('CreateUsername')}
         >
-          <AppText variant="buttonLg" color={colors.white}>Verify Email</AppText>
-          <Ionicons name="mail-outline" size={20} color={colors.white} />
+          <AppText variant="buttonLg" color={colors.white}>
+            {otpVerificationScreenStrings.primaryCta.verifyEmail}
+          </AppText>
+          <Ionicons name="mail-outline" size={sizes.icon20} color={colors.white} />
         </TouchableOpacity>
       </View>
     </Screen>
@@ -79,51 +96,51 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingHorizontal: horizontalScale(24),
+    paddingHorizontal: spacing[5],
   },
   iconContainer: {
     alignItems: 'center',
-    marginBottom: verticalScale(32),
+    marginBottom: spacing[6],
   },
   titleContainer: {
     alignItems: 'center',
-    marginBottom: verticalScale(32),
+    marginBottom: spacing[6],
   },
   subtitle: {
     textAlign: 'center',
-    marginTop: verticalScale(8),
+    marginTop: spacing[2],
   },
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: spacing[2],
-    marginBottom: verticalScale(32),
+    marginBottom: spacing[6],
   },
   otpInputWrapper: {
-    width: horizontalScale(50),
-    height: verticalScale(60),
+    width: sizes.otpInputWidth,
+    height: sizes.otpInputHeight,
     borderRadius: radii.lg,
-    borderWidth: 2,
+    borderWidth: borderWidths.thick,
     borderColor: colors.primary,
     paddingHorizontal: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   otpInput: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.bold,
     textAlign: 'center',
     paddingVertical: 0,
   },
   resendContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: verticalScale(32),
+    marginBottom: spacing[6],
   },
   verifyButton: {
     flexDirection: 'row',
     backgroundColor: colors.primary,
-    paddingVertical: verticalScale(16),
+    paddingVertical: spacing[4],
     borderRadius: radii.lg,
     alignItems: 'center',
     justifyContent: 'center',

@@ -5,7 +5,19 @@ import {
   moderateScale,
 } from 'react-native-size-matters';
 import { getThemeColors } from './colors';
-import { spacing, radii, fontSizes, lineHeights, shadows, zIndex, typography } from './tokens';
+import {
+  spacing,
+  radii,
+  fontSizes,
+  lineHeights,
+  shadows,
+  zIndex,
+  typography,
+  fontWeights,
+  opacity,
+  borderWidths,
+  sizes,
+} from './tokens';
 
 /** Default (dark) palette. For theme-aware colors (auto dark/light), use useTheme() from @/app/providers. */
 export const colors = getThemeColors('dark');
@@ -27,6 +39,10 @@ export const theme = {
   typography,
   shadows,
   zIndex,
+  fontWeights,
+  opacity,
+  borderWidths,
+  sizes,
 } as const;
 
 export type Theme = typeof theme;

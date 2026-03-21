@@ -124,3 +124,26 @@ useScreenHook.ts -> ScreenContainer.tsx -> Screen.tsx -> components/*
 7. **Line count is a guideline**
    - Use ~100 lines as a guideline, not a strict rule.
    - Prioritize readability over rigid thresholds.
+
+---
+
+## 12. String Management Rules
+
+1. **Do not use a global strings.ts file**
+   - Avoid a single file containing all app strings.
+2. **Do not hardcode strings in components**
+   - Avoid inline strings unless trivial.
+3. **Use screen-level or feature-level string files**
+   - Place strings close to where they are used:
+     - Example: `Login/login.strings.ts`
+4. **Namespace strings**
+   - Export objects like:
+     - `loginStrings.title`
+     - `receiptStrings.summary`
+5. **Extract shared strings only when reused**
+   - Place in feature-level shared string files:
+     - Example: `features/auth/strings/auth.strings.ts`
+6. **Avoid generic shared strings**
+   - Do not create vague keys like `title`, `label`, etc.
+7. **Prepare for localization**
+   - Structure strings so they can easily map to i18n keys later.

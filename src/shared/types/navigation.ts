@@ -5,6 +5,7 @@ import type { BattleMode, StatDuelPlayer, StatDuelStatCategory, StatDuelOpponent
 
 export type AuthStackParamList = {
   Login: undefined;
+  EmailLogin: undefined;
   SignUp: undefined;
   OTPVerification: undefined;
   CreateUsername: undefined;
@@ -142,7 +143,8 @@ export type AddFriendScreenProps = RootStackScreenProps<'AddFriend'>;
 
 // ─── Auth stack screen props (typed navigation + route) ────────────────────
 
-export type LoginScreenProps = AuthScreenProps<'Login'>;
+export type LoginWelcomeScreenProps = AuthScreenProps<'Login'>;
+export type EmailLoginScreenProps = AuthScreenProps<'EmailLogin'>;
 export type SignUpScreenProps = AuthScreenProps<'SignUp'>;
 export type OTPVerificationScreenProps = AuthScreenProps<'OTPVerification'>;
 export type CreateUsernameScreenProps = AuthScreenProps<'CreateUsername'>;

@@ -1,18 +1,19 @@
-import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText, Input } from '@/shared/ui';
-import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import {
+  Screen,
+  AppText,
+  Input,
+  AuthHeader,
+  PatternBackground,
+  AuthOrGoogleFooter,
+  Button,
+} from '@/shared/ui';
+import { colors, spacing, fontSizes, fontWeights, sizes } from '@/shared/constants/theme';
+import { authStrings, loginScreenStrings, signUpScreenStrings } from '@/features/auth/strings';
+import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { SignUpScreenProps } from '@/shared/types';
 
 export default function SignUpScreen({ navigation }: SignUpScreenProps) {
@@ -34,17 +35,26 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
 
   const handleSignUp = async () => {
     if (!signUpEmail || !signUpPassword || !signUpConfirmPassword) {
-      Alert.alert('Missing Info', 'Please fill in all fields');
+      Alert.alert(
+        signUpScreenStrings.alerts.missingFieldsTitle,
+        signUpScreenStrings.alerts.missingFieldsMessage,
+      );
       return;
     }
 
     if (signUpPassword !== signUpConfirmPassword) {
-      Alert.alert('Password Mismatch', 'Passwords do not match');
+      Alert.alert(
+        signUpScreenStrings.alerts.passwordMismatchTitle,
+        signUpScreenStrings.alerts.passwordMismatchMessage,
+      );
       return;
     }
 
     if (signUpPassword.length < 6) {
-      Alert.alert('Weak Password', 'Password must be at least 6 characters');
+      Alert.alert(
+        signUpScreenStrings.alerts.weakPasswordTitle,
+        signUpScreenStrings.alerts.weakPasswordMessage,
+      );
       return;
     }
 
@@ -53,71 +63,69 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
     setSignUpLoading(false);
 
     if (error) {
-      Alert.alert('Sign Up Failed', error);
+      Alert.alert(signUpScreenStrings.alerts.signUpFailedTitle, error);
       return;
     }
 
     Alert.alert(
-      'Account Created',
-      'Please check your email to confirm your account, then log in.',
-      [{ text: 'OK', onPress: () => navigation.navigate('Login') }],
+      signUpScreenStrings.alerts.accountCreatedTitle,
+      signUpScreenStrings.alerts.accountCreatedMessage,
+      [{ text: authStrings.alerts.actionConfirmOk, onPress: () => navigation.navigate('Login') }],
     );
   };
 
   const handleSocialSignUp = (provider: string) => {
-    Alert.alert('Coming Soon', `${provider} sign up will be available in a future update.`);
+    Alert.alert(authStrings.comingSoon.alertTitle, authStrings.comingSoon.signUpMessage(provider));
   };
 
   return (
     <Screen padding={0}>
+      <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Ionicons name="chevron-back" size={24} color={colors.text} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <AppText variant="h3" color={colors.white}>
-              LB
+        <AuthHeader
+          variant={AuthHeaderVariant.Left}
+          canGoBack
+          showTitleHand
+          title={signUpScreenStrings.authHeader.welcomeTitle}
+          subtitle={
+            <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
+              {signUpScreenStrings.authHeader.createAccountSubtitle}
             </AppText>
-          </View>
-        </View>
-
-        <View style={styles.titleContainer}>
-          <AppText variant="h2" style={styles.title}>
-            Welcome, Legend-In-The-Making!
-          </AppText>
-          <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
-            Create An Account To Start Battling
-          </AppText>
-        </View>
+          }
+        />
 
         <View style={styles.form}>
           <Input
-            label="Email Address"
+            label={signUpScreenStrings.form.emailLabel}
             value={signUpEmail}
             onChangeText={setSignUpEmail}
-            placeholder="Enter Email"
+            placeholder={signUpScreenStrings.form.emailPlaceholder}
             keyboardType="email-address"
             autoCapitalize="none"
-            leftComponent={<Ionicons name="mail-outline" size={20} color={colors.textSecondary} />}
+            leftComponent={
+              <Ionicons name="mail-outline" size={sizes.icon20} color={colors.textSecondary} />
+            }
             containerStyle={styles.inputContainer}
           />
 
           <Input
-            label="Enter Password"
+            label={signUpScreenStrings.form.passwordLabel}
             value={signUpPassword}
             onChangeText={setSignUpPassword}
-            placeholder="Enter Password"
+            placeholder={signUpScreenStrings.form.passwordPlaceholder}
             secureTextEntry={!showSignUpPassword}
-            leftComponent={<Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />}
+            leftComponent={
+              <Ionicons
+                name="lock-closed-outline"
+                size={sizes.icon20}
+                color={colors.textSecondary}
+              />
+            }
             rightComponent={
               <TouchableOpacity onPress={() => setShowSignUpPassword(!showSignUpPassword)}>
                 <Ionicons
                   name={showSignUpPassword ? 'eye-outline' : 'eye-off-outline'}
-                  size={20}
+                  size={sizes.icon20}
                   color={colors.textSecondary}
                 />
               </TouchableOpacity>
@@ -126,17 +134,25 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           />
 
           <Input
-            label="Confirm Password"
+            label={signUpScreenStrings.form.confirmPasswordLabel}
             value={signUpConfirmPassword}
             onChangeText={setSignUpConfirmPassword}
-            placeholder="Enter Password"
+            placeholder={signUpScreenStrings.form.passwordPlaceholder}
             secureTextEntry={!showSignUpConfirmPassword}
-            leftComponent={<Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />}
+            leftComponent={
+              <Ionicons
+                name="lock-closed-outline"
+                size={sizes.icon20}
+                color={colors.textSecondary}
+              />
+            }
             rightComponent={
-              <TouchableOpacity onPress={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}>
+              <TouchableOpacity
+                onPress={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
+              >
                 <Ionicons
                   name={showSignUpConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
-                  size={20}
+                  size={sizes.icon20}
                   color={colors.textSecondary}
                 />
               </TouchableOpacity>
@@ -145,64 +161,34 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
           />
 
           <AppText variant="captionSm" color={colors.textSecondary} style={styles.termsText}>
-            By Continuing You Agree To Our{' '}
+            {signUpScreenStrings.legal.termsLeadIn}{' '}
             <AppText variant="captionSm" color={colors.primary} style={styles.termsLink}>
-              Terms
+              {signUpScreenStrings.legal.termsWord}
             </AppText>{' '}
-            And{' '}
+            {signUpScreenStrings.legal.termsConnector}{' '}
             <AppText variant="captionSm" color={colors.primary} style={styles.termsLink}>
-              Conditions
+              {signUpScreenStrings.legal.conditionsWord}
             </AppText>
           </AppText>
 
-          <TouchableOpacity
-            style={[styles.signUpButton, signUpLoading && styles.buttonDisabled]}
-            onPress={handleSignUp}
+          <Button
+            variant="primary"
+            loading={signUpLoading}
             disabled={signUpLoading}
+            onPress={handleSignUp}
+            rightIcon={<Ionicons name="arrow-forward" size={sizes.icon20} color={colors.white} />}
           >
-            {signUpLoading ? (
-              <ActivityIndicator color={colors.white} />
-            ) : (
-              <>
-                <AppText variant="body1" color={colors.white} style={styles.signUpButtonText}>
-                  Sign Up
-                </AppText>
-                <Ionicons name="arrow-forward" size={20} color={colors.white} />
-              </>
-            )}
-          </TouchableOpacity>
+            {signUpScreenStrings.primaryCta.signUp}
+          </Button>
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <AppText variant="captionSm" color={colors.textSecondary} style={styles.dividerText}>
-              Or
-            </AppText>
-            <View style={styles.dividerLine} />
-          </View>
-
-          <TouchableOpacity
-            style={styles.googleButton}
-            onPress={() => handleSocialSignUp('Google')}
-          >
-            <Image
-              source={{ uri: 'https://www.google.com/favicon.ico' }}
-              style={styles.googleIcon}
-            />
-            <AppText variant="body1" style={styles.googleButtonText}>
-              Continue With Google
-            </AppText>
-          </TouchableOpacity>
-
-          <View style={styles.loginContainer}>
-            <AppText variant="body1" color={colors.textSecondary} style={styles.loginText}>
-              Already have an account?{' '}
-            </AppText>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AppText variant="body1" color={colors.text} style={styles.loginLink}>
-                Log in
-              </AppText>
-            </TouchableOpacity>
-          </View>
+          <AuthOrGoogleFooter
+            orLabel={signUpScreenStrings.divider.or}
+            googleButtonLabel={signUpScreenStrings.social.continueWithGoogle}
+            footerLeadText={`${signUpScreenStrings.footer.hasAccountPrompt} `}
+            footerLinkLabel={signUpScreenStrings.footer.logInCta}
+            onGooglePress={() => handleSocialSignUp('Google')}
+            onFooterLinkPress={() => navigation.navigate('EmailLogin')}
+          />
         </View>
       </ScrollView>
     </Screen>
@@ -213,37 +199,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: spacing[5],
-    paddingBottom: spacing[6],
-  },
-  header: {
     paddingTop: spacing[4],
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: spacing[4],
-    marginBottom: spacing[4],
-  },
-  logo: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  titleContainer: {
-    marginBottom: spacing[5],
-  },
-  title: {
-    marginBottom: spacing[2],
+    paddingBottom: spacing[6],
   },
   subtitle: {
     fontSize: fontSizes.sm,
@@ -261,63 +218,5 @@ const styles = StyleSheet.create({
   termsLink: {
     color: colors.primary,
     textDecorationLine: 'underline',
-  },
-  signUpButton: {
-    flexDirection: 'row',
-    backgroundColor: colors.primary,
-    paddingVertical: spacing[4],
-    borderRadius: radii.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing[2],
-  },
-  signUpButtonText: {
-    fontWeight: 'bold',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[4],
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.inputBorder,
-  },
-  dividerText: {
-    fontSize: fontSizes.xs,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.transparent,
-    paddingVertical: spacing[4],
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    gap: spacing[2],
-  },
-  googleIcon: {
-    width: 20,
-    height: 20,
-  },
-  googleButtonText: {
-    fontWeight: '500',
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loginText: {
-    fontSize: fontSizes.sm,
-  },
-  loginLink: {
-    fontSize: fontSizes.sm,
-    fontWeight: 'bold',
-  },
-  buttonDisabled: {
-    opacity: 0.7,
   },
 });

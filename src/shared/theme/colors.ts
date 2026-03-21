@@ -33,6 +33,8 @@ export type ThemeColors = {
   overlayHeavy: string;
   inputBackground: string;
   inputBorder: string;
+  /** Facebook brand blue (social buttons / icons). */
+  brandFacebook: string;
 };
 
 export const DARK_COLORS: ThemeColors = {
@@ -65,6 +67,7 @@ export const DARK_COLORS: ThemeColors = {
   overlayHeavy: 'rgba(0, 0, 0, 0.7)',
   inputBackground: '#2A2A2A',
   inputBorder: '#404040',
+  brandFacebook: '#1877F2',
 };
 
 export const LIGHT_COLORS: ThemeColors = {
@@ -97,6 +100,7 @@ export const LIGHT_COLORS: ThemeColors = {
   overlayHeavy: 'rgba(0, 0, 0, 0.6)',
   inputBackground: '#F0F0F0',
   inputBorder: '#D0D0D0',
+  brandFacebook: '#1877F2',
 };
 
 export type ThemeMode = 'dark' | 'light';
