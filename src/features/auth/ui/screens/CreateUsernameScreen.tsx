@@ -2,13 +2,21 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
+import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import { Screen, AppText, ScreenHeader, Input } from '@/shared/ui';
 import { colors, spacing, radii, verticalScale, horizontalScale } from '@/shared/theme';
 import type { CreateUsernameScreenProps } from '@/shared/types';
 
 export default function CreateUsernameScreen({ navigation }: CreateUsernameScreenProps) {
   const { username, setUsername } = useAuthFormStore();
+  const setToken = useAuthStore((s) => s.setToken);
+  const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
   const isAvailable = username.length > 0;
+
+  const handleStartBattle = () => {
+    setToken('signed-in');
+    setIsAuthenticated(true);
+  };
 
   return (
     <Screen>
@@ -55,7 +63,7 @@ export default function CreateUsernameScreen({ navigation }: CreateUsernameScree
 
         <TouchableOpacity
           style={styles.startButton}
-          onPress={() => navigation.navigate('MainTabs')}
+          onPress={handleStartBattle}
         >
           <AppText variant="buttonLg" color={colors.white}>Start Battle</AppText>
           <AppText variant="body1">⚔</AppText>

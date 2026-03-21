@@ -48,9 +48,9 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
     );
   });
 
-  const statCategories = STAT_CATEGORIES_BY_SPORT[sport] || STAT_CATEGORIES_BY_SPORT.NFL;
-  const statOptions: SelectionOption[] = statCategories.map((s) => ({ key: s.id, label: s.name }));
-  const selectedStatData = statCategories.find((s) => s.id === (statCategory?.id ?? ''));
+  const statCategories = STAT_CATEGORIES_BY_SPORT[sport ?? 'NFL'] ?? STAT_CATEGORIES_BY_SPORT.NFL;
+  const statOptions: SelectionOption[] = statCategories.map((s: { id: string; name: string }) => ({ key: s.id, label: s.name }));
+  const selectedStatData = statCategories.find((s: { id: string; name: string }) => s.id === (statCategory?.id ?? ''));
   const selectedDirectionData = DIRECTION_OPTIONS.find((d) => d.key === (direction ?? ''));
 
   const handleContinue = () => {
@@ -277,7 +277,7 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
         options={statOptions}
         selectedKey={statCategory?.id ?? undefined}
         onSelect={(key) => {
-          const cat = statCategories.find((s) => s.id === key);
+          const cat = statCategories.find((s: { id: string; name: string }) => s.id === key);
           if (cat) setStatCategory(cat);
           setShowStatModal(false);
         }}

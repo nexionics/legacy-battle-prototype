@@ -110,7 +110,7 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
         </View>
 
         <View style={styles.card}>
-          <DetailRow label="Battle Mode" value={getBattleModeLabel(battleMode)} />
+          <DetailRow label="Battle Mode" value={getBattleModeLabel(battleMode ?? 'STANDARD')} />
           <DetailRow label="Visibility" value={visibility === 'private' ? 'Private' : 'Public'} />
           <DetailRow label="Stake" value={`${stake} BC`} />
           {opponent ? <DetailRow label="Opponent" value={opponent.display_name} /> : null}

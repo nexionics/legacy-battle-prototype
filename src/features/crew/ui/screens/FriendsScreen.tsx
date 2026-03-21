@@ -19,8 +19,9 @@ import {
   useDeclineRequest,
   useSendRequestById,
 } from '@/features/crew/data/mutations/useCrewMutations';
+import type { FriendsScreenProps } from '@/shared/types';
 
-export default function FriendsScreen({ navigation }: any) {
+export default function FriendsScreen({ navigation }: FriendsScreenProps) {
   const { user } = useAuth();
   const {
     crewMembers,

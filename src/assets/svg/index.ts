@@ -9,5 +9,5 @@
  */
 
 export default {
-  battleNowButton: require('./battle-now-button.png'),
+    legacyBattleLogo: require('./logo.svg'),
 }
