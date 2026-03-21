@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { svgIconComponents } from '@/shared/lib/svgIconComponents';
 import { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import { colors, radii, sizes, spacing } from '@/shared/theme';
+import If from '../atoms/If';
 import { AppText } from '../atoms/AppText';
 import type { AuthHeaderProps } from '@/shared/types';
 
@@ -49,7 +50,7 @@ export function AuthHeader({
 
   return (
     <View style={[styles.root, style]}>
-      {canGoBack ? (
+      <If condition={canGoBack}>
         <TouchableOpacity
           onPress={handleBackPress}
           disabled={disabled}
@@ -61,12 +62,12 @@ export function AuthHeader({
         >
           <AntDesign name="arrow-left" size={sizes.icon16} color={colors.white} />
         </TouchableOpacity>
-      ) : null}
+      </If>
 
       <View style={[styles.body, { alignItems }]}>
         <Logo width={logoSize} height={logoSize} style={styles.logo} />
 
-        {title != null ? (
+        <If condition={title != null}>
           <View style={[styles.titleRow, isCenter ? styles.titleRowCenter : styles.titleRowLeft]}>
             <View style={styles.titleBlock}>
               {typeof title === 'string' ? (
@@ -80,13 +81,13 @@ export function AuthHeader({
                 title
               )}
             </View>
-            {showTitleHand ? (
+            <If condition={showTitleHand}>
               <Hand width={titleHandSize} height={titleHandSize} style={styles.titleHandIcon} />
-            ) : null}
+            </If>
           </View>
-        ) : null}
+        </If>
 
-        {subtitle != null ? (
+        <If condition={subtitle != null}>
           <View style={styles.slot}>
             {typeof subtitle === 'string' ? (
               <AppText variant="body1" color={colors.textSecondary} style={{ textAlign }}>
@@ -96,7 +97,7 @@ export function AuthHeader({
               subtitle
             )}
           </View>
-        ) : null}
+        </If>
       </View>
     </View>
   );
@@ -148,8 +149,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     minWidth: 0,
   },
-  // Only applied when the hand is present — prevents the text from stretching
-  // past the icon and wrapping awkwardly on narrow screens.
   titleTextWithHand: {
     maxWidth: '100%',
   },
