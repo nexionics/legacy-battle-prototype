@@ -9,5 +9,6 @@ import { IconNameEnum } from '@/shared/utils/enum';
  */
 export const svgIconComponents: Record<IconNameEnum, ComponentType<SvgProps>> = {
   [IconNameEnum.BattleHand]: svgAssets.BattleHand,
+  [IconNameEnum.ChatBubble]: svgAssets.ChatBubble as ComponentType<SvgProps>,
   [IconNameEnum.LegacyBattleLogo]: svgAssets.LegacyBattleLogo,
 };

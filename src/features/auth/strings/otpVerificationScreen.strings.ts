@@ -9,6 +9,7 @@ export const otpVerificationScreenStrings = {
   resend: {
     prompt: "Didn't receive the email?",
     cta: 'Click To Resend',
+    successToast: 'A new code has been sent',
   },
   primaryCta: {
     verifyEmail: 'Verify Email',

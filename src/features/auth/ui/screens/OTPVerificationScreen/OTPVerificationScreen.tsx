@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import type { TextInput as RNTextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
 import {
   Screen,
   AppText,
@@ -11,6 +10,7 @@ import {
   IconCircle,
   PatternBackground,
   SVGWrapper,
+  Button,
 } from '@/shared/ui';
 import {
   colors,
@@ -21,16 +21,34 @@ import {
   borderWidths,
   sizes,
 } from '@/shared/constants/theme';
-import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
 import type { OTPVerificationScreenProps } from '@/shared/types';
+import type { UseOtpVerificationReturn } from '@/features/auth/ui/hooks/useOtpVerification.types';
 
-export default function OTPVerificationScreen({ navigation }: OTPVerificationScreenProps) {
-  const { otp, setOtpDigit } = useAuthFormStore();
+const OTP_LENGTH = 6;
+
+export type OTPVerificationViewProps = OTPVerificationScreenProps & UseOtpVerificationReturn;
+
+export function OTPVerificationScreen({
+  navigation,
+  onDigitChange,
+  digitAt,
+  onSubmit,
+  errors,
+  isValid,
+  isSubmitting,
+  onResend,
+  resendDisabled,
+  cooldownSec,
+  displayEmail,
+  loginScreenStrings,
+  otpVerificationScreenStrings,
+}: OTPVerificationViewProps) {
   const inputRefs = useRef<(RNTextInput | null)[]>([]);
 
-  const handleOtpChange = (value: string, index: number) => {
-    setOtpDigit(index, value);
-    if (value && index < 4) {
+  const handleDigitChange = (index: number, value: string) => {
+    onDigitChange(index, value);
+    const last = value.replace(/\D/g, '').slice(-1) ?? '';
+    if (last && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -53,20 +71,20 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
             {otpVerificationScreenStrings.body.codeSentLeadIn}
             {'\n'}
             <AppText variant="body1" color={colors.text}>
-              {otpVerificationScreenStrings.body.mockRecipientEmail}
+              {displayEmail}
             </AppText>
           </AppText>
         </View>
 
         <View style={styles.otpContainer}>
-          {otp.map((digit, index) => (
+          {Array.from({ length: OTP_LENGTH }, (_, index) => (
             <Input
               key={index}
               ref={(ref) => {
                 inputRefs.current[index] = ref;
               }}
-              value={digit}
-              onChangeText={(value) => handleOtpChange(value, index)}
+              value={digitAt(index)}
+              onChangeText={(v) => handleDigitChange(index, v)}
               keyboardType="number-pad"
               maxLength={1}
               selectTextOnFocus
@@ -75,27 +93,35 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
             />
           ))}
         </View>
+        {errors.code?.message ? (
+          <AppText variant="error" color={colors.error} style={styles.codeError}>
+            {errors.code.message}
+          </AppText>
+        ) : null}
 
         <View style={styles.resendContainer}>
           <AppText variant="body2" color={colors.textSecondary}>
             {otpVerificationScreenStrings.resend.prompt}{' '}
           </AppText>
-          <TouchableOpacity>
-            <AppText variant="label" color={colors.primary}>
-              {otpVerificationScreenStrings.resend.cta}
+          <TouchableOpacity onPress={onResend} disabled={resendDisabled}>
+            <AppText variant="label" color={resendDisabled ? colors.textSecondary : colors.primary}>
+              {cooldownSec > 0
+                ? `${otpVerificationScreenStrings.resend.cta} (${cooldownSec}s)`
+                : otpVerificationScreenStrings.resend.cta}
             </AppText>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
+        <Button
+          variant="primary"
+          loading={isSubmitting}
+          disabled={!isValid || isSubmitting}
+          onPress={onSubmit}
           style={styles.verifyButton}
-          onPress={() => navigation.navigate('CreateUsername')}
+          rightIcon={<Ionicons name="mail-outline" size={sizes.icon20} color={colors.white} />}
         >
-          <AppText variant="buttonLg" color={colors.white}>
-            {otpVerificationScreenStrings.primaryCta.verifyEmail}
-          </AppText>
-          <Ionicons name="mail-outline" size={sizes.icon20} color={colors.white} />
-        </TouchableOpacity>
+          {otpVerificationScreenStrings.primaryCta.verifyEmail}
+        </Button>
       </View>
     </Screen>
   );
@@ -146,12 +172,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing[6],
   },
   verifyButton: {
-    flexDirection: 'row',
-    backgroundColor: colors.primary,
-    paddingVertical: spacing[4],
-    borderRadius: radii.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing[2],
+    marginTop: spacing[2],
+  },
+  codeError: {
+    textAlign: 'center',
+    marginBottom: spacing[4],
   },
 });

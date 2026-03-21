@@ -64,6 +64,8 @@ export const horizontalScale = (size: number) => horizontalScaleLib(size);
 export const verticalScale = (size: number) => verticalScaleLib(size);
 
 export const moderateScale = (size: number, factor = 0.5) => moderateScaleLib(size, factor);
+/** Alias for `moderateScale` (legacy / shorter name). */
+export const moderate = moderateScale;
 export const scaleText = (size: number) => moderateScaleLib(size, 0.3);
 export const scaleLayout = (size: number) => moderateScaleLib(size, 0.3);
 

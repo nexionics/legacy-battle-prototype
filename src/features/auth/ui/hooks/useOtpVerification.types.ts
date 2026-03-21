@@ -1,0 +1,20 @@
+import type { Control, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
+import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
+import type { OtpFormValues } from './useOtp.validation';
+
+export type UseOtpVerificationReturn = {
+  control: Control<OtpFormValues>;
+  handleSubmit: UseFormHandleSubmit<OtpFormValues>;
+  onSubmit: ReturnType<UseFormHandleSubmit<OtpFormValues>>;
+  errors: FieldErrors<OtpFormValues>;
+  isValid: boolean;
+  isSubmitting: boolean;
+  onResend: () => Promise<void>;
+  resendDisabled: boolean;
+  cooldownSec: number;
+  displayEmail: string;
+  onDigitChange: (index: number, value: string) => void;
+  digitAt: (index: number) => string;
+  loginScreenStrings: typeof loginScreenStrings;
+  otpVerificationScreenStrings: typeof otpVerificationScreenStrings;
+};

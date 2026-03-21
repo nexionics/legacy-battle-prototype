@@ -7,3 +7,4 @@ export {
   type AppTheme,
 } from './ThemeProvider';
 export { ToastProvider, ToastContext } from './ToastProvider';
+export { useToast } from './useToast';

@@ -7,7 +7,7 @@ export type AuthStackParamList = {
   Login: undefined;
   EmailLogin: undefined;
   SignUp: undefined;
-  OTPVerification: undefined;
+  OTPVerification: { email: string; reference: string };
   CreateUsername: undefined;
 };
 

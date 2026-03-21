@@ -7,10 +7,14 @@ import type { UserData } from '@/shared/types';
 interface AuthStore {
   isLoading: boolean;
   isAuthenticated: boolean;
-  token: string | null;
+  /** True after OTP until username is chosen (Auth stack still shown while tokens exist). */
+  needsUsername: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
   user: UserData | null;
   setLoading: (loading: boolean) => void;
-  setToken: (token: string) => void;
+  setAuthTokens: (accessToken: string, refreshToken: string) => void;
+  setNeedsUsername: (needs: boolean) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setUser: (user: UserData | null) => void;
   setHasHydrated: (state: boolean) => void;
@@ -23,18 +27,32 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       isLoading: true,
       isAuthenticated: false,
-      token: null,
+      needsUsername: false,
+      accessToken: null,
+      refreshToken: null,
       user: null,
       _hasHydrated: false,
       setLoading: (loading) => set({ isLoading: loading }),
-      setToken: (token) => set({ token }),
+      setAuthTokens: (accessToken, refreshToken) =>
+        set({
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+        }),
+      setNeedsUsername: (needsUsername) => set({ needsUsername }),
       setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
       setUser: (user) => set({ user }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
       logout: () =>
         set(() => {
           queryClient.clear();
-          return { token: '', isAuthenticated: false, user: null };
+          return {
+            accessToken: null,
+            refreshToken: null,
+            isAuthenticated: false,
+            needsUsername: false,
+            user: null,
+          };
         }),
     }),
     {
@@ -44,10 +62,12 @@ export const useAuthStore = create<AuthStore>()(
       name: 'authStore',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
-        token: state.token,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
+        needsUsername: state.needsUsername,
         user: state.user,
       }),
-    }
-  )
+    },
+  ),
 );

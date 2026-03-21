@@ -69,6 +69,7 @@ ScreenName/
 - `api/` → TanStack Query functions (fetch/mutate).
 - `store/` → Zustand state stores.
 - No UI logic or screen-specific logic.
+- **Mutations:** keep related `useMutation` hooks in one `api/` module (e.g. `authMutations.ts`) unless the file grows past ~200–300 lines or a mutation becomes complex—see `docs/ARCHITECTURE.md` (TanStack Query → Mutations).
 
 ---
 

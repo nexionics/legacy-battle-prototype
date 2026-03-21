@@ -152,6 +152,14 @@ src/
 - **Query client:** `shared/lib/queryClient.ts` – single instance, `staleTime: Infinity` by default.
 - **Usage:** Feature API modules or hooks in `features/<feature>/api/` or `features/<feature>/hooks/` should use `useQuery`, `useMutation`, etc., with this client (provided at root). No separate “repository” layer unless you need multi-source abstraction.
 
+#### Mutations: one file vs many
+
+- **Default:** Group related `useMutation` hooks in **one module** under the feature’s `data/api/` (e.g. `features/auth/data/api/authMutations.ts`), next to raw API calls (`authApi.ts`). Prefer **logical grouping** over one hook per file when each hook is only a thin wrapper.
+- **Split into separate files only when:**
+  1. The module grows beyond roughly **200–300 lines**, or
+  2. A mutation gains **real complexity** (custom transforms, orchestration, heavy side effects) that makes the shared file hard to read.
+- **Rule of thumb:** *Mutations should be grouped logically and split only when complexity justifies it.*
+
 ### Supabase
 
 - **Client:** `shared/lib/supabaseClient.ts` (env: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`).
