@@ -187,7 +187,7 @@ export default function SignUpScreen({ navigation }: SignUpScreenProps) {
             footerLeadText={`${signUpScreenStrings.footer.hasAccountPrompt} `}
             footerLinkLabel={signUpScreenStrings.footer.logInCta}
             onGooglePress={() => handleSocialSignUp('Google')}
-            onFooterLinkPress={() => navigation.navigate('EmailLogin')}
+            onFooterLinkPress={() => navigation.navigate('OTPVerification')}
           />
         </View>
       </ScrollView>

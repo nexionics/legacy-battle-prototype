@@ -1,9 +1,17 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import type { TextInput as RNTextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthFormStore } from '@/features/auth/data/store/authForm.store';
-import { Screen, AppText, ScreenHeader, Input, IconCircle, PatternBackground } from '@/shared/ui';
+import {
+  Screen,
+  AppText,
+  ScreenHeader,
+  Input,
+  IconCircle,
+  PatternBackground,
+  SVGWrapper,
+} from '@/shared/ui';
 import {
   colors,
   spacing,
@@ -22,7 +30,7 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
 
   const handleOtpChange = (value: string, index: number) => {
     setOtpDigit(index, value);
-    if (value && index < 5) {
+    if (value && index < 4) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -35,7 +43,7 @@ export default function OTPVerificationScreen({ navigation }: OTPVerificationScr
 
         <View style={styles.iconContainer}>
           <IconCircle size={sizes.iconHero} backgroundColor={colors.card}>
-            <Ionicons name="chatbubble-outline" size={sizes.icon40} color={colors.primary} />
+            <SVGWrapper name="ChatBubble" width={sizes.icon40} height={sizes.icon40} />
           </IconCircle>
         </View>
 

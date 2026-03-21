@@ -1,4 +1,4 @@
-import type { TextInputProps, TextProps, ViewStyle } from 'react-native';
+import type { StyleProp, TextInputProps, TextProps, ViewStyle } from 'react-native';
 import type { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { TypographyVariant } from '@/shared/theme';
 import type { SportsEvent } from './domain';
@@ -7,6 +7,8 @@ import type { Battle, BattleParticipant } from './domain';
 import type { LevelInfo } from './profile';
 
 // ─── Shared UI Atoms ───────────────────────────────────────────────────────
+
+export type ViewPropStyle = StyleProp<ViewStyle>;
 
 export type CardProps = {
   children: React.ReactNode;
@@ -369,4 +371,9 @@ export interface WinnerCardProps {
 export interface ScoreDisplayProps {
   gameScore: SportsEvent;
   isCompleted: boolean;
+}
+
+export interface IconProps {
+  fill?: string;
+  [key: string]: unknown;
 }

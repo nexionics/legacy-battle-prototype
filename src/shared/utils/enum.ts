@@ -10,6 +10,7 @@
 
 export enum IconNameEnum {
     BattleHand = 'BattleHand',
+    ChatBubble = "ChatBubble",
     LegacyBattleLogo = 'LegacyBattleLogo',
 }
 

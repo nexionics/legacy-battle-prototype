@@ -4,7 +4,6 @@ export const otpVerificationScreenStrings = {
   },
   body: {
     codeSentLeadIn: 'We Sent A Verification Code To Your Email',
-    /** Placeholder demo email — replace with dynamic value when wired. */
     mockRecipientEmail: 'Mike.Design@mail.com',
   },
   resend: {
