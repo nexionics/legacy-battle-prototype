@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Alert } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
 import { useSignupMutation } from '../../data/api/authMutations';
 import type { AuthStackParamList } from '@/shared/types';
@@ -44,7 +43,7 @@ export function useSignup() {
   };
 
   const onGooglePress = () => {
-    Alert.alert(authStrings.comingSoon.alertTitle, authStrings.comingSoon.signUpMessage('Google'));
+    showToast('success', authStrings.comingSoon.signUpMessage('Google'));
   };
 
   const onFooterLinkPress = () => {

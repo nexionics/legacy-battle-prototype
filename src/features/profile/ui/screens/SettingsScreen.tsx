@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
@@ -8,12 +7,14 @@ import type { SettingsScreenProps, UpdateUserPreferences } from '@/shared/types'
 import { usePreferencesQuery } from '../../data/queries/usePreferencesQuery';
 import { useUpdatePreferences } from '../../data/mutations/useUpdatePreferences';
 import { ActivityIndicator, Alert } from 'react-native';
+import { useToast } from '@/app/providers/useToast';
 import { logoutSession } from '@/features/auth/data/logoutSession';
 
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const colors = useThemeColors();
   const { data: preferencesData, isLoading, error } = usePreferencesQuery();
   const updatePreferences = useUpdatePreferences();
+  const { showToast } = useToast();
 
   const preferences =
     preferencesData && 'success' in preferencesData && preferencesData.success
@@ -36,7 +37,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           try {
             await logoutSession();
           } catch (error) {
-            Alert.alert('Error', 'Failed to log out. Please try again.');
+            showToast('fail', 'Failed to log out. Please try again.');
           }
         },
       },

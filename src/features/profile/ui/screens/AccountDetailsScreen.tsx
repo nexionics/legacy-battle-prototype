@@ -4,6 +4,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { spacing, radii } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader } from '@/shared/ui';
+import { useToast } from '@/app/providers/useToast';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useProfile } from '@/features/profile/ui/hooks/useProfile';
 import { useUpdateAvatar } from '../../data/mutations/useUpdateAvatar';
@@ -14,8 +15,9 @@ import { ActivityIndicator } from 'react-native';
 export default function AccountDetailsScreen({ navigation }: AccountDetailsScreenProps) {
   const colors = useThemeColors();
   const { user } = useAuth();
-  const { profile, profileLoading } = useProfile(user?.id);
+  const { profile } = useProfile(user?.id);
   const updateAvatar = useUpdateAvatar(user?.id);
+  const { showToast } = useToast();
 
   const displayName = profile?.displayName || 'Legacy Battles';
   const email = user?.email || 'legend@legacybattles.com';
@@ -32,8 +34,9 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
     if (!result.canceled && result.assets[0].uri) {
       try {
         await updateAvatar.mutateAsync(result.assets[0].uri);
+        showToast('success', 'Avatar updated successfully.');
       } catch (error) {
-        Alert.alert('Error', 'Failed to update avatar. Please try again.');
+        showToast('fail', 'Failed to update avatar. Please try again.');
       }
     }
   };
@@ -76,14 +79,14 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
             icon="person-outline"
             label="Username"
             value={displayName}
-            onEdit={() => Alert.alert('Edit Username', 'Open edit modal')}
+            onEdit={() => showToast('success', 'Edit Username coming soon')}
           />
           <View style={[styles.divider, { backgroundColor: colors.inputBorder }]} />
           <InfoRow
             icon="mail-outline"
             label="Email"
             value={email}
-            onEdit={() => Alert.alert('Edit Email', 'Open edit modal')}
+            onEdit={() => showToast('success', 'Edit Email coming soon')}
           />
         </View>
       </ScrollView>
