@@ -9,17 +9,14 @@ import { HomeScreen } from '@/features/sports';
 import { BattlesScreen, ExploreScreen } from '@/features/battles';
 import { ProfileScreen } from '@/features/profile';
 import {
-  colors,
+  colors as staticColors,
   Sizes,
   verticalScale,
   horizontalScale,
   FontFamily,
 } from '@/shared/theme';
-import type {
-  RootStackParamList,
-  TabStackParamList,
-  TabScreenProps,
-} from './types';
+import { useThemeColors } from '@/app/providers/ThemeProvider';
+import type { RootStackParamList, TabStackParamList, TabScreenProps } from './types';
 
 const Tab = createBottomTabNavigator<TabStackParamList>();
 
@@ -44,19 +41,26 @@ function BattleNowPlaceholder() {
 }
 
 export function MainTabs() {
+  const colors = useThemeColors();
   const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const onBattleNowPress = useCallback(() => {
     rootNavigation.navigate('BattleVisibility');
   }, [rootNavigation]);
 
   return (
-    <SafeAreaView edges={['bottom']} style={tabStyles.safeArea}>
+    <SafeAreaView
+      edges={['bottom']}
+      style={[tabStyles.safeArea, { backgroundColor: colors.background }]}
+    >
       <Tab.Navigator
         detachInactiveScreens={false}
         screenOptions={{
           headerShown: false,
           freezeOnBlur: false,
-          tabBarStyle: tabStyles.tabBar,
+          tabBarStyle: [
+            tabStyles.tabBar,
+            { backgroundColor: colors.background, borderTopColor: colors.inputBorder },
+          ],
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.textSecondary,
           tabBarLabelStyle: tabStyles.tabBarLabel,
@@ -115,11 +119,8 @@ export function MainTabs() {
 const tabStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   tabBar: {
-    backgroundColor: colors.background,
-    borderTopColor: colors.inputBorder,
     borderTopWidth: 1,
     height: Platform.OS === 'android' ? verticalScale(66) : verticalScale(70),
     paddingBottom: Platform.OS === 'android' ? verticalScale(6) : verticalScale(10),

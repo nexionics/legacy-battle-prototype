@@ -2,13 +2,22 @@ import React from 'react';
 import { View, TouchableOpacity, Switch, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, MenuRow } from '@/shared/ui';
-import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import { colors as staticColors, spacing, fontSizes, radii } from '@/shared/theme';
+import { useThemeColors } from '@/app/providers/ThemeProvider';
 import type { ProfileMenuProps } from '@/shared/types';
 
 function Badge({ count, variant = 'default' }: { count: number; variant?: 'default' | 'pending' }) {
+  const colors = useThemeColors();
   return (
-    <View style={[styles.menuBadge, variant === 'pending' && styles.menuBadgePending]}>
-      <AppText variant="captionSm" style={styles.menuBadgeText}>{count}</AppText>
+    <View
+      style={[
+        styles.menuBadge,
+        { backgroundColor: variant === 'pending' ? colors.warning : colors.primary },
+      ]}
+    >
+      <AppText variant="captionSm" style={[styles.menuBadgeText, { color: colors.white }]}>
+        {count}
+      </AppText>
     </View>
   );
 }
@@ -21,9 +30,10 @@ export function ProfileMenu({
   onCrewPress,
   onLogout,
 }: ProfileMenuProps) {
+  const colors = useThemeColors();
   return (
     <>
-      <View style={styles.menuSection}>
+      <View style={[styles.menuSection, { backgroundColor: colors.card }]}>
         <MenuRow icon="trophy-outline" label="Achievements" rightSlot={<Badge count={12} />} />
 
         <MenuRow icon="stats-chart-outline" label="Statistics" />
@@ -63,7 +73,9 @@ export function ProfileMenu({
 
       <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
         <Ionicons name="log-out-outline" size={20} color={colors.primary} />
-        <AppText variant="buttonMd" style={styles.logoutText}>Log Out</AppText>
+        <AppText variant="buttonMd" style={styles.logoutText}>
+          Log Out
+        </AppText>
       </TouchableOpacity>
     </>
   );
@@ -71,13 +83,11 @@ export function ProfileMenu({
 
 const styles = StyleSheet.create({
   menuSection: {
-    backgroundColor: colors.card,
     borderRadius: radii.lg,
     marginBottom: spacing[4],
     overflow: 'hidden',
   },
   menuBadge: {
-    backgroundColor: colors.primary,
     borderRadius: radii.lg,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
@@ -85,10 +95,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuBadgePending: {
-    backgroundColor: colors.warning,
+    backgroundColor: staticColors.warning,
   },
   menuBadgeText: {
-    color: colors.white,
     fontSize: fontSizes.xs,
     fontWeight: 'bold',
   },
@@ -101,7 +110,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[6],
   },
   logoutText: {
-    color: colors.primary,
     fontSize: fontSizes.sm,
     fontWeight: 'bold',
   },
