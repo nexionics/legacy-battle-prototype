@@ -5,10 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
-import { useAuthStore } from '@/features/auth/data/store/auth.store';
+import { logoutSession } from '../../data/logoutSession';
+import { useAuthStore } from '../../data/store/auth.store';
 import type { AuthStackParamList } from '@/shared/types';
-import { getCheckUsername, postSetUsername } from '@/features/auth/data/api/authApi';
-import { createUsernameScreenStrings, loginScreenStrings } from '@/features/auth/strings';
+import { getCheckUsername, postSetUsername } from '../../data/api/authApi';
+import { createUsernameScreenStrings, loginScreenStrings } from '../../strings';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import { formatUsernameForApi } from '@/shared/utils/helpers';
 import { createUsernameSchema, type CreateUsernameFormValues } from './useCreateUsername.validation';
@@ -18,7 +19,6 @@ export function useCreateUsername() {
   const { showToast } = useToast();
   const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
-  const logout = useAuthStore((s) => s.logout);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [usernameStatusMessage, setUsernameStatusMessage] = useState('');
@@ -105,8 +105,8 @@ export function useCreateUsername() {
         {
           text: 'Yes',
           style: 'destructive',
-          onPress: () => {
-            logout();
+          onPress: async () => {
+            await logoutSession();
             navigation.reset({
               index: 0,
               routes: [{ name: 'Login' }],

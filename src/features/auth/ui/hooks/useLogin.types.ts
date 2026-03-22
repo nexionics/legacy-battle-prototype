@@ -1,5 +1,5 @@
 import type { Control, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
-import { loginScreenStrings, signUpScreenStrings } from '@/features/auth/strings';
+import { loginScreenStrings, signUpScreenStrings } from '../../strings';
 import type { LoginFormValues } from './useLogin.validation';
 
 export type UseLoginReturn = {

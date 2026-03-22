@@ -12,7 +12,7 @@ import {
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { EmailLoginScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
-import type { UseLoginReturn } from '@/features/auth/ui/hooks/useLogin.types';
+import type { UseLoginReturn } from '../../hooks/useLogin.types';
 
 export type EmailLoginViewProps = EmailLoginScreenProps & UseLoginReturn;
 

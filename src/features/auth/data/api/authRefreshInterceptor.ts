@@ -1,4 +1,5 @@
 import { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
+import { logoutSession } from '../logoutSession';
 import { postRefreshToken } from './authApi';
 import { useAuthStore } from '../store/auth.store';
 import { authenticatedHttp } from '@/shared/lib/httpClient';
@@ -20,13 +21,13 @@ async function refreshAccessToken(): Promise<string | null> {
   refreshInFlight = (async () => {
     const rt = useAuthStore.getState().refreshToken?.trim();
     if (!rt) {
-      useAuthStore.getState().logout();
+      await logoutSession();
       return null;
     }
 
     const result = await postRefreshToken({ refreshToken: rt });
     if (!result.success) {
-      useAuthStore.getState().logout();
+      await logoutSession();
       return null;
     }
 

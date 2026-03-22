@@ -55,3 +55,19 @@ export interface SetUsernameRequest {
 
 /** Backend may extend this; we only require success envelope handling. */
 export type SetUsernameResponseData = Record<string, unknown>;
+
+/** POST /auth/logout — no request body. */
+export type LogoutResponseData = Record<string, unknown>;
+
+/** POST /devices — register Expo push token for the current user. */
+export interface RegisterDeviceRequest {
+  token: string;
+  /** Typically `ios` | `android` from `Platform.OS`. */
+  type: string;
+  /** Human-readable device label (e.g. model name). */
+  name: string;
+}
+
+export type RegisterDeviceResponseData = Record<string, unknown>;
+
+export type ListDevicesResponseData = unknown[];

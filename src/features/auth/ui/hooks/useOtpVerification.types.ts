@@ -1,5 +1,5 @@
 import type { Control, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
-import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
+import { loginScreenStrings, otpVerificationScreenStrings } from '../../strings';
 import type { OtpFormValues } from './useOtp.validation';
 
 export type UseOtpVerificationReturn = {

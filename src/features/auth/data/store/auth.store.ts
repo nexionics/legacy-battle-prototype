@@ -11,8 +11,11 @@ interface AuthStore {
   needsUsername: boolean;
   accessToken: string | null;
   refreshToken: string | null;
+  /** Last registered Expo push token (for DELETE /devices/{token} on logout). */
+  expoPushToken: string | null;
   user: UserData | null;
   setLoading: (loading: boolean) => void;
+  setExpoPushToken: (token: string | null) => void;
   setAuthTokens: (accessToken: string, refreshToken: string) => void;
   setNeedsUsername: (needs: boolean) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -30,6 +33,7 @@ export const useAuthStore = create<AuthStore>()(
       needsUsername: false,
       accessToken: null,
       refreshToken: null,
+      expoPushToken: null,
       user: null,
       _hasHydrated: false,
       setLoading: (loading) => set({ isLoading: loading }),
@@ -42,6 +46,7 @@ export const useAuthStore = create<AuthStore>()(
       setNeedsUsername: (needsUsername) => set({ needsUsername }),
       setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
       setUser: (user) => set({ user }),
+      setExpoPushToken: (expoPushToken) => set({ expoPushToken }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
       logout: () =>
         set(() => {
@@ -51,6 +56,7 @@ export const useAuthStore = create<AuthStore>()(
             refreshToken: null,
             isAuthenticated: false,
             needsUsername: false,
+            expoPushToken: null,
             user: null,
           };
         }),
@@ -66,6 +72,7 @@ export const useAuthStore = create<AuthStore>()(
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
         needsUsername: state.needsUsername,
+        expoPushToken: state.expoPushToken,
         user: state.user,
       }),
     },

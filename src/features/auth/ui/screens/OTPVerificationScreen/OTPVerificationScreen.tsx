@@ -18,7 +18,7 @@ import {
   fontWeights,
 } from '@/shared/constants/theme';
 import type { OTPVerificationScreenProps } from '@/shared/types';
-import type { UseOtpVerificationReturn } from '@/features/auth/ui/hooks/useOtpVerification.types';
+import type { UseOtpVerificationReturn } from '../../hooks/useOtpVerification.types';
 
 const OTP_LENGTH = 5;
 

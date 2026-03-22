@@ -5,10 +5,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { useToast } from '@/app/providers/useToast';
-import { useAuthStore } from '@/features/auth/data/store/auth.store';
-import { useResendOtpMutation, useVerifyOtpMutation } from '@/features/auth/data/api/authMutations';
+import { useAuthStore } from '../../data/store/auth.store';
+import { useResendOtpMutation, useVerifyOtpMutation } from '../../data/api/authMutations';
 import type { AuthStackParamList } from '@/shared/types';
-import { loginScreenStrings, otpVerificationScreenStrings } from '@/features/auth/strings';
+import { loginScreenStrings, otpVerificationScreenStrings } from '../../strings';
 import { otpSchema, type OtpFormValues } from './useOtp.validation';
 
 /** Resend OTP allowed only after this many seconds (2 minutes). */

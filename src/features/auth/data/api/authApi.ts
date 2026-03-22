@@ -20,6 +20,7 @@ import type {
   VerifyOtpResponseData,
   SetUsernameRequest,
   SetUsernameResponseData,
+  LogoutResponseData,
 } from './types';
 
 export async function postLogin(body: LoginRequest): Promise<ApiResponse<LoginResponseData>> {
@@ -88,6 +89,18 @@ export async function postSetUsername(
   try {
     const res = await authenticatedHttp.post(path, body);
     return parseApiResponse<SetUsernameResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postLogout(): Promise<ApiResponse<LogoutResponseData>> {
+  const path = '/auth/logout';
+  try {
+    const res = await authenticatedHttp.post(path);
+    const body = res.data != null && typeof res.data === 'object' ? (res.data as object) : {};
+    return parseApiResponse<LogoutResponseData>(path, res.status, body);
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Network error';
     return networkFailure(path, message);

@@ -4,10 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
-import { useAuthStore } from '@/features/auth/data/store/auth.store';
-import { useLoginMutation } from '@/features/auth/data/api/authMutations';
+import { useAuthStore } from '../../data/store/auth.store';
+import { useLoginMutation } from '../../data/api/authMutations';
 import type { AuthStackParamList } from '@/shared/types';
-import { authStrings, loginScreenStrings, signUpScreenStrings } from '@/features/auth/strings';
+import { authStrings, loginScreenStrings, signUpScreenStrings } from '../../strings';
 import { loginSchema, type LoginFormValues } from './useLogin.validation';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;

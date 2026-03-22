@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/shared/lib/queryClient';
-import { AuthProvider, ThemeProvider, ToastProvider } from '@/app/providers';
+import { AuthProvider, PushNotificationProvider, ThemeProvider, ToastProvider } from '@/app/providers';
 import { useCachedResources } from '@/shared/hooks';
 import { MainRouter } from '@/app/navigation';
 import { SplashVideo } from '@/shared/ui';
@@ -24,9 +24,11 @@ function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
           <AuthProvider>
-            <ToastProvider>
-              <MainRouter />
-            </ToastProvider>
+            <PushNotificationProvider>
+              <ToastProvider>
+                <MainRouter />
+              </ToastProvider>
+            </PushNotificationProvider>
           </AuthProvider>
         </ThemeProvider>
       </GestureHandlerRootView>

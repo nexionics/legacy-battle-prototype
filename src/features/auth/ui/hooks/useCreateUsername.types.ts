@@ -1,5 +1,5 @@
 import type { Control, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
-import { createUsernameScreenStrings, loginScreenStrings } from '@/features/auth/strings';
+import { createUsernameScreenStrings, loginScreenStrings } from '../../strings';
 import type { CreateUsernameFormValues } from './useCreateUsername.validation';
 
 export type UseCreateUsernameReturn = {

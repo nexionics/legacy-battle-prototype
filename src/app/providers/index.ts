@@ -8,3 +8,4 @@ export {
 } from './ThemeProvider';
 export { ToastProvider, ToastContext } from './ToastProvider';
 export { useToast } from './useToast';
+export { PushNotificationProvider } from './PushNotificationProvider';
