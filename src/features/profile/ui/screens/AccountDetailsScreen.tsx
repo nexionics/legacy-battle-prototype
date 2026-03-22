@@ -82,14 +82,14 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
             icon="person-outline"
             label="Username"
             value={displayName}
-            onEdit={() => showToast('success', 'Edit Username coming soon')}
+            onEdit={() => navigation.navigate('EditUsername')}
           />
           <View style={[styles.divider, { backgroundColor: colors.inputBorder }]} />
           <InfoRow
             icon="mail-outline"
             label="Email"
             value={email}
-            onEdit={() => showToast('success', 'Edit Email coming soon')}
+            onEdit={() => navigation.navigate('EditEmail')}
           />
         </View>
       </ScrollView>

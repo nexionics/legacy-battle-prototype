@@ -53,6 +53,7 @@ export const SuccessBottomSheet = forwardRef<BottomSheetModal, SuccessBottomShee
 const styles = StyleSheet.create({
   container: {
     padding: spacing[6],
+    paddingTop: spacing[4],
     paddingBottom: spacing[6],
   },
   content: {

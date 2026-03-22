@@ -83,6 +83,8 @@ export type {
   PrivacyPolicyScreenProps,
   ChangePasswordScreenProps,
   ContactUsScreenProps,
+  EditUsernameScreenProps,
+  EditEmailScreenProps,
 } from './navigation';
 export type {
   LevelInfo,

@@ -24,6 +24,8 @@ import {
   ContactUsScreen,
   SecurityPrivacyScreen,
   ChangePasswordScreen,
+  EditUsernameScreen,
+  EditEmailScreen,
 } from '@/features/profile';
 import { AllResultsScreen, AllUpcomingGamesScreen } from '@/features/sports';
 import { RootStackParamList } from './types';
@@ -52,6 +54,8 @@ export default function AppStack() {
       <Stack.Screen name="ContactUs" component={ContactUsScreen} />
       <Stack.Screen name="SecurityPrivacy" component={SecurityPrivacyScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <Stack.Screen name="EditUsername" component={EditUsernameScreen} />
+      <Stack.Screen name="EditEmail" component={EditEmailScreen} />
       <Stack.Screen name="StatDuelMode" component={StatDuelModeScreen} />
       <Stack.Screen name="StatDuelDetails" component={StatDuelDetailsScreen} />
       <Stack.Screen name="StatDuelChampion" component={StatDuelChampionScreen} />

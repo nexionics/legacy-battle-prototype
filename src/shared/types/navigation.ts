@@ -108,6 +108,8 @@ export type RootStackParamList = {
   ContactUs: undefined;
   SecurityPrivacy: undefined;
   ChangePassword: undefined;
+  EditUsername: undefined;
+  EditEmail: undefined;
 };
 
 export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> = NativeStackScreenProps<
@@ -155,6 +157,8 @@ export type AccountDetailsScreenProps = RootStackScreenProps<'AccountDetails'>;
 export type PrivacyPolicyScreenProps = RootStackScreenProps<'PrivacyPolicy'>;
 export type ChangePasswordScreenProps = RootStackScreenProps<'ChangePassword'>;
 export type ContactUsScreenProps = RootStackScreenProps<'ContactUs'>;
+export type EditUsernameScreenProps = RootStackScreenProps<'EditUsername'>;
+export type EditEmailScreenProps = RootStackScreenProps<'EditEmail'>;
 
 // ─── Auth stack screen props (typed navigation + route) ────────────────────
 

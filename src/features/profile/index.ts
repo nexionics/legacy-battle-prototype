@@ -7,3 +7,5 @@ export { default as PrivacyPolicyScreen } from './ui/screens/PrivacyPolicyScreen
 export { default as ChangePasswordScreen } from './ui/screens/ChangePasswordScreen';
 export { default as ContactUsScreen } from './ui/screens/ContactUsScreen';
 export { default as SecurityPrivacyScreen } from './ui/screens/SecurityPrivacyScreen';
+export { default as EditUsernameScreen } from './ui/screens/EditUsernameScreen';
+export { default as EditEmailScreen } from './ui/screens/EditEmailScreen';
