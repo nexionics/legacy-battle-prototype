@@ -64,7 +64,11 @@ export interface RegisterDeviceRequest {
   name: string;
 }
 
-export type RegisterDeviceResponseData = Record<string, unknown>;
+export interface RegisterDeviceResponseData {
+  id: string;
+  token: string;
+  userId: string;
+}
 
 export type ListDevicesResponseData = unknown[];
 
@@ -113,8 +117,7 @@ export interface ResetPasswordResponseData {
 /** POST /auth/biometric/enroll (authenticated) */
 export interface BiometricEnrollRequest {
   publicKey: string;
-  deviceName: string;
-  deviceToken: string;
+  deviceId: string;
 }
 
 export type BiometricEnrollResponseData = Record<string, unknown>;
@@ -134,6 +137,7 @@ export interface BiometricVerifyRequest {
   challenge: string;
   signature: string;
   publicKey: string;
+  deviceId?: string;
 }
 
 export interface BiometricVerifyResponseData {

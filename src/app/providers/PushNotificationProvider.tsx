@@ -18,6 +18,7 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const needsUsername = useAuthStore((s) => s.needsUsername);
   const setExpoPushToken = useAuthStore((s) => s.setExpoPushToken);
+  const setDeviceId = useAuthStore((s) => s.setDeviceId);
 
   useEffect(() => {
     setupNotificationHandler();
@@ -46,6 +47,7 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
 
       if (result.success) {
         setExpoPushToken(token);
+        setDeviceId(result.data.id);
       }
     };
 

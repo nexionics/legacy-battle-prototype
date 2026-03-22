@@ -13,7 +13,6 @@ export type ConnectionStatus = 'idle' | 'ok' | 'error' | 'testing';
 export interface UserPreferences {
   id: string;
   userId: string;
-  biometricsEnabled: boolean;
   rememberMe: boolean;
   pushEnabled: boolean;
   bcUpdatesEnabled: boolean;

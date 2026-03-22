@@ -5,6 +5,7 @@
 export interface LoginRequest {
   email: string;
   password: string;
+  deviceId?: string;
 }
 
 /**
@@ -18,5 +19,6 @@ export type LoginResponseData =
       refreshToken: string;
       hasUsername: boolean;
       userId: string;
+      isBiometricEnrolled?: boolean;
     }
   | { outcome: 'PENDING_VERIFICATION'; reference: string; email: string };

@@ -13,9 +13,12 @@ interface AuthStore {
   refreshToken: string | null;
   /** Last registered Expo push token (for DELETE /devices/{token} on logout). */
   expoPushToken: string | null;
+  /** UUID from backend for the registered device. */
+  deviceId: string | null;
   user: UserData | null;
   setLoading: (loading: boolean) => void;
   setExpoPushToken: (token: string | null) => void;
+  setDeviceId: (id: string | null) => void;
   setAuthTokens: (accessToken: string, refreshToken: string) => void;
   setNeedsUsername: (needs: boolean) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -34,6 +37,7 @@ export const useAuthStore = create<AuthStore>()(
       accessToken: null,
       refreshToken: null,
       expoPushToken: null,
+      deviceId: null,
       user: null,
       _hasHydrated: false,
       setLoading: (loading) => set({ isLoading: loading }),
@@ -46,6 +50,7 @@ export const useAuthStore = create<AuthStore>()(
       setNeedsUsername: (needsUsername) => set({ needsUsername }),
       setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
       setUser: (user) => set({ user }),
+      setDeviceId: (deviceId) => set({ deviceId }),
       setExpoPushToken: (expoPushToken) => set({ expoPushToken }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
       logout: () =>
@@ -57,6 +62,7 @@ export const useAuthStore = create<AuthStore>()(
             isAuthenticated: false,
             needsUsername: false,
             expoPushToken: null,
+            deviceId: null,
             user: null,
           };
         }),
@@ -73,6 +79,7 @@ export const useAuthStore = create<AuthStore>()(
         isAuthenticated: state.isAuthenticated,
         needsUsername: state.needsUsername,
         expoPushToken: state.expoPushToken,
+        deviceId: state.deviceId,
         user: state.user,
       }),
     },

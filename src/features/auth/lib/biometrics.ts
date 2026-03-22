@@ -11,6 +11,7 @@ import {
   postBiometricEnroll,
   postBiometricVerify,
 } from '@/features/auth/data/api/biometricApi';
+import { useAuthStore } from '../data/store/auth.store';
 
 const rnBiometrics = new ReactNativeBiometrics();
 
@@ -40,8 +41,7 @@ export async function checkBiometricsAvailable(): Promise<BiometricsAvailability
 export async function enrollBiometrics(
   _accessToken: string,
   userEmail: string,
-  deviceName: string,
-  deviceToken: string,
+  deviceId: string,
 ): Promise<{ ok: boolean }> {
   try {
     const { available } = await rnBiometrics.isSensorAvailable();
@@ -54,8 +54,7 @@ export async function enrollBiometrics(
 
     const result = await postBiometricEnroll({
       publicKey,
-      deviceName,
-      deviceToken: deviceToken || '',
+      deviceId,
     });
 
     if (!result.success) {
@@ -105,11 +104,14 @@ export async function signInWithBiometrics(): Promise<
       return { ok: false, reason: 'cancelled' };
     }
 
+    const savedDeviceId = useAuthStore.getState().deviceId;
+
     const verifyRes = await postBiometricVerify({
       email: userEmail,
       challenge: challengeString,
       signature,
       publicKey: savedPublicKey,
+      deviceId: savedDeviceId ?? undefined,
     });
 
     if (!verifyRes.success) {

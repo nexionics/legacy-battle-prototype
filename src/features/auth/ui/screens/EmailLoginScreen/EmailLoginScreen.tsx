@@ -30,8 +30,8 @@ export function EmailLoginScreen({
   onGooglePress,
   onFooterLinkPress,
   onForgotPasswordPress,
-  biometricsEnabled,
-  onBiometricsToggle,
+  wantBiometrics,
+  onWantBiometricsToggle,
   loginScreenStrings,
   signUpScreenStrings,
 }: EmailLoginViewProps) {
@@ -105,8 +105,8 @@ export function EmailLoginScreen({
 
           <LabeledSwitch
             label={loginScreenStrings.emailLoginForm.enableBiometrics}
-            value={biometricsEnabled}
-            onValueChange={onBiometricsToggle}
+            value={wantBiometrics}
+            onValueChange={onWantBiometricsToggle}
             disabled={formDisabled}
           />
 

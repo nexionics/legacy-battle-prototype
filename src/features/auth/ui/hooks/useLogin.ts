@@ -7,7 +7,7 @@ import { useToast } from '@/app/providers/useToast';
 import { getBiometricsRequested, setBiometricsRequested } from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useGoogleSocialAuthMutation, useLoginMutation } from '../../data/api/authMutations';
-import { enrollBiometrics, getDefaultBiometricDeviceName } from '../../lib/biometrics';
+import { enrollBiometrics } from '../../lib/biometrics';
 import { requestGoogleIdToken } from '../../lib/googleSignIn';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings, signUpScreenStrings } from '../../string';
@@ -21,19 +21,18 @@ export function useLogin() {
   const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
   const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
-  const expoPushToken = useAuthStore((s) => s.expoPushToken);
+  const deviceId = useAuthStore((s) => s.deviceId);
   const loginMutation = useLoginMutation();
   const googleSocialMutation = useGoogleSocialAuthMutation();
-  const [biometricsEnabled, setBiometricsEnabled] = useState(false);
+  const [wantBiometrics, setWantBiometrics] = useState(false);
   const [googleFlowLoading, setGoogleFlowLoading] = useState(false);
-  /** Prevents async hydration from overwriting the switch after the user has toggled it. */
   const biometricsTouchedByUser = useRef(false);
 
   useEffect(() => {
     void (async () => {
       const requested = await getBiometricsRequested();
       if (biometricsTouchedByUser.current) return;
-      setBiometricsEnabled(requested);
+      setWantBiometrics(requested);
     })();
   }, []);
 
@@ -44,7 +43,10 @@ export function useLogin() {
   });
 
   const onValidSubmit = async (data: LoginFormValues) => {
-    const result = await loginMutation.mutateAsync(data);
+    const result = await loginMutation.mutateAsync({
+      ...data,
+      deviceId: deviceId ?? undefined,
+    });
 
     if (!result.success) {
       showToast('fail', result.error.message);
@@ -63,14 +65,14 @@ export function useLogin() {
       setAuthTokens(result.data.accessToken, result.data.refreshToken);
       setUser({ id: result.data.userId, email: data.email });
 
+      if (result.data.isBiometricEnrolled) {
+        await setBiometricsRequested(true);
+        setWantBiometrics(true);
+      }
+
       const wantBiometrics = await getBiometricsRequested();
-      if (wantBiometrics) {
-        const enroll = await enrollBiometrics(
-          result.data.accessToken,
-          data.email,
-          getDefaultBiometricDeviceName(),
-          expoPushToken ?? '',
-        );
+      if (wantBiometrics && !result.data.isBiometricEnrolled && deviceId) {
+        const enroll = await enrollBiometrics(result.data.accessToken, data.email, deviceId);
         if (!enroll.ok) {
           showToast('fail', loginScreenStrings.emailLoginForm.biometricsEnrollCancelledToast);
         }
@@ -127,10 +129,9 @@ export function useLogin() {
     navigation.navigate('ForgotPassword');
   };
 
-  const onBiometricsToggle = (enabled: boolean) => {
+  const onWantBiometricsToggle = (enabled: boolean) => {
     biometricsTouchedByUser.current = true;
-    // Update state synchronously so the controlled <Switch /> tracks the gesture (async persist alone causes snap-back).
-    setBiometricsEnabled(enabled);
+    setWantBiometrics(enabled);
     void setBiometricsRequested(enabled);
   };
 
@@ -149,8 +150,8 @@ export function useLogin() {
     onGooglePress,
     onFooterLinkPress,
     onForgotPasswordPress,
-    biometricsEnabled,
-    onBiometricsToggle,
+    wantBiometrics,
+    onWantBiometricsToggle,
     loginScreenStrings,
     signUpScreenStrings,
   };

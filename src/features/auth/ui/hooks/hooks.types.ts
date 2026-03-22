@@ -32,8 +32,8 @@ export type UseLoginReturn = {
   onGooglePress: () => Promise<void>;
   onFooterLinkPress: () => void;
   onForgotPasswordPress: () => void;
-  biometricsEnabled: boolean;
-  onBiometricsToggle: (enabled: boolean) => void;
+  wantBiometrics: boolean;
+  onWantBiometricsToggle: (enabled: boolean) => void;
   loginScreenStrings: typeof loginScreenStrings;
   signUpScreenStrings: typeof signUpScreenStrings;
 };
