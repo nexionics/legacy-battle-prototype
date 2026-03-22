@@ -4,31 +4,33 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useToast } from '@/app/providers/useToast';
+import {
+  getBiometricsRequested,
+  setBiometricsRequested,
+} from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useLoginMutation } from '../../data/api/authMutations';
+import { enrollBiometrics, getDefaultBiometricDeviceName } from '../../lib/biometrics';
 import type { AuthStackParamList } from '@/shared/types';
 import { authStrings, loginScreenStrings, signUpScreenStrings } from '../../string';
 import { loginSchema, type LoginFormValues } from './validations';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 
-const BIOMETRICS_PREF_KEY = '@legacy-battle/auth-biometrics-enabled';
-
 export function useLogin() {
   const navigation = useNavigation<AuthNav>();
   const { showToast } = useToast();
   const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
+  const expoPushToken = useAuthStore((s) => s.expoPushToken);
   const loginMutation = useLoginMutation();
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);
 
   useEffect(() => {
     void (async () => {
-      const stored = await AsyncStorage.getItem(BIOMETRICS_PREF_KEY);
-      setBiometricsEnabled(stored === 'true');
+      const requested = await getBiometricsRequested();
+      setBiometricsEnabled(requested);
     })();
   }, []);
 
@@ -56,6 +58,20 @@ export function useLogin() {
 
     if (result.data.outcome === 'AUTHENTICATED') {
       setAuthTokens(result.data.accessToken, result.data.refreshToken);
+
+      const wantBiometrics = await getBiometricsRequested();
+      if (wantBiometrics) {
+        const enroll = await enrollBiometrics(
+          result.data.accessToken,
+          data.email,
+          getDefaultBiometricDeviceName(),
+          expoPushToken ?? '',
+        );
+        if (!enroll.ok) {
+          showToast('fail', loginScreenStrings.emailLoginForm.biometricsEnrollCancelledToast);
+        }
+      }
+
       if (!result.data.hasUsername) {
         setNeedsUsername(true);
         navigation.navigate('CreateUsername');
@@ -82,34 +98,8 @@ export function useLogin() {
   };
 
   const onBiometricsToggle = async (enabled: boolean) => {
-    if (!enabled) {
-      await AsyncStorage.setItem(BIOMETRICS_PREF_KEY, 'false');
-      setBiometricsEnabled(false);
-      return;
-    }
-
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    if (!hasHardware) {
-      showToast('fail', loginScreenStrings.emailLoginForm.biometricsUnavailable);
-      return;
-    }
-
-    const enrolled = await LocalAuthentication.isEnrolledAsync();
-    if (!enrolled) {
-      showToast('fail', loginScreenStrings.emailLoginForm.biometricsNotEnrolled);
-      return;
-    }
-
-    const authResult = await LocalAuthentication.authenticateAsync({
-      promptMessage: loginScreenStrings.emailLoginForm.biometricsPrompt,
-    });
-
-    if (!authResult.success) {
-      return;
-    }
-
-    await AsyncStorage.setItem(BIOMETRICS_PREF_KEY, 'true');
-    setBiometricsEnabled(true);
+    await setBiometricsRequested(enabled);
+    setBiometricsEnabled(enabled);
   };
 
   return {

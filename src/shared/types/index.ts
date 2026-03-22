@@ -71,6 +71,7 @@ export type {
   AddFriendScreenProps,
   LoginWelcomeScreenProps,
   EmailLoginScreenProps,
+  LoginWithBiometricsScreenProps,
   SignUpScreenProps,
   OTPVerificationScreenProps,
   CreateUsernameScreenProps,

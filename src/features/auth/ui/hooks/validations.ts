@@ -16,6 +16,12 @@ export const loginSchema = yup.object({
 
 export type LoginFormValues = yup.InferType<typeof loginSchema>;
 
+export const biometricPasswordLoginSchema = yup.object({
+  password: yup.string().required('Password is required'),
+});
+
+export type BiometricPasswordLoginFormValues = yup.InferType<typeof biometricPasswordLoginSchema>;
+
 export const signUpSchema = yup.object({
   email: yup.string().email('Invalid email address').required('Email is required'),
   password: passwordRules,

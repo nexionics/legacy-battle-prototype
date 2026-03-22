@@ -1,3 +1,5 @@
+import type { RefObject } from 'react';
+import type { TextInput } from 'react-native';
 import type { Control, FieldErrors, UseFormHandleSubmit } from 'react-hook-form';
 import {
   createUsernameScreenStrings,
@@ -7,6 +9,7 @@ import {
   signUpScreenStrings,
 } from '../../string';
 import type {
+  BiometricPasswordLoginFormValues,
   CreateUsernameFormValues,
   ForgotPasswordFormValues,
   LoginFormValues,
@@ -30,6 +33,22 @@ export type UseLoginReturn = {
   onBiometricsToggle: (enabled: boolean) => void;
   loginScreenStrings: typeof loginScreenStrings;
   signUpScreenStrings: typeof signUpScreenStrings;
+};
+
+export type UseLoginWithBiometricsReturn = {
+  passwordRef: RefObject<TextInput | null>;
+  displayName: string;
+  accountEmail: string | null;
+  control: Control<BiometricPasswordLoginFormValues>;
+  handleSubmit: UseFormHandleSubmit<BiometricPasswordLoginFormValues>;
+  onSubmit: ReturnType<UseFormHandleSubmit<BiometricPasswordLoginFormValues>>;
+  errors: FieldErrors<BiometricPasswordLoginFormValues>;
+  isValid: boolean;
+  isSubmitting: boolean;
+  biometricBusy: boolean;
+  onBiometricLoginPress: () => void;
+  onUsePasswordInstead: () => void;
+  loginScreenStrings: typeof loginScreenStrings;
 };
 
 export type UseSignupReturn = {

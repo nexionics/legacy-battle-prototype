@@ -42,6 +42,8 @@ export const loginScreenStrings = {
     biometricsPrompt: 'Confirm to enable biometric login',
     biometricsUnavailable: 'Biometrics are not available on this device.',
     biometricsNotEnrolled: 'Set up Face ID or Touch ID in your device settings first.',
+    biometricsEnrollCancelledToast:
+      'Biometrics setup was cancelled, you can enable it in Settings',
     submitLogIn: 'Log In',
     /** Shown before the Sign Up link on email login (includes trailing space). */
     footerLeadNoAccount: "Don't have an account? ",
@@ -51,6 +53,16 @@ export const loginScreenStrings = {
     missingCredentialsTitle: 'Missing Info',
     missingCredentialsMessage: 'Please enter email and password',
     loginFailedTitle: 'Login Failed',
+  },
+  loginWithBiometricsScreen: {
+    title: 'Welcome back',
+    subtitle: 'Sign in with biometrics or your password',
+    displayEmailLabel: 'Account',
+    passwordPlaceholder: 'Password',
+    loginWithBiometrics: 'Log in with biometrics',
+    usePasswordInstead: 'Use password instead',
+    submitLogIn: 'Log in with password',
+    biometricSignInFailed: 'Could not sign in with biometrics. Try your password.',
   },
 } as const;
 

@@ -113,3 +113,35 @@ export interface ResetPasswordResponseData {
   message: string;
   reference: string;
 }
+
+/** POST /auth/biometric/enroll (authenticated) */
+export interface BiometricEnrollRequest {
+  publicKey: string;
+  deviceName: string;
+  deviceToken: string;
+}
+
+export type BiometricEnrollResponseData = Record<string, unknown>;
+
+/** POST /auth/biometric/challenge */
+export interface BiometricChallengeRequest {
+  email: string;
+}
+
+export interface BiometricChallengeResponseData {
+  challenge: string;
+}
+
+/** POST /auth/biometric/verify */
+export interface BiometricVerifyRequest {
+  email: string;
+  challenge: string;
+  signature: string;
+  publicKey: string;
+}
+
+export interface BiometricVerifyResponseData {
+  accessToken: string;
+  refreshToken: string;
+  hasUsername?: boolean;
+}

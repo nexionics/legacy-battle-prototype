@@ -1,10 +1,11 @@
 import { postLogout } from './api/authApi';
 import { deleteRegisteredDevice } from './api/devicesApi';
+import { logout as logoutBiometrics } from '../lib/biometrics';
 import { useAuthStore } from './store/auth.store';
 
 /**
  * Unregisters push (while the access token is still valid), notifies `POST /auth/logout`,
- * then clears local auth state.
+ * wipes biometric keys and SecureStore flags, then clears local auth state.
  */
 export async function logoutSession(): Promise<void> {
   const { expoPushToken, accessToken } = useAuthStore.getState();
@@ -25,5 +26,6 @@ export async function logoutSession(): Promise<void> {
     }
   }
 
+  await logoutBiometrics();
   useAuthStore.getState().logout();
 }
