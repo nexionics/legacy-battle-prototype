@@ -54,7 +54,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
   }
 
   return (
-    <Screen padding={0}>
+    <Screen padding={0} edges={['top', 'left', 'right']}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ProfileHeader
           displayName={profile?.displayName ?? undefined}
@@ -78,6 +78,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           onToggleTheme={toggleTheme}
           onCrewPress={() => navigation.navigate('Friends')}
           onLogout={handleLogout}
+          onHelpPress={() => navigation.navigate('ContactUs')}
         />
       </ScrollView>
     </Screen>

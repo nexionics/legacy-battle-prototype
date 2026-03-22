@@ -4,7 +4,7 @@ import { useAppTheme } from '@/app/providers/ThemeProvider';
 import { screenPadding } from '../lib/layout';
 import type { ScreenProps } from '@/shared/types';
 
-export function Screen({ children, scroll = false, padding, style }: ScreenProps) {
+export function Screen({ children, scroll = false, padding, style, edges }: ScreenProps) {
   const { colors, mode } = useAppTheme();
   const pad = padding ?? screenPadding();
 
@@ -12,7 +12,10 @@ export function Screen({ children, scroll = false, padding, style }: ScreenProps
 
   if (scroll) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }, style]}>
+      <SafeAreaView
+        edges={edges}
+        style={[styles.container, { backgroundColor: colors.background }, style]}
+      >
         <StatusBar barStyle={barStyle} backgroundColor={colors.background} />
         <ScrollView
           contentContainerStyle={{ paddingHorizontal: pad }}
@@ -26,6 +29,7 @@ export function Screen({ children, scroll = false, padding, style }: ScreenProps
 
   return (
     <SafeAreaView
+      edges={edges}
       style={[
         styles.container,
         { paddingHorizontal: pad, backgroundColor: colors.background },

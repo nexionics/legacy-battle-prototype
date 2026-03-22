@@ -267,11 +267,14 @@ export interface SelectionModalProps<T extends string = string> {
 
 // ─── Screen & Layout ────────────────────────────────────────────────────────
 
+import type { Edge } from 'react-native-safe-area-context';
+
 export type ScreenProps = {
   children: React.ReactNode;
   scroll?: boolean;
   padding?: number;
   style?: ViewStyle;
+  edges?: Edge[];
 };
 
 // ─── Feature Component Props ────────────────────────────────────────────────
@@ -306,6 +309,7 @@ export interface ProfileMenuProps {
   onToggleTheme: () => void;
   onCrewPress: () => void;
   onLogout: () => void;
+  onHelpPress?: () => void;
 }
 
 export interface UserRowProps {

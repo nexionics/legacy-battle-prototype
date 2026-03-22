@@ -40,7 +40,7 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
   const onRefresh = () => refetch();
 
   return (
-    <Screen padding={0}>
+    <Screen padding={0} edges={['top', 'left', 'right']}>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}

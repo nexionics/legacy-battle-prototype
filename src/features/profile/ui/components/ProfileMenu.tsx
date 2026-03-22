@@ -29,6 +29,7 @@ export function ProfileMenu({
   onToggleTheme,
   onCrewPress,
   onLogout,
+  onHelpPress,
 }: ProfileMenuProps) {
   const colors = useThemeColors();
   return (
@@ -54,7 +55,7 @@ export function ProfileMenu({
 
         <MenuRow icon="notifications-outline" label="Notifications" />
 
-        <MenuRow icon="help-circle-outline" label="Help & Support" />
+        <MenuRow icon="help-circle-outline" label="Help & Support" onPress={onHelpPress} />
 
         <MenuRow
           icon={themeMode === 'dark' ? 'moon-outline' : 'sunny-outline'}

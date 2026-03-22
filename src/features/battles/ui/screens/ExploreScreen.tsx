@@ -18,7 +18,7 @@ export default function ExploreScreen() {
     useExploreBattles();
 
   return (
-    <Screen scroll padding={spacing[4]}>
+    <Screen scroll padding={spacing[4]} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <View style={styles.headerSide} />
         <View style={styles.headerCenter}>

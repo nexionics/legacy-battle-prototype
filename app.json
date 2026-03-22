@@ -9,9 +9,9 @@
     "splash": {
       "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#366bd6",
+      "backgroundColor": "#F5F5F5",
       "dark": {
-        "backgroundColor": "#366bd6"
+        "backgroundColor": "#121212"
       }
     },
     "ios": {

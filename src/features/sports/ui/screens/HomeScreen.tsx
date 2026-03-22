@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { CompositeScreenProps } from '@react-navigation/native';
@@ -54,7 +53,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   }
 
   return (
-    <Screen padding={0}>
+    <Screen padding={0} edges={['top', 'left', 'right']}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <HomeHeader
           displayName={profile?.displayName}

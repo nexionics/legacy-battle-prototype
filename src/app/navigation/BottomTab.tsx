@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Platform, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import * as NavigationBar from 'expo-navigation-bar';
-
 import { HomeScreen } from '@/features/sports';
 import { BattlesScreen, ExploreScreen } from '@/features/battles';
 import { ProfileScreen } from '@/features/profile';
-
 import { Sizes, verticalScale, horizontalScale, FontFamily } from '@/shared/theme';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import type { RootStackParamList, TabStackParamList, TabScreenProps } from './types';
@@ -39,25 +36,14 @@ function BattleNowPlaceholder() {
 
 export function MainTabs() {
   const colors = useThemeColors();
-  const insets = useSafeAreaInsets();
   const rootNavigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const onBattleNowPress = useCallback(() => {
     rootNavigation.navigate('BattleVisibility');
   }, [rootNavigation]);
 
-  const baseHeight = Platform.OS === 'android' ? verticalScale(66) : verticalScale(70);
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      NavigationBar.setBackgroundColorAsync(colors.background);
-      NavigationBar.setButtonStyleAsync('light');
-    }
-  }, [colors.background]);
-
   return (
     <SafeAreaView
-      edges={['top']}
+      edges={['bottom']}
       style={[tabStyles.safeArea, { backgroundColor: colors.background }]}
     >
       <Tab.Navigator
@@ -67,14 +53,7 @@ export function MainTabs() {
           freezeOnBlur: false,
           tabBarStyle: [
             tabStyles.tabBar,
-            {
-              backgroundColor: colors.background,
-              borderTopColor: colors.inputBorder,
-              height: baseHeight + insets.bottom,
-              paddingTop: verticalScale(10),
-              paddingBottom:
-                insets.bottom + (Platform.OS === 'android' ? verticalScale(6) : verticalScale(10)),
-            },
+            { backgroundColor: colors.background, borderTopColor: colors.inputBorder },
           ],
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.textSecondary,
@@ -137,6 +116,8 @@ const tabStyles = StyleSheet.create({
   },
   tabBar: {
     borderTopWidth: 1,
+    height: Platform.OS === 'android' ? verticalScale(66) : verticalScale(70),
+    paddingBottom: Platform.OS === 'android' ? verticalScale(6) : verticalScale(10),
     paddingTop: verticalScale(10),
   },
   tabBarLabel: {
