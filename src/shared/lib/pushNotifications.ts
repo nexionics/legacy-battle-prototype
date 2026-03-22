@@ -64,7 +64,17 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
     return pushTokenString;
   } catch (error: unknown) {
     const detail = error instanceof Error ? error.message : String(error);
-    logRegistrationError(`Failed to get push token: ${detail}`);
+    if (
+      detail.includes('FirebaseApp') ||
+      detail.includes('Firebase') ||
+      detail.includes('FCM')
+    ) {
+      logRegistrationError(
+        `Failed to get push token (Android needs google-services.json + rebuild). ${detail}`,
+      );
+    } else {
+      logRegistrationError(`Failed to get push token: ${detail}`);
+    }
     return undefined;
   }
 }

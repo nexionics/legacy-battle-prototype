@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
@@ -28,10 +28,13 @@ export function useLogin() {
   const googleSocialMutation = useGoogleSocialAuthMutation();
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);
   const [googleFlowLoading, setGoogleFlowLoading] = useState(false);
+  /** Prevents async hydration from overwriting the switch after the user has toggled it. */
+  const biometricsTouchedByUser = useRef(false);
 
   useEffect(() => {
     void (async () => {
       const requested = await getBiometricsRequested();
+      if (biometricsTouchedByUser.current) return;
       setBiometricsEnabled(requested);
     })();
   }, []);
@@ -123,9 +126,11 @@ export function useLogin() {
     navigation.navigate('ForgotPassword');
   };
 
-  const onBiometricsToggle = async (enabled: boolean) => {
-    await setBiometricsRequested(enabled);
+  const onBiometricsToggle = (enabled: boolean) => {
+    biometricsTouchedByUser.current = true;
+    // Update state synchronously so the controlled <Switch /> tracks the gesture (async persist alone causes snap-back).
     setBiometricsEnabled(enabled);
+    void setBiometricsRequested(enabled);
   };
 
   const isSubmitting = form.formState.isSubmitting || loginMutation.isPending;

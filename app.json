@@ -39,10 +39,12 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.INTERNET"
-      ]
+      ],
+      "package": "com.legacybattle.android"
     },
     "web": {
       "favicon": "./assets/favicon.png"
