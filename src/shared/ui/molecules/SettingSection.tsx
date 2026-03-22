@@ -51,7 +51,9 @@ export function SettingSection({ title, subtitle, icon, children, style }: Setti
           return (
             <React.Fragment key={index}>
               {child}
-              {!isLast && <View style={[styles.divider, { backgroundColor: colors.inputBorder }]} />}
+              {!isLast && (
+                <View style={[styles.divider, { backgroundColor: colors.inputBorder }]} />
+              )}
             </React.Fragment>
           );
         })}

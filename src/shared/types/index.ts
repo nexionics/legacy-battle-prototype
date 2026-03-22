@@ -79,6 +79,7 @@ export type {
   VerifyResetOTPScreenProps,
   ResetPasswordScreenProps,
   SettingsScreenProps,
+  AccountDetailsScreenProps,
 } from './navigation';
 export type { LevelInfo, ConnectionStatus } from './profile';
 export type { SportFilter } from './sports';

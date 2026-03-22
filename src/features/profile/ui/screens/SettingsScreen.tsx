@@ -27,7 +27,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           icon="person-outline"
           title="Account Details"
           subtitle="Personal Information's"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('AccountDetails')}
           iconColor="#33A0FF"
           iconBgColor="#0088FF33"
         />
