@@ -7,9 +7,12 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#366bd6",
+      "dark": {
+        "backgroundColor": "#366bd6"
+      }
     },
     "ios": {
       "supportsTablet": true,
@@ -21,28 +24,10 @@
           },
           {
             "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
-          },
-          {
-            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
           }
         ]
       },
-      "bundleIdentifier": "com.legacybattle.android"
+      "bundleIdentifier": "com.legacybattle.ios"
     },
     "android": {
       "adaptiveIcon": {
@@ -68,7 +53,7 @@
         {
           "appID": "YOUR_FACEBOOK_APP_ID",
           "clientToken": "YOUR_FACEBOOK_CLIENT_TOKEN",
-          "displayName": "YourAppName",
+          "displayName": "Legacy Battle",
           "scheme": "fbYOUR_FACEBOOK_APP_ID"
         }
       ]

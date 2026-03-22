@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Platform, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as NavigationBar from 'expo-navigation-bar';
 
 import { HomeScreen } from '@/features/sports';
 import { BattlesScreen, ExploreScreen } from '@/features/battles';
@@ -46,6 +47,13 @@ export function MainTabs() {
   }, [rootNavigation]);
 
   const baseHeight = Platform.OS === 'android' ? verticalScale(66) : verticalScale(70);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setBackgroundColorAsync(colors.background);
+      NavigationBar.setButtonStyleAsync('light');
+    }
+  }, [colors.background]);
 
   return (
     <SafeAreaView
