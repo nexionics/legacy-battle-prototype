@@ -16,10 +16,7 @@ export function MenuRow({
   const Wrapper = onPress ? TouchableOpacity : View;
 
   return (
-    <Wrapper
-      style={[styles.container, style]}
-      {...(onPress ? { onPress } : {})}
-    >
+    <Wrapper style={[styles.container, style]} {...(onPress ? { onPress } : {})}>
       <IconCircle size={40} backgroundColor={colors.background}>
         <Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={22} color={colors.text} />
       </IconCircle>

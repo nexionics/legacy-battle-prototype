@@ -5,12 +5,7 @@ export type TabType = 'open' | 'active' | 'completed';
 export type ExploreTab = 'Trending' | 'Ending Soon' | 'New' | 'High Activity';
 
 /** Battle type for store/selection (full set) */
-export type BattleType =
-  | 'head_to_head'
-  | 'stat_duel'
-  | 'GAME_DUEL'
-  | 'STAT_DUEL'
-  | 'SKILL_BATTLE';
+export type BattleType = 'head_to_head' | 'stat_duel' | 'GAME_DUEL' | 'STAT_DUEL' | 'SKILL_BATTLE';
 
 /** Battle type option id for BattleTypeScreen */
 export type BattleTypeOptionId = 'GAME_DUEL' | 'STAT_DUEL' | 'SKILL_BATTLE';

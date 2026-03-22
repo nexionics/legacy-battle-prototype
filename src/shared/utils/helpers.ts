@@ -11,8 +11,7 @@ export const extractOTPDigits = (value: string, maxDigits: number): string[] =>
 /**
  * Returns true only when every slot is filled with a single digit.
  */
-export const isOTPComplete = (slots: string[]): boolean =>
-  slots.every((s) => s.length === 1);
+export const isOTPComplete = (slots: string[]): boolean => slots.every((s) => s.length === 1);
 
 /**
  * Reads numeric digits from the clipboard.
@@ -20,7 +19,7 @@ export const isOTPComplete = (slots: string[]): boolean =>
  */
 export const getOTPFromClipboard = async (length: number): Promise<string[]> => {
   try {
-    const { hasStringAsync, getStringAsync } = await import("expo-clipboard");
+    const { hasStringAsync, getStringAsync } = await import('expo-clipboard');
 
     const hasContent = await hasStringAsync();
     if (!hasContent) return [];
@@ -38,12 +37,7 @@ export const getOTPFromClipboard = async (length: number): Promise<string[]> => 
  * @example "The Legend Killer" → "the_legend_killer"
  */
 export function formatUsernameForApi(raw: string): string {
-  return raw
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '_')
-    .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '');
+  return raw.trim().toLowerCase().replace(/\s+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
 }
 
 /** Formats seconds as `M:SS` (e.g. countdown timers). */
@@ -69,9 +63,7 @@ export function formatMmSs(totalSeconds: number): string {
  */
 export function normalizeCheckUsernameData(data: Record<string, unknown>): NormalizedCheckUsername {
   const available =
-    typeof data.available === 'boolean'
-      ? data.available
-      : data.isAvailable === true;
+    typeof data.available === 'boolean' ? data.available : data.isAvailable === true;
 
   const fromApi = data.message;
   if (typeof fromApi === 'string' && fromApi.length > 0) {
@@ -176,10 +168,7 @@ export function normalizeLoginResponse(
     if (typeof d.accessToken !== 'string' || typeof d.refreshToken !== 'string') {
       return parsed;
     }
-    const hasUsername =
-      typeof d.hasUsername === 'boolean'
-        ? d.hasUsername
-        : true;
+    const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
     return {
       success: true,
       data: {
@@ -192,10 +181,7 @@ export function normalizeLoginResponse(
   }
 
   if (typeof d.accessToken === 'string' && typeof d.refreshToken === 'string') {
-    const hasUsername =
-      typeof d.hasUsername === 'boolean'
-        ? d.hasUsername
-        : true;
+    const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
     return {
       success: true,
       data: {

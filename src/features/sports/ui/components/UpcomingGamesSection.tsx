@@ -15,14 +15,20 @@ export const UpcomingGamesSection = ({
 }: UpcomingGamesSectionProps) => (
   <View style={styles.section}>
     <View style={styles.sectionHeader}>
-      <AppText variant="h3" style={styles.sectionTitle}>Upcoming Games</AppText>
+      <AppText variant="h3" style={styles.sectionTitle}>
+        Upcoming Games
+      </AppText>
       <View style={styles.headerButtons}>
         <TouchableOpacity style={styles.seeAllButton} onPress={onRefresh}>
           <Ionicons name="refresh-outline" size={14} color={colors.textSecondary} />
-          <AppText variant="captionLg" style={styles.seeAllText}>Refresh</AppText>
+          <AppText variant="captionLg" style={styles.seeAllText}>
+            Refresh
+          </AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.seeAllButton} onPress={onViewAll}>
-          <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
+          <AppText variant="captionLg" style={styles.seeAllText}>
+            View All
+          </AppText>
           <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
@@ -30,21 +36,21 @@ export const UpcomingGamesSection = ({
     {loading ? (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <AppText variant="body2" style={styles.loadingText}>Loading live sports data...</AppText>
+        <AppText variant="body2" style={styles.loadingText}>
+          Loading live sports data...
+        </AppText>
       </View>
     ) : upcomingGames.length > 0 ? (
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {upcomingGames.map((event) => (
-          <UpcomingGameCard
-            key={event.idEvent}
-            event={event}
-            onJoin={() => onJoin(event)}
-          />
+          <UpcomingGameCard key={event.idEvent} event={event} onJoin={() => onJoin(event)} />
         ))}
       </ScrollView>
     ) : (
       <View style={styles.emptyContainer}>
-        <AppText variant="body2" style={styles.emptyText}>No upcoming games found</AppText>
+        <AppText variant="body2" style={styles.emptyText}>
+          No upcoming games found
+        </AppText>
       </View>
     )}
   </View>

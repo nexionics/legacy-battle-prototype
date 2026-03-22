@@ -1,10 +1,5 @@
 export { getInitials } from './string';
-export {
-  formatRelativeDate,
-  formatFullDate,
-  formatShortDate,
-  formatTimeRemaining,
-} from './date';
+export { formatRelativeDate, formatFullDate, formatShortDate, formatTimeRemaining } from './date';
 export {
   getStatusColor,
   deriveTeamsFromTitle,

@@ -10,7 +10,11 @@ export function EmptyState({ title, message, children }: EmptyStateProps) {
       <AppText variant="h3" style={styles.title}>
         {title}
       </AppText>
-      {message ? <AppText variant="body2" style={styles.message}>{message}</AppText> : null}
+      {message ? (
+        <AppText variant="body2" style={styles.message}>
+          {message}
+        </AppText>
+      ) : null}
       {children}
     </View>
   );

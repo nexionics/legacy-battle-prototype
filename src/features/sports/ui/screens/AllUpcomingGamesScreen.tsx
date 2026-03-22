@@ -135,8 +135,8 @@ export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomin
           {AVAILABLE_SPORTS.map((sport) => (
             <TouchableOpacity
               key={sport.id}
-            style={[styles.filterTab, gamesSelectedSport === sport.id && styles.filterTabActive]}
-            onPress={() => handleSportChange(sport.id as SportFilter)}
+              style={[styles.filterTab, gamesSelectedSport === sport.id && styles.filterTabActive]}
+              onPress={() => handleSportChange(sport.id as SportFilter)}
             >
               <AppText style={{ fontSize: 16 }}>{sport.icon}</AppText>
               <AppText
@@ -202,11 +202,7 @@ export default function AllUpcomingGamesScreen({ navigation, route }: AllUpcomin
         ) : (
           <View style={styles.emptyContainer}>
             <Ionicons name="calendar-outline" size={48} color={colors.textSecondary} />
-            <AppText
-              variant="body2"
-              color={colors.textSecondary}
-              style={{ marginTop: spacing[4] }}
-            >
+            <AppText variant="body2" color={colors.textSecondary} style={{ marginTop: spacing[4] }}>
               No upcoming games
             </AppText>
             <AppText variant="captionSm" color={colors.textSecondary} style={{ marginTop: 4 }}>

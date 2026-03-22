@@ -5,7 +5,11 @@ import { useBattlesStore } from '../../data/store/battles.store';
 import { useJoinBattle } from '../../data/mutations/useJoinBattle';
 import { useResultByEventIdQuery } from '@/features/sports/data/queries/useResultByEventIdQuery';
 import { battlesKeys } from '../../data/keys';
-import { subscribeToBattles, subscribeToParticipants, removeChannel } from '../../data/api/battles.api';
+import {
+  subscribeToBattles,
+  subscribeToParticipants,
+  removeChannel,
+} from '../../data/api/battles.api';
 
 export function useBattleDetail(battleId: string | undefined) {
   const queryClient = useQueryClient();

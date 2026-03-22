@@ -9,9 +9,13 @@ export function TopPlayersSection() {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <AppText variant="h4" style={{ marginBottom: spacing[2] }}>Top Players</AppText>
+        <AppText variant="h4" style={{ marginBottom: spacing[2] }}>
+          Top Players
+        </AppText>
         <TouchableOpacity style={styles.seeAllButton}>
-          <AppText variant="captionSm" color={colors.textSecondary}>See All</AppText>
+          <AppText variant="captionSm" color={colors.textSecondary}>
+            See All
+          </AppText>
           <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
@@ -19,7 +23,9 @@ export function TopPlayersSection() {
         {TOP_PLAYERS.map((player, index) => (
           <View key={player.name} style={styles.topPlayerCard}>
             <View style={styles.topPlayerAvatar}>
-              <AppText variant="h4" color={colors.white}>{index + 1}</AppText>
+              <AppText variant="h4" color={colors.white}>
+                {index + 1}
+              </AppText>
             </View>
             <AppText variant="label">{player.name}</AppText>
             <AppText variant="captionSm" color={colors.textSecondary}>

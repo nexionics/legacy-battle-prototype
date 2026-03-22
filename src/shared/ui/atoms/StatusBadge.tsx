@@ -3,12 +3,7 @@ import { spacing, radii } from '@/shared/theme';
 import { AppText } from './AppText';
 import type { StatusBadgeProps } from '@/shared/types';
 
-export function StatusBadge({
-  label,
-  color,
-  textColor = '#FFFFFF',
-  style,
-}: StatusBadgeProps) {
+export function StatusBadge({ label, color, textColor = '#FFFFFF', style }: StatusBadgeProps) {
   return (
     <View style={[styles.badge, { backgroundColor: color }, style]}>
       <AppText variant="captionSm" color={textColor} style={styles.text}>

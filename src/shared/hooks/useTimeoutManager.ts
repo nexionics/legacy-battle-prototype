@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef} from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { TIMEOUT_DEFAULT_DELAY } from '../constants';
 
 type CallbackFn<Args extends unknown[] = []> = (...args: Args) => void;

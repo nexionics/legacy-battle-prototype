@@ -23,7 +23,9 @@ export const CrewRepo = {
     return { data: (profiles || []) as CrewMember[], error: profileError };
   },
 
-  getPendingReceived: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
+  getPendingReceived: async (
+    userId: string,
+  ): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
     const { data, error } = await supabase
       .from('crew_requests')
       .select('*')
@@ -51,7 +53,9 @@ export const CrewRepo = {
     return { data: enriched, error: null };
   },
 
-  getPendingSent: async (userId: string): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
+  getPendingSent: async (
+    userId: string,
+  ): Promise<{ data: CrewRequestWithProfile[]; error: unknown }> => {
     const { data, error } = await supabase
       .from('crew_requests')
       .select('*')
@@ -84,7 +88,7 @@ export const CrewRepo = {
       .from('crew_requests')
       .select('*')
       .or(
-        `and(requester_id.eq.${userId},requested_id.eq.${otherUserId}),and(requester_id.eq.${otherUserId},requested_id.eq.${userId})`
+        `and(requester_id.eq.${userId},requested_id.eq.${otherUserId}),and(requester_id.eq.${otherUserId},requested_id.eq.${userId})`,
       )
       .in('status', ['pending', 'accepted'])
       .limit(1)

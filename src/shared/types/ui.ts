@@ -166,6 +166,26 @@ export interface MenuRowProps {
   style?: ViewStyle;
 }
 
+export interface SettingRowProps {
+  icon: string;
+  title: string;
+  subtitle?: string;
+  onPress?: () => void;
+  rightSlot?: React.ReactNode;
+  showChevron?: boolean;
+  iconColor?: string;
+  iconBgColor?: string;
+  style?: ViewStyle;
+}
+
+export interface SettingSectionProps {
+  title?: string;
+  subtitle?: string;
+  icon?: string;
+  children: React.ReactNode;
+  style?: ViewStyle;
+}
+
 export interface SearchInputProps {
   value: string;
   onChangeText: (text: string) => void;

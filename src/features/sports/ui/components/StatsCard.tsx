@@ -8,16 +8,26 @@ export const StatsCard = () => (
   <View style={styles.statsCard}>
     <View style={styles.statsRow}>
       <View style={styles.statItem}>
-        <AppText variant="label" style={styles.statLabel}>Total XP</AppText>
-        <AppText variant="h4" style={styles.statValue}>1,247 XP</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          Total XP
+        </AppText>
+        <AppText variant="h4" style={styles.statValue}>
+          1,247 XP
+        </AppText>
       </View>
       <View style={styles.statItem}>
-        <AppText variant="label" style={styles.statLabel}>Battle Coins</AppText>
-        <AppText variant="h4" style={styles.statValue}>2,000 BC</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          Battle Coins
+        </AppText>
+        <AppText variant="h4" style={styles.statValue}>
+          2,000 BC
+        </AppText>
       </View>
     </View>
     <TouchableOpacity style={styles.inviteBanner}>
-      <AppText variant="captionSm" style={styles.inviteText}>Live sports data from TheSportsDB</AppText>
+      <AppText variant="captionSm" style={styles.inviteText}>
+        Live sports data from TheSportsDB
+      </AppText>
       <Ionicons name="arrow-forward" size={16} color={colors.white} />
     </TouchableOpacity>
   </View>

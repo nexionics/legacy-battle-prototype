@@ -11,10 +11,7 @@ import { useLoginMutation } from '../../data/api/authMutations';
 import { signInWithBiometrics } from '../../lib/biometrics';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings } from '../../string';
-import {
-  biometricPasswordLoginSchema,
-  type BiometricPasswordLoginFormValues,
-} from './validations';
+import { biometricPasswordLoginSchema, type BiometricPasswordLoginFormValues } from './validations';
 
 function formatDisplayNameFromEmail(email: string): string {
   const local = email.split('@')[0]?.trim() ?? email;
@@ -115,11 +112,7 @@ export function useLoginWithBiometrics() {
       return;
     }
     if (result.data.outcome === 'AUTHENTICATED') {
-      applyAuthSuccess(
-        result.data.accessToken,
-        result.data.refreshToken,
-        result.data.hasUsername,
-      );
+      applyAuthSuccess(result.data.accessToken, result.data.refreshToken, result.data.hasUsername);
     }
   };
 

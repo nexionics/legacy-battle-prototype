@@ -16,10 +16,7 @@
  * @param {string | null | undefined} [username] - Optional username used as a fallback.
  * @returns {string} Up to two uppercase initials derived from the provided values.
  */
-export function getInitials(
-  name: string | null | undefined,
-  username?: string | null,
-): string {
+export function getInitials(name: string | null | undefined, username?: string | null): string {
   const source = name || username || 'U';
 
   return source

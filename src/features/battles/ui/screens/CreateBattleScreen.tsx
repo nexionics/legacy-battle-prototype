@@ -154,7 +154,9 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
         <View style={styles.modalContent}>
-          <AppText variant="h4" style={styles.modalTitle}>{modalTitle}</AppText>
+          <AppText variant="h4" style={styles.modalTitle}>
+            {modalTitle}
+          </AppText>
           {options.map((option) => (
             <TouchableOpacity
               key={option.value}
@@ -164,7 +166,9 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
                 onClose();
               }}
             >
-              <AppText variant="body2" style={{ textAlign: 'center' }}>{option.label}</AppText>
+              <AppText variant="body2" style={{ textAlign: 'center' }}>
+                {option.label}
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
@@ -198,12 +202,19 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
 
           {teamOptions.length > 0 && (
             <View style={styles.inputGroup}>
-              <AppText variant="label" style={styles.label}>Battle Setup</AppText>
-              <AppText variant="helper" color={colors.textSecondary} style={styles.setupHint}>Select your prediction for this game</AppText>
+              <AppText variant="label" style={styles.label}>
+                Battle Setup
+              </AppText>
+              <AppText variant="helper" color={colors.textSecondary} style={styles.setupHint}>
+                Select your prediction for this game
+              </AppText>
 
               <View style={styles.dropdownRow}>
                 <TouchableOpacity style={styles.dropdown} onPress={() => setShowTeamPicker(true)}>
-                  <AppText variant="body2" color={selectedTeam ? colors.text : colors.textSecondary}>
+                  <AppText
+                    variant="body2"
+                    color={selectedTeam ? colors.text : colors.textSecondary}
+                  >
                     {getSelectedTeamLabel()}
                   </AppText>
                   <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
@@ -213,7 +224,10 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
                   style={styles.dropdown}
                   onPress={() => setShowOutcomePicker(true)}
                 >
-                  <AppText variant="body2" color={selectedOutcome ? colors.text : colors.textSecondary}>
+                  <AppText
+                    variant="body2"
+                    color={selectedOutcome ? colors.text : colors.textSecondary}
+                  >
                     {getSelectedOutcomeLabel()}
                   </AppText>
                   <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
@@ -223,7 +237,9 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
               {selectedTeam && selectedOutcome && (
                 <View style={styles.predictionPreview}>
                   <Ionicons name="checkmark-circle" size={16} color={colors.primary} />
-                  <AppText variant="body2" style={{ flex: 1 }}>{generateBattleDescription()}</AppText>
+                  <AppText variant="body2" style={{ flex: 1 }}>
+                    {generateBattleDescription()}
+                  </AppText>
                 </View>
               )}
             </View>
@@ -240,7 +256,11 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
               wrapperStyle={eventId ? styles.inputDisabled : undefined}
               inputTextStyle={styles.inputFont}
             />
-            {eventId ? <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>Linked to live game data</AppText> : null}
+            {eventId ? (
+              <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>
+                Linked to live game data
+              </AppText>
+            ) : null}
           </View>
 
           <View style={styles.inputGroup}>
@@ -253,7 +273,9 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
               keyboardType="numeric"
               inputTextStyle={styles.inputFont}
             />
-            <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>Battle Coins to wager (optional)</AppText>
+            <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>
+              Battle Coins to wager (optional)
+            </AppText>
           </View>
         </View>
 
@@ -267,7 +289,9 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
           ) : (
             <>
               <Ionicons name="flash" size={20} color={colors.white} />
-              <AppText variant="buttonMd" color={colors.white}>Create Battle</AppText>
+              <AppText variant="buttonMd" color={colors.white}>
+                Create Battle
+              </AppText>
             </>
           )}
         </TouchableOpacity>

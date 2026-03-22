@@ -28,7 +28,7 @@ const InputComponent = (
     secureTextEntry: secureTextEntryProp,
     ...rest
   }: InputProps,
-  ref: React.Ref<RNTextInput>
+  ref: React.Ref<RNTextInput>,
 ) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const hasError = Boolean(error);

@@ -20,7 +20,10 @@ export async function getBiometricSecureItem(key: BiometricSecureKey): Promise<s
   }
 }
 
-export async function setBiometricSecureItem(key: BiometricSecureKey, value: string): Promise<void> {
+export async function setBiometricSecureItem(
+  key: BiometricSecureKey,
+  value: string,
+): Promise<void> {
   await SecureStore.setItemAsync(BIOMETRIC_SECURE_KEYS[key], value);
 }
 
@@ -34,7 +37,9 @@ export async function deleteBiometricSecureItem(key: BiometricSecureKey): Promis
 
 export async function clearAllBiometricSecureItems(): Promise<void> {
   await Promise.all(
-    (Object.keys(BIOMETRIC_SECURE_KEYS) as BiometricSecureKey[]).map((k) => deleteBiometricSecureItem(k)),
+    (Object.keys(BIOMETRIC_SECURE_KEYS) as BiometricSecureKey[]).map((k) =>
+      deleteBiometricSecureItem(k),
+    ),
   );
 }
 

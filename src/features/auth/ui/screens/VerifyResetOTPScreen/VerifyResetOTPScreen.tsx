@@ -11,13 +11,7 @@ import {
   OTPInput,
 } from '@/shared/ui';
 import { OTP_LENGTH } from '@/shared/constants';
-import {
-  colors,
-  spacing,
-  sizes,
-  fontSizes,
-  fontWeights,
-} from '@/shared/constants/theme';
+import { colors, spacing, sizes, fontSizes, fontWeights } from '@/shared/constants/theme';
 import type { VerifyResetOTPScreenProps } from '@/shared/types';
 import { formatMmSs } from '@/shared/utils/helpers';
 import type { UseVerifyResetOtpReturn } from '../../hooks/hooks.types';
@@ -94,8 +88,15 @@ export function VerifyResetOTPScreen({
               </AppText>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => void onResend()} disabled={resendDisabled} style={styles.resendCta}>
-              <AppText variant="label" color={resendDisabled ? colors.textSecondary : colors.primary}>
+            <TouchableOpacity
+              onPress={() => void onResend()}
+              disabled={resendDisabled}
+              style={styles.resendCta}
+            >
+              <AppText
+                variant="label"
+                color={resendDisabled ? colors.textSecondary : colors.primary}
+              >
                 {copy.resendCta}
               </AppText>
             </TouchableOpacity>
@@ -108,7 +109,9 @@ export function VerifyResetOTPScreen({
           disabled={!isValid || isSubmitting}
           onPress={onSubmit}
           style={styles.verifyButton}
-          rightIcon={<Ionicons name="shield-checkmark-outline" size={sizes.icon20} color={colors.white} />}
+          rightIcon={
+            <Ionicons name="shield-checkmark-outline" size={sizes.icon20} color={colors.white} />
+          }
         >
           {copy.verifyCta}
         </Button>

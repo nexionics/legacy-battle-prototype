@@ -10,10 +10,16 @@ export function ErrorState({ title = 'Something went wrong', message, onRetry }:
       <AppText variant="h3" style={styles.title}>
         {title}
       </AppText>
-      {message ? <AppText variant="body2" style={styles.message}>{message}</AppText> : null}
+      {message ? (
+        <AppText variant="body2" style={styles.message}>
+          {message}
+        </AppText>
+      ) : null}
       {onRetry ? (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-          <AppText variant="buttonMd" color={colors.white} style={styles.retryText}>Try Again</AppText>
+          <AppText variant="buttonMd" color={colors.white} style={styles.retryText}>
+            Try Again
+          </AppText>
         </TouchableOpacity>
       ) : null}
     </View>

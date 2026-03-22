@@ -4,7 +4,7 @@ import type { Result } from './result';
 
 export async function callEdgeFunction<T>(
   name: string,
-  payload?: Record<string, unknown>
+  payload?: Record<string, unknown>,
 ): Promise<Result<T>> {
   try {
     const { data, error } = await supabase.functions.invoke(name, {

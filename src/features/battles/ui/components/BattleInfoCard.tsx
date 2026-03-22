@@ -18,7 +18,9 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
         <StatusBadge label={battle.status} color={getStatusColor(battle.status)} />
       </View>
 
-      <AppText variant="h4" style={styles.battleTitle}>{battle.title}</AppText>
+      <AppText variant="h4" style={styles.battleTitle}>
+        {battle.title}
+      </AppText>
 
       {battle.description && (
         <AppText variant="body2" color={colors.textSecondary} style={styles.battleDescription}>
@@ -29,18 +31,24 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
       <View style={styles.battleMeta}>
         <View style={styles.metaItem}>
           <Ionicons name="flash" size={16} color={colors.primary} />
-          <AppText variant="captionSm" color={colors.textSecondary}>Stake:</AppText>
+          <AppText variant="captionSm" color={colors.textSecondary}>
+            Stake:
+          </AppText>
           <AppText variant="label">{battle.stake} BC</AppText>
         </View>
         <View style={styles.metaItem}>
           <Ionicons name="time-outline" size={16} color={colors.textSecondary} />
-          <AppText variant="captionSm" color={colors.textSecondary}>Created:</AppText>
+          <AppText variant="captionSm" color={colors.textSecondary}>
+            Created:
+          </AppText>
           <AppText variant="label">{formatFullDate(battle.created_at)}</AppText>
         </View>
         {battle.event_id && (
           <View style={styles.metaItem}>
             <Ionicons name="football-outline" size={16} color={colors.textSecondary} />
-            <AppText variant="captionSm" color={colors.textSecondary}>Event:</AppText>
+            <AppText variant="captionSm" color={colors.textSecondary}>
+              Event:
+            </AppText>
             <AppText variant="label">{battle.event_id}</AppText>
           </View>
         )}

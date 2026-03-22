@@ -8,7 +8,9 @@ export function LoadingState({ message = 'Loading...' }: LoadingStateProps) {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color={colors.primary} />
-      <AppText variant="body2" style={styles.message}>{message}</AppText>
+      <AppText variant="body2" style={styles.message}>
+        {message}
+      </AppText>
     </View>
   );
 }

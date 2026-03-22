@@ -14,9 +14,19 @@ export async function migrateBattleEventIds(): Promise<{
   migrated: number;
   skipped: number;
   failed: number;
-  details: Array<{ battleId: string; oldEventId: string; newEventId: string | null; status: string }>;
+  details: Array<{
+    battleId: string;
+    oldEventId: string;
+    newEventId: string | null;
+    status: string;
+  }>;
 }> {
-  const details: Array<{ battleId: string; oldEventId: string; newEventId: string | null; status: string }> = [];
+  const details: Array<{
+    battleId: string;
+    oldEventId: string;
+    newEventId: string | null;
+    status: string;
+  }> = [];
   let migrated = 0;
   let skipped = 0;
   let failed = 0;

@@ -9,14 +9,20 @@ export const UpcomingGameCard = ({ event, onJoin }: UpcomingGameCardProps) => (
   <View style={styles.battleCard}>
     <View style={styles.battleCardLeft}>
       <View style={styles.battleIcon}>
-        <AppText variant="body2" style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
+        <AppText variant="body2" style={styles.battleIconText}>
+          {getSportIcon(event.strSport)}
+        </AppText>
       </View>
       <View style={styles.battleInfo}>
         <AppText variant="h6" style={styles.battleTitle} numberOfLines={1}>
           {event.strHomeTeam.split(' ').pop()} vs {event.strAwayTeam.split(' ').pop()}
         </AppText>
-        <AppText variant="body2" style={styles.battleSubtitle}>{event.strLeague}</AppText>
-        <AppText variant="body2" style={styles.battleTime}>{formatEventTime(event)}</AppText>
+        <AppText variant="body2" style={styles.battleSubtitle}>
+          {event.strLeague}
+        </AppText>
+        <AppText variant="body2" style={styles.battleTime}>
+          {formatEventTime(event)}
+        </AppText>
       </View>
     </View>
     <View style={styles.battleCardRight}>
@@ -29,7 +35,9 @@ export const UpcomingGameCard = ({ event, onJoin }: UpcomingGameCardProps) => (
         )}
       </View>
       <TouchableOpacity style={styles.joinButton} onPress={onJoin}>
-        <AppText variant="buttonMd" style={styles.joinButtonText}>Battle</AppText>
+        <AppText variant="buttonMd" style={styles.joinButtonText}>
+          Battle
+        </AppText>
       </TouchableOpacity>
     </View>
   </View>

@@ -10,8 +10,10 @@ import { BATTLE_TYPES } from '@/shared/constants';
 const resolveBattleTypes = (): BattleTypeOption[] =>
   BATTLE_TYPES.map((t) => ({
     ...t,
-    iconColor: t.iconColor in colors ? (colors as Record<string, string>)[t.iconColor] : t.iconColor,
-    badgeColor: t.badgeColor in colors ? (colors as Record<string, string>)[t.badgeColor] : t.badgeColor,
+    iconColor:
+      t.iconColor in colors ? (colors as Record<string, string>)[t.iconColor] : t.iconColor,
+    badgeColor:
+      t.badgeColor in colors ? (colors as Record<string, string>)[t.badgeColor] : t.badgeColor,
   })) as BattleTypeOption[];
 
 const BATTLE_TYPES_RESOLVED = resolveBattleTypes();
@@ -110,7 +112,11 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
           <View style={styles.featuresList}>
             {type.features.map((feature, index) => (
               <View key={index} style={styles.featureItem}>
-                <Ionicons name={feature.icon as keyof typeof Ionicons.glyphMap} size={14} color={colors.primary} />
+                <Ionicons
+                  name={feature.icon as keyof typeof Ionicons.glyphMap}
+                  size={14}
+                  color={colors.primary}
+                />
                 <AppText variant="body2" color={colors.textSecondary}>
                   {feature.text}
                 </AppText>

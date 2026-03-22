@@ -30,7 +30,7 @@ export function useProfile(userId: string | undefined) {
               battleStats: { wins: 0, losses: 0, challenges: 0 },
               crewCount: 0,
               pendingCrewCount: 0,
-            }
+            },
       );
     });
     return () => {

@@ -42,8 +42,7 @@ export const loginScreenStrings = {
     biometricsPrompt: 'Confirm to enable biometric login',
     biometricsUnavailable: 'Biometrics are not available on this device.',
     biometricsNotEnrolled: 'Set up Face ID or Touch ID in your device settings first.',
-    biometricsEnrollCancelledToast:
-      'Biometrics setup was cancelled, you can enable it in Settings',
+    biometricsEnrollCancelledToast: 'Biometrics setup was cancelled, you can enable it in Settings',
     submitLogIn: 'Log In',
     /** Shown before the Sign Up link on email login (includes trailing space). */
     footerLeadNoAccount: "Don't have an account? ",
@@ -106,8 +105,7 @@ export const signUpScreenStrings = {
     weakPasswordMessage: 'Password must be at least 6 characters',
     signUpFailedTitle: 'Sign Up Failed',
     accountCreatedTitle: 'Account Created',
-    accountCreatedMessage:
-      'Please check your email to confirm your account, then log in.',
+    accountCreatedMessage: 'Please check your email to confirm your account, then log in.',
   },
 } as const;
 

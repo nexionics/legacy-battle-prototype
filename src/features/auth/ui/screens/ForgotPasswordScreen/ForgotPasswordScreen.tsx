@@ -1,13 +1,7 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Screen,
-  Input,
-  AuthHeader,
-  PatternBackground,
-  Button,
-} from '@/shared/ui';
+import { Screen, Input, AuthHeader, PatternBackground, Button } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { ForgotPasswordScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';

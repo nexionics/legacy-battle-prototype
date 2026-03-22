@@ -30,13 +30,11 @@ export const BattleService = {
     }
 
     if (creatorPick) {
-      const { error: participantError } = await supabase
-        .from('battle_participants')
-        .insert({
-          battle_id: battle.id,
-          user_id: creatorId,
-          pick: creatorPick,
-        });
+      const { error: participantError } = await supabase.from('battle_participants').insert({
+        battle_id: battle.id,
+        user_id: creatorId,
+        pick: creatorPick,
+      });
 
       if (participantError) {
         console.error('Error inserting creator participant:', participantError);
@@ -49,11 +47,7 @@ export const BattleService = {
   subscribeToBattles: (callback: (payload: any) => void) => {
     return supabase
       .channel('public:battles')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'battles' },
-        callback
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'battles' }, callback)
       .subscribe();
   },
 
@@ -81,8 +75,7 @@ export const BattleService = {
         return {
           data: null,
           error: {
-            message:
-              "This battle is crew-only. You must be in the creator's crew to join.",
+            message: "This battle is crew-only. You must be in the creator's crew to join.",
           },
         };
       }
@@ -108,10 +101,7 @@ export const BattleService = {
       .eq('battle_id', battleId);
 
     if (!participantsError && (participants?.length || 0) >= 2) {
-      await supabase
-        .from('battles')
-        .update({ status: 'active' })
-        .eq('id', battleId);
+      await supabase.from('battles').update({ status: 'active' }).eq('id', battleId);
     }
 
     return { data, error };
@@ -128,7 +118,7 @@ export const BattleService = {
           table: 'battle_participants',
           filter: `battle_id=eq.${battleId}`,
         },
-        callback
+        callback,
       )
       .subscribe();
   },

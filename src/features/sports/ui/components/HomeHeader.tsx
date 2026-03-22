@@ -9,12 +9,18 @@ export const HomeHeader = () => (
     <View style={styles.headerLeft}>
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
-          <AppText variant="body1" style={styles.avatarText}>LB</AppText>
+          <AppText variant="body1" style={styles.avatarText}>
+            LB
+          </AppText>
         </View>
       </View>
       <View style={styles.welcomeContainer}>
-        <AppText variant="captionLg" style={styles.welcomeText}>Welcome Back</AppText>
-        <AppText variant="h4" style={styles.usernameText}>Champion</AppText>
+        <AppText variant="captionLg" style={styles.welcomeText}>
+          Welcome Back
+        </AppText>
+        <AppText variant="h4" style={styles.usernameText}>
+          Champion
+        </AppText>
       </View>
     </View>
     <TouchableOpacity style={styles.notificationButton}>

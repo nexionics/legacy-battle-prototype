@@ -3,13 +3,7 @@ import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import type { TabBarProps } from '@/shared/types';
 
-export function TabBar({
-  tabs,
-  activeTab,
-  onTabChange,
-  scrollable = false,
-  style,
-}: TabBarProps) {
+export function TabBar({ tabs, activeTab, onTabChange, scrollable = false, style }: TabBarProps) {
   const content = tabs.map((tab) => {
     const isActive = tab.key === activeTab;
     return (
@@ -18,10 +12,7 @@ export function TabBar({
         style={[styles.tab, isActive && styles.activeTab]}
         onPress={() => onTabChange(tab.key)}
       >
-        <AppText
-          variant="label"
-          color={isActive ? colors.white : colors.textSecondary}
-        >
+        <AppText variant="label" color={isActive ? colors.white : colors.textSecondary}>
           {tab.label}
         </AppText>
       </TouchableOpacity>

@@ -92,7 +92,11 @@ export default function AddFriendScreen({ navigation }: AddFriendScreenProps) {
           <AppText variant="h4" style={{ marginBottom: 4 }}>
             Search for Crew
           </AppText>
-          <AppText variant="body2" color={colors.textSecondary} style={{ marginBottom: spacing[4] }}>
+          <AppText
+            variant="body2"
+            color={colors.textSecondary}
+            style={{ marginBottom: spacing[4] }}
+          >
             Find people by username
           </AppText>
 
@@ -171,7 +175,11 @@ export default function AddFriendScreen({ navigation }: AddFriendScreenProps) {
 
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
-          <AppText variant="captionSm" color={colors.textSecondary} style={{ paddingHorizontal: spacing[4] }}>
+          <AppText
+            variant="captionSm"
+            color={colors.textSecondary}
+            style={{ paddingHorizontal: spacing[4] }}
+          >
             OR
           </AppText>
           <View style={styles.dividerLine} />
@@ -181,7 +189,11 @@ export default function AddFriendScreen({ navigation }: AddFriendScreenProps) {
           <AppText variant="h4" style={{ marginBottom: 4 }}>
             Invite to Crew
           </AppText>
-          <AppText variant="body2" color={colors.textSecondary} style={{ marginBottom: spacing[4] }}>
+          <AppText
+            variant="body2"
+            color={colors.textSecondary}
+            style={{ marginBottom: spacing[4] }}
+          >
             Invite people who aren't on Legacy Battle yet
           </AppText>
 

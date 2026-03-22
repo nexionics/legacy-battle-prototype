@@ -1,10 +1,4 @@
-import type {
-  Battle,
-  BattleParticipant,
-  CrewMember,
-  CrewRequest,
-  SportsTeam,
-} from './domain';
+import type { Battle, BattleParticipant, CrewMember, CrewRequest, SportsTeam } from './domain';
 
 export type BattleStats = {
   wins: number;

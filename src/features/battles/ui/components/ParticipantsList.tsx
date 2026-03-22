@@ -41,7 +41,9 @@ export function ParticipantsList({ participants, currentUserId }: ParticipantsLi
                 </View>
               </View>
               <View style={styles.pickBadge}>
-                <AppText variant="captionSm" color={colors.textSecondary}>Pick:</AppText>
+                <AppText variant="captionSm" color={colors.textSecondary}>
+                  Pick:
+                </AppText>
                 <AppText variant="captionSm">{participant.pick || '-'}</AppText>
               </View>
             </View>

@@ -14,8 +14,7 @@ export function useHomeData(userId: string | undefined) {
   const quickPicks = quickPicksQuery.data ?? [];
   const myBattles = myBattlesQuery.data ?? [];
 
-  const isLoading =
-    upcomingQuery.isLoading || recentQuery.isLoading;
+  const isLoading = upcomingQuery.isLoading || recentQuery.isLoading;
   const error = upcomingQuery.error ?? recentQuery.error;
 
   const refetch = () => {

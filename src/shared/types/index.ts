@@ -78,6 +78,7 @@ export type {
   ForgotPasswordScreenProps,
   VerifyResetOTPScreenProps,
   ResetPasswordScreenProps,
+  SettingsScreenProps,
 } from './navigation';
 export type { LevelInfo, ConnectionStatus } from './profile';
 export type { SportFilter } from './sports';
@@ -102,6 +103,8 @@ export type {
   DropdownFieldProps,
   SectionHeaderProps,
   MenuRowProps,
+  SettingRowProps,
+  SettingSectionProps,
   SearchInputProps,
   Tab,
   TabBarProps,

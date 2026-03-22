@@ -38,10 +38,7 @@ export function AuthOrGoogleFooter({
         disabled={googleDisabled}
         onPress={onGooglePress}
         leftIcon={
-          <Image
-            source={{ uri: 'https://www.google.com/favicon.ico' }}
-            style={styles.googleIcon}
-          />
+          <Image source={{ uri: 'https://www.google.com/favicon.ico' }} style={styles.googleIcon} />
         }
       >
         {googleButtonLabel}

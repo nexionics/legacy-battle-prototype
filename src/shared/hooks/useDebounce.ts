@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTimeoutManager } from './useTimeoutManager';
 
 /**
@@ -25,9 +25,9 @@ export const useDebounceFunction = (
   cb: (...args: unknown[]) => void,
   options: Options,
 ): DebouncedFunction => {
-  const {delay = 3000, runImmediately = false} = options;
+  const { delay = 3000, runImmediately = false } = options;
 
-  const {timeoutRef, setTimeout, clearTimeout} = useTimeoutManager();
+  const { timeoutRef, setTimeout, clearTimeout } = useTimeoutManager();
 
   const debouncedFunction: DebouncedFunction = useCallback(
     (...args: unknown[]) => {

@@ -15,16 +15,8 @@ import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import type { StatDuelConfirmScreenProps } from '@/shared/types';
 
 export default function StatDuelConfirmScreen({ navigation, route }: StatDuelConfirmScreenProps) {
-  const {
-    visibility,
-    battleMode,
-    sport,
-    game,
-    player,
-    statCategory,
-    stake,
-    opponent,
-  } = route?.params || {};
+  const { visibility, battleMode, sport, game, player, statCategory, stake, opponent } =
+    route?.params || {};
 
   const isSubmitting = useStatDuelStore((s) => s.isSubmitting);
   const setIsSubmitting = useStatDuelStore((s) => s.setIsSubmitting);
@@ -35,11 +27,9 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
     setTimeout(() => {
       setIsSubmitting(false);
       reset();
-      Alert.alert(
-        'Battle Created!',
-        'Your Stat Duel has been created successfully.',
-        [{ text: 'OK', onPress: () => navigation.navigate('MainTabs') }],
-      );
+      Alert.alert('Battle Created!', 'Your Stat Duel has been created successfully.', [
+        { text: 'OK', onPress: () => navigation.navigate('MainTabs') },
+      ]);
     }, 1500);
   };
 
@@ -47,7 +37,15 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      navigation.navigate('StatDuelOpponent', { visibility, battleMode, sport, game, player, statCategory, stake });
+      navigation.navigate('StatDuelOpponent', {
+        visibility,
+        battleMode,
+        sport,
+        game,
+        player,
+        statCategory,
+        stake,
+      });
     }
   };
 
@@ -77,9 +75,16 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
         </View>
 
         <View style={styles.card}>
-          <SummaryRow label="Stat Category:" value={`${statCategory?.name || 'Passing Yards'} (H2H)`} />
+          <SummaryRow
+            label="Stat Category:"
+            value={`${statCategory?.name || 'Passing Yards'} (H2H)`}
+          />
           <SummaryRow label="Game/Event:" value={game?.name || 'Chiefs vs Bills, Week 5'} />
-          <SummaryRow label="Player:" value={player?.name || 'Mahomes'} valueColor={colors.primary} />
+          <SummaryRow
+            label="Player:"
+            value={player?.name || 'Mahomes'}
+            valueColor={colors.primary}
+          />
         </View>
 
         <View style={styles.lockTimeBanner}>
@@ -92,7 +97,8 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
           <AppText variant="captionSm" color={colors.textSecondary} style={styles.rulesText}>
             Tie Rule: If Both QBs Have Same Passing Yards — Tie.{'\n'}
             Minimum Attempts: x10 Passes Required For Each QB.{'\n'}
-            Evidence: Winner Decided By Official Data Source. Attesters Only Activate If Data Is Delayed.{'\n'}
+            Evidence: Winner Decided By Official Data Source. Attesters Only Activate If Data Is
+            Delayed.{'\n'}
             Info Note: *Rules Are Automatically Enforced At Resolution
           </AppText>
         </View>
@@ -133,7 +139,9 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
             <ActivityIndicator color={colors.white} />
           ) : (
             <>
-              <AppText variant="buttonLg" color={colors.white}>Continue</AppText>
+              <AppText variant="buttonLg" color={colors.white}>
+                Continue
+              </AppText>
               <AppText variant="body1">⚔</AppText>
             </>
           )}
@@ -143,12 +151,24 @@ export default function StatDuelConfirmScreen({ navigation, route }: StatDuelCon
   );
 }
 
-function SummaryRow({ label, value, valueColor }: { label: string; value: string; valueColor?: string }) {
+function SummaryRow({
+  label,
+  value,
+  valueColor,
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
   return (
     <View style={summaryStyles.row}>
       <View style={summaryStyles.dot} />
-      <AppText variant="captionSm" color={colors.textSecondary}>{label}</AppText>
-      <AppText variant="label" color={valueColor}>{value}</AppText>
+      <AppText variant="captionSm" color={colors.textSecondary}>
+        {label}
+      </AppText>
+      <AppText variant="label" color={valueColor}>
+        {value}
+      </AppText>
     </View>
   );
 }
@@ -156,7 +176,9 @@ function SummaryRow({ label, value, valueColor }: { label: string; value: string
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={detailStyles.row}>
-      <AppText variant="body2" color={colors.textSecondary}>{label}</AppText>
+      <AppText variant="body2" color={colors.textSecondary}>
+        {label}
+      </AppText>
       <AppText variant="label">{value}</AppText>
     </View>
   );

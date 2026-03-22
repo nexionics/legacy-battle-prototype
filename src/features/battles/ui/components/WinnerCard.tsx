@@ -11,7 +11,9 @@ export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCard
       {battle.status === 'completed' && (
         <View style={styles.winnerCard}>
           <Ionicons name="trophy" size={32} color={colors.gold} />
-          <AppText variant="h4" style={styles.winnerTitle}>Battle Resolved</AppText>
+          <AppText variant="h4" style={styles.winnerTitle}>
+            Battle Resolved
+          </AppText>
           <AppText variant="label" color={colors.gold} style={styles.winnerName}>
             Winner: {winnerName}
           </AppText>
@@ -25,10 +27,18 @@ export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCard
               };
               return (
                 <View style={styles.outcomeDetails}>
-                  <AppText variant="captionSm" color={colors.textSecondary} style={styles.outcomeText}>
+                  <AppText
+                    variant="captionSm"
+                    color={colors.textSecondary}
+                    style={styles.outcomeText}
+                  >
                     {outcome.home_team ?? 'Home'}: {outcome.home_score ?? '-'}
                   </AppText>
-                  <AppText variant="captionSm" color={colors.textSecondary} style={styles.outcomeText}>
+                  <AppText
+                    variant="captionSm"
+                    color={colors.textSecondary}
+                    style={styles.outcomeText}
+                  >
                     {outcome.away_team ?? 'Away'}: {outcome.away_score ?? '-'}
                   </AppText>
                 </View>

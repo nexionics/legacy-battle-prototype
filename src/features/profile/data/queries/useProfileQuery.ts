@@ -1,10 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { profileKeys } from '../keys';
-import {
-  getProfileById,
-  getBattleStats,
-  getCrewCounts,
-} from '../api/profile.api';
+import { getProfileById, getBattleStats, getCrewCounts } from '../api/profile.api';
 import type { UserProfile } from '@/shared/types';
 
 async function fetchProfileWithStats(userId: string) {

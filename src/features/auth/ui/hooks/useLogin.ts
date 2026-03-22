@@ -4,10 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useToast } from '@/app/providers/useToast';
-import {
-  getBiometricsRequested,
-  setBiometricsRequested,
-} from '../../data/biometricSecureStorage';
+import { getBiometricsRequested, setBiometricsRequested } from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useGoogleSocialAuthMutation, useLoginMutation } from '../../data/api/authMutations';
 import { enrollBiometrics, getDefaultBiometricDeviceName } from '../../lib/biometrics';

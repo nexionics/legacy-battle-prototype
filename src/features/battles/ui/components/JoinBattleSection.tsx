@@ -35,12 +35,18 @@ export function JoinBattleSection({
 
   return (
     <View style={styles.joinSection}>
-      <AppText variant="buttonMd" style={styles.sectionTitle}>Join This Battle</AppText>
+      <AppText variant="buttonMd" style={styles.sectionTitle}>
+        Join This Battle
+      </AppText>
       <View style={styles.joinCard}>
         {isHeadToHeadReady ? (
           <>
             <View style={styles.challengeInfo}>
-              <AppText variant="captionSm" color={colors.textSecondary} style={styles.challengeLabel}>
+              <AppText
+                variant="captionSm"
+                color={colors.textSecondary}
+                style={styles.challengeLabel}
+              >
                 Creator's prediction:
               </AppText>
               <View style={styles.predictionBox}>
@@ -49,7 +55,11 @@ export function JoinBattleSection({
               </View>
             </View>
             <View style={styles.challengeInfo}>
-              <AppText variant="captionSm" color={colors.textSecondary} style={styles.challengeLabel}>
+              <AppText
+                variant="captionSm"
+                color={colors.textSecondary}
+                style={styles.challengeLabel}
+              >
                 Your side (if you accept):
               </AppText>
               <View style={[styles.predictionBox, styles.yourPredictionBox]}>
@@ -62,7 +72,9 @@ export function JoinBattleSection({
           </>
         ) : homeTeamName && awayTeamName ? (
           <>
-            <AppText variant="label" style={styles.joinLabel}>Pick the winner:</AppText>
+            <AppText variant="label" style={styles.joinLabel}>
+              Pick the winner:
+            </AppText>
             <View style={styles.teamPickContainer}>
               <TouchableOpacity
                 style={[
@@ -78,11 +90,17 @@ export function JoinBattleSection({
                 >
                   {homeTeamName}
                 </AppText>
-                <AppText variant="captionSm" color={colors.textSecondary} style={styles.teamPickLabel}>
+                <AppText
+                  variant="captionSm"
+                  color={colors.textSecondary}
+                  style={styles.teamPickLabel}
+                >
                   Home
                 </AppText>
               </TouchableOpacity>
-              <AppText variant="buttonMd" color={colors.textSecondary}>vs</AppText>
+              <AppText variant="buttonMd" color={colors.textSecondary}>
+                vs
+              </AppText>
               <TouchableOpacity
                 style={[
                   styles.teamPickButton,
@@ -97,7 +115,11 @@ export function JoinBattleSection({
                 >
                   {awayTeamName}
                 </AppText>
-                <AppText variant="captionSm" color={colors.textSecondary} style={styles.teamPickLabel}>
+                <AppText
+                  variant="captionSm"
+                  color={colors.textSecondary}
+                  style={styles.teamPickLabel}
+                >
                   Away
                 </AppText>
               </TouchableOpacity>

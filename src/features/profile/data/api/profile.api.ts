@@ -20,7 +20,7 @@ export function subscribeToProfile(userId: string, onUpdate: (profile: UserProfi
         table: 'profiles',
         filter: `id=eq.${userId}`,
       },
-      (payload) => onUpdate(payload.new as UserProfile)
+      (payload) => onUpdate(payload.new as UserProfile),
     )
     .subscribe();
 }
@@ -34,7 +34,7 @@ export async function getBattleStats(userId: string): Promise<BattleStats> {
   if (!participations) return { wins: 0, losses: 0, challenges: 0 };
 
   const completed = participations.filter(
-    (p) => (p as { battles?: { status?: string } }).battles?.status === 'resolved'
+    (p) => (p as { battles?: { status?: string } }).battles?.status === 'resolved',
   );
   const wins = completed.filter((p) => (p as { is_winner?: boolean }).is_winner === true).length;
   const losses = completed.filter((p) => (p as { is_winner?: boolean }).is_winner === false).length;
@@ -46,11 +46,7 @@ export async function getBattleStats(userId: string): Promise<BattleStats> {
 export async function getCrewCounts(userId: string) {
   const [crewResult, pendingResult] = await Promise.all([
     supabase.from('crew_members').select('crew_user_id').eq('user_id', userId),
-    supabase
-      .from('crew_requests')
-      .select('id')
-      .eq('requested_id', userId)
-      .eq('status', 'pending'),
+    supabase.from('crew_requests').select('id').eq('requested_id', userId).eq('status', 'pending'),
   ]);
 
   return {

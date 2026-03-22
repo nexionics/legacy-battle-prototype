@@ -11,7 +11,9 @@ export const RecentResultCard = ({ event }: RecentResultCardProps) => (
     <View style={styles.myBattleHeader}>
       <View style={styles.myBattleLeft}>
         <View style={styles.battleIcon}>
-          <AppText variant="body2" style={styles.battleIconText}>{getSportIcon(event.strSport)}</AppText>
+          <AppText variant="body2" style={styles.battleIconText}>
+            {getSportIcon(event.strSport)}
+          </AppText>
         </View>
         <View style={styles.battleInfo}>
           <AppText variant="h6" style={styles.battleTitle} numberOfLines={1}>
@@ -21,7 +23,9 @@ export const RecentResultCard = ({ event }: RecentResultCardProps) => (
         </View>
       </View>
       <View style={[styles.statusBadge, styles.statusCompleted]}>
-        <AppText variant="captionSm" style={styles.statusText}>Final</AppText>
+        <AppText variant="captionSm" style={styles.statusText}>
+          Final
+        </AppText>
       </View>
     </View>
     <View style={styles.myBattleDetails}>
@@ -38,17 +42,21 @@ export const RecentResultCard = ({ event }: RecentResultCardProps) => (
       </View>
       <View style={styles.timeInfo}>
         <Ionicons name="location-outline" size={14} color={colors.textSecondary} />
-          <AppText variant="body2" style={styles.timeText} numberOfLines={1}>
-            {event.strVenue || 'TBD'}
-          </AppText>
+        <AppText variant="body2" style={styles.timeText} numberOfLines={1}>
+          {event.strVenue || 'TBD'}
+        </AppText>
       </View>
     </View>
     <View style={styles.myBattleFooter}>
       <View style={styles.statDuelBadge}>
-        <AppText variant="captionLg" style={styles.statDuelText}>{event.strSport}</AppText>
+        <AppText variant="captionLg" style={styles.statDuelText}>
+          {event.strSport}
+        </AppText>
       </View>
       <TouchableOpacity style={styles.viewButton}>
-        <AppText variant="buttonMd" style={styles.viewButtonText}>View</AppText>
+        <AppText variant="buttonMd" style={styles.viewButtonText}>
+          View
+        </AppText>
       </TouchableOpacity>
     </View>
   </View>

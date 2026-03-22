@@ -1,10 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Keyboard, TextInput } from 'react-native';
-import {
-  extractOTPDigits,
-  isOTPComplete,
-  getOTPFromClipboard,
-} from '@/shared/utils/helpers';
+import { extractOTPDigits, isOTPComplete, getOTPFromClipboard } from '@/shared/utils/helpers';
 import type { UseOTPInputOptions, UseOTPInputReturn } from '@/shared/types';
 
 export function useOTPInput({

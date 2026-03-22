@@ -4,10 +4,7 @@ import type { JoinBattleParams, CreateBattleParams } from '@/shared/types';
 import type { BattleWithParticipants, ExploreBattle, ExploreBattleRow } from '@/shared/types';
 
 export async function getBattles() {
-  return supabase
-    .from('battles')
-    .select('*')
-    .order('created_at', { ascending: false });
+  return supabase.from('battles').select('*').order('created_at', { ascending: false });
 }
 
 export async function getBattleWithParticipants(battleId: string): Promise<BattleWithParticipants> {
@@ -46,7 +43,7 @@ export async function getExploreBattles(tab: 'Trending' | 'Ending Soon' | 'New' 
       stake,
       event_id,
       battle_participants(count)
-    `
+    `,
     )
     .eq('status', 'open');
 
@@ -178,8 +175,13 @@ export function subscribeToParticipants(battleId: string, callback: (payload: un
     .channel(`battle_participants:${battleId}`)
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'battle_participants', filter: `battle_id=eq.${battleId}` },
-      callback
+      {
+        event: '*',
+        schema: 'public',
+        table: 'battle_participants',
+        filter: `battle_id=eq.${battleId}`,
+      },
+      callback,
     )
     .subscribe();
 }

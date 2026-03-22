@@ -50,9 +50,10 @@ export function getStatusColor(status: BattleStatus): string {
  * @param {string | undefined} title - The match title containing team names.
  * @returns {{ home: string | undefined; away: string | undefined }} An object containing parsed team names.
  */
-export function deriveTeamsFromTitle(
-  title: string | undefined,
-): { home: string | undefined; away: string | undefined } {
+export function deriveTeamsFromTitle(title: string | undefined): {
+  home: string | undefined;
+  away: string | undefined;
+} {
   if (!title) return { home: undefined, away: undefined };
 
   const parts = title.split(' vs ');

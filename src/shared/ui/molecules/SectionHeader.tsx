@@ -4,12 +4,7 @@ import { colors, spacing } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import type { SectionHeaderProps } from '@/shared/types';
 
-export function SectionHeader({
-  title,
-  actionLabel,
-  onAction,
-  style,
-}: SectionHeaderProps) {
+export function SectionHeader({ title, actionLabel, onAction, style }: SectionHeaderProps) {
   return (
     <View style={[styles.container, style]}>
       <AppText variant="h5">{title}</AppText>

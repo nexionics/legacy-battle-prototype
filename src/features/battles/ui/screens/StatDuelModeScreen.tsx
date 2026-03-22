@@ -29,7 +29,7 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
 
   const handleContinue = () => {
     if (battleMode) {
-      navigation.navigate('StatDuelDetails', { 
+      navigation.navigate('StatDuelDetails', {
         visibility,
         battleMode,
       });
@@ -40,10 +40,7 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </View>
@@ -68,7 +65,9 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
 
         <View style={styles.titleSection}>
           <AppText variant="h3">Select Battle Mode</AppText>
-          <AppText variant="body2" color={colors.textSecondary}>Choose How Your Battle Will Be Resolved</AppText>
+          <AppText variant="body2" color={colors.textSecondary}>
+            Choose How Your Battle Will Be Resolved
+          </AppText>
         </View>
 
         {BATTLE_MODES.map((mode) => (
@@ -77,19 +76,31 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
             style={[
               styles.modeCard,
               battleMode === mode.id && styles.modeCardSelected,
-              { borderColor: battleMode === mode.id ? colors.primary : mode.borderColor === colors.primary ? colors.primary : colors.inputBorder },
+              {
+                borderColor:
+                  battleMode === mode.id
+                    ? colors.primary
+                    : mode.borderColor === colors.primary
+                      ? colors.primary
+                      : colors.inputBorder,
+              },
             ]}
             onPress={() => handleSelectMode(mode.id)}
           >
             <View style={styles.modeCardHeader}>
               <View style={styles.modeInfo}>
                 <AppText variant="h5">{mode.name}</AppText>
-                <AppText variant="captionSm" color={colors.textSecondary} style={{ lineHeight: 18 }}>{mode.description}</AppText>
+                <AppText
+                  variant="captionSm"
+                  color={colors.textSecondary}
+                  style={{ lineHeight: 18 }}
+                >
+                  {mode.description}
+                </AppText>
               </View>
-              <View style={[
-                styles.radioButton,
-                battleMode === mode.id && styles.radioButtonSelected,
-              ]}>
+              <View
+                style={[styles.radioButton, battleMode === mode.id && styles.radioButtonSelected]}
+              >
                 {battleMode === mode.id && <View style={styles.radioButtonInner} />}
               </View>
             </View>
@@ -99,7 +110,9 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
                 {mode.features.map((feature, index) => (
                   <View key={index} style={styles.featureItem}>
                     <View style={[styles.featureDot, { backgroundColor: feature.color }]} />
-                    <AppText variant="body2" color={colors.textSecondary}>{feature.text}</AppText>
+                    <AppText variant="body2" color={colors.textSecondary}>
+                      {feature.text}
+                    </AppText>
                   </View>
                 ))}
               </View>
@@ -109,12 +122,14 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.continueButton, !battleMode && styles.continueButtonDisabled]}
           onPress={handleContinue}
           disabled={!battleMode}
         >
-          <AppText variant="buttonLg" color={colors.white}>Continue</AppText>
+          <AppText variant="buttonLg" color={colors.white}>
+            Continue
+          </AppText>
           <View style={styles.continueIcon}>
             <AppText style={styles.continueIconText}>⚔</AppText>
           </View>

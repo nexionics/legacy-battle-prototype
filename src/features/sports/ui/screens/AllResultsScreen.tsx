@@ -121,8 +121,11 @@ export default function AllResultsScreen({ navigation }: AllResultsScreenProps) 
           {AVAILABLE_SPORTS.map((sport) => (
             <TouchableOpacity
               key={sport.id}
-            style={[styles.filterTab, resultsSelectedSport === sport.id && styles.filterTabActive]}
-            onPress={() => handleSportChange(sport.id as SportFilter)}
+              style={[
+                styles.filterTab,
+                resultsSelectedSport === sport.id && styles.filterTabActive,
+              ]}
+              onPress={() => handleSportChange(sport.id as SportFilter)}
             >
               <AppText style={{ fontSize: 16 }}>{sport.icon}</AppText>
               <AppText
@@ -163,11 +166,7 @@ export default function AllResultsScreen({ navigation }: AllResultsScreenProps) 
         ) : (
           <View style={styles.emptyContainer}>
             <Ionicons name="trophy-outline" size={48} color={colors.textSecondary} />
-            <AppText
-              variant="body2"
-              color={colors.textSecondary}
-              style={{ marginTop: spacing[4] }}
-            >
+            <AppText variant="body2" color={colors.textSecondary} style={{ marginTop: spacing[4] }}>
               No results found
             </AppText>
             <AppText variant="captionSm" color={colors.textSecondary} style={{ marginTop: 4 }}>

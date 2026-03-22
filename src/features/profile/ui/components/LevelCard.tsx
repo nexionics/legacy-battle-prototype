@@ -9,8 +9,12 @@ export function LevelCard({ levelInfo, xp }: LevelCardProps) {
   return (
     <View style={styles.rankCard}>
       <View style={styles.rankHeader}>
-        <AppText variant="label" style={styles.rankTitle}>Legacy Rank</AppText>
-        <AppText variant="h5" style={styles.rankLevel}>{levelInfo.level}</AppText>
+        <AppText variant="label" style={styles.rankTitle}>
+          Legacy Rank
+        </AppText>
+        <AppText variant="h5" style={styles.rankLevel}>
+          {levelInfo.level}
+        </AppText>
       </View>
       <View style={styles.rankProgressContainer}>
         <View style={styles.rankProgressBar}>

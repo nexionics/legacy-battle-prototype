@@ -10,8 +10,8 @@
 
 export enum IconNameEnum {
   BattleHand = 'BattleHand',
-  CheckValid = "CheckValid",
-  ChatBubble = "ChatBubble",
+  CheckValid = 'CheckValid',
+  ChatBubble = 'ChatBubble',
   LegacyBattleLogo = 'LegacyBattleLogo',
 }
 
@@ -19,4 +19,3 @@ export enum AuthHeaderVariant {
   Center = 'center',
   Left = 'left',
 }
-  

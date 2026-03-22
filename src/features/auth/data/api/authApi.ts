@@ -54,7 +54,9 @@ export async function postSignup(body: SignupRequest): Promise<ApiResponse<Signu
   }
 }
 
-export async function postVerifyOtp(body: VerifyOtpRequest): Promise<ApiResponse<VerifyOtpResponseData>> {
+export async function postVerifyOtp(
+  body: VerifyOtpRequest,
+): Promise<ApiResponse<VerifyOtpResponseData>> {
   const path = '/auth/verify-otp';
   try {
     const res = await authHttp.post(path, body);
@@ -65,7 +67,9 @@ export async function postVerifyOtp(body: VerifyOtpRequest): Promise<ApiResponse
   }
 }
 
-export async function postResendOtp(body: ResendOtpRequest): Promise<ApiResponse<ResendOtpResponseData>> {
+export async function postResendOtp(
+  body: ResendOtpRequest,
+): Promise<ApiResponse<ResendOtpResponseData>> {
   const path = '/auth/resend-otp';
   try {
     const res = await authHttp.post(path, body);

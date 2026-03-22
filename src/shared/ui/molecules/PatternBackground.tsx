@@ -1,12 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 import { AppText } from '../atoms/AppText';
-import {
-  colors,
-  fontSizes,
-  fontWeights,
-  opacity,
-  sizes,
-} from '@/shared/constants/theme';
+import { colors, fontSizes, fontWeights, opacity, sizes } from '@/shared/constants/theme';
 import type { PatternBackgroundProps } from '@/shared/types';
 
 const DEFAULT_REPEAT = 20;

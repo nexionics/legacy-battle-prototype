@@ -42,11 +42,7 @@ export function useLoginMutation() {
 }
 
 export function useGoogleSocialAuthMutation() {
-  return useMutation<
-    ApiResponse<GoogleSocialAuthResponseData>,
-    Error,
-    GoogleSocialAuthRequest
-  >({
+  return useMutation<ApiResponse<GoogleSocialAuthResponseData>, Error, GoogleSocialAuthRequest>({
     mutationFn: (payload: GoogleSocialAuthRequest) => postGoogleSocialAuth(payload),
   });
 }

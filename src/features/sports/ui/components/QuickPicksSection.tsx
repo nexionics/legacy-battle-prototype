@@ -5,12 +5,20 @@ import { AppText, EmptyState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 import type { QuickPicksSectionProps } from '@/shared/types';
 
-export const QuickPicksSection = ({ quickPicks, onViewAll, onPickPress }: QuickPicksSectionProps) => (
+export const QuickPicksSection = ({
+  quickPicks,
+  onViewAll,
+  onPickPress,
+}: QuickPicksSectionProps) => (
   <View style={styles.section}>
     <View style={styles.sectionHeader}>
-      <AppText variant="h3" style={styles.sectionTitle}>Quick Picks</AppText>
+      <AppText variant="h3" style={styles.sectionTitle}>
+        Quick Picks
+      </AppText>
       <TouchableOpacity style={styles.seeAllButton} onPress={onViewAll}>
-        <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
+        <AppText variant="captionLg" style={styles.seeAllText}>
+          View All
+        </AppText>
         <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
       </TouchableOpacity>
     </View>
@@ -27,19 +35,22 @@ export const QuickPicksSection = ({ quickPicks, onViewAll, onPickPress }: QuickP
                 <Ionicons name="flash" size={20} color={colors.primary} />
               </View>
               <View style={[styles.statusBadge, styles.statusOpen]}>
-                <AppText variant="captionSm" style={styles.statusText}>Open</AppText>
+                <AppText variant="captionSm" style={styles.statusText}>
+                  Open
+                </AppText>
               </View>
             </View>
             <AppText variant="h6" style={styles.quickPickTitle} numberOfLines={2}>
               {battle.title}
             </AppText>
             <View style={styles.quickPickFooter}>
-              <AppText variant="label" style={styles.quickPickStake}>{battle.stake} BC</AppText>
-              <TouchableOpacity
-                style={styles.quickPickJoin}
-                onPress={() => onPickPress(battle.id)}
-              >
-                <AppText variant="buttonMd" style={styles.quickPickJoinText}>Join</AppText>
+              <AppText variant="label" style={styles.quickPickStake}>
+                {battle.stake} BC
+              </AppText>
+              <TouchableOpacity style={styles.quickPickJoin} onPress={() => onPickPress(battle.id)}>
+                <AppText variant="buttonMd" style={styles.quickPickJoinText}>
+                  Join
+                </AppText>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

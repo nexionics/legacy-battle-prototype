@@ -1,14 +1,7 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Screen,
-  Input,
-  AuthHeader,
-  PatternBackground,
-  Button,
-  AppText,
-} from '@/shared/ui';
+import { Screen, Input, AuthHeader, PatternBackground, Button, AppText } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { ResetPasswordScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
@@ -86,7 +79,9 @@ export function ResetPasswordScreen({
             disabled={!isValid || isSubmitting}
             onPress={onSubmit}
             style={styles.submitButton}
-            rightIcon={<Ionicons name="lock-closed-outline" size={sizes.icon20} color={colors.white} />}
+            rightIcon={
+              <Ionicons name="lock-closed-outline" size={sizes.icon20} color={colors.white} />
+            }
           >
             {copy.submitCta}
           </Button>

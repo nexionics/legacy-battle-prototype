@@ -12,7 +12,6 @@ import { forgotPasswordFlowStrings, loginScreenStrings } from '../../string';
 import { otpSchema, type OtpFormValues } from './validations';
 import { VERIFY_OTP_COOLDOWN_SEC } from '@/shared/constants';
 
-
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 type VerifyResetRoute = RouteProp<AuthStackParamList, 'VerifyResetOTP'>;
 

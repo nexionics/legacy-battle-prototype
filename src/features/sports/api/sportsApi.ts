@@ -36,8 +36,18 @@ function repoGameToSportsEvent(game: RepoGame): SportsEvent {
     intAwayScore: game.away_score !== null ? String(game.away_score) : null,
     strTimestamp: game.start_time || '',
     dateEvent: game.start_time ? game.start_time.split('T')[0] : '',
-    strTime: game.start_time ? new Date(game.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
-    strTimeLocal: game.start_time ? new Date(game.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+    strTime: game.start_time
+      ? new Date(game.start_time).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : '',
+    strTimeLocal: game.start_time
+      ? new Date(game.start_time).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : '',
     idHomeTeam: '',
     strHomeTeamBadge: '',
     idAwayTeam: '',
@@ -113,7 +123,9 @@ export async function getUpcomingGames(): Promise<SportsEvent[]> {
       getNextLeagueEvents(LEAGUE_IDS.NBA),
     ]);
     const allEvents = [...nflEvents, ...nbaEvents];
-    allEvents.sort((a, b) => new Date(a.strTimestamp).getTime() - new Date(b.strTimestamp).getTime());
+    allEvents.sort(
+      (a, b) => new Date(a.strTimestamp).getTime() - new Date(b.strTimestamp).getTime(),
+    );
     return allEvents;
   } catch (error) {
     console.error('Error fetching upcoming games:', error);
@@ -131,7 +143,9 @@ export async function getRecentResults(): Promise<SportsEvent[]> {
       getPreviousLeagueEvents(LEAGUE_IDS.NBA),
     ]);
     const allEvents = [...nflEvents, ...nbaEvents];
-    allEvents.sort((a, b) => new Date(b.strTimestamp).getTime() - new Date(a.strTimestamp).getTime());
+    allEvents.sort(
+      (a, b) => new Date(b.strTimestamp).getTime() - new Date(a.strTimestamp).getTime(),
+    );
     return allEvents;
   } catch (error) {
     console.error('Error fetching recent results:', error);
@@ -177,7 +191,7 @@ export function getSportIcon(sport: string): string {
 }
 
 export async function getResultsBySport(
-  sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'
+  sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL',
 ): Promise<SportsEvent[]> {
   try {
     const repoGames = await SportsRepo.getResultsBySport(sport, 7);
@@ -198,7 +212,11 @@ export async function getResultsBySport(
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const filtered = events.filter((e) => new Date(e.strTimestamp || e.dateEvent) >= sevenDaysAgo);
-    filtered.sort((a, b) => new Date(b.strTimestamp || b.dateEvent).getTime() - new Date(a.strTimestamp || a.dateEvent).getTime());
+    filtered.sort(
+      (a, b) =>
+        new Date(b.strTimestamp || b.dateEvent).getTime() -
+        new Date(a.strTimestamp || a.dateEvent).getTime(),
+    );
     return filtered;
   } catch (error) {
     console.error('Error fetching results by sport:', error);
@@ -207,7 +225,7 @@ export async function getResultsBySport(
 }
 
 export async function getUpcomingBySport(
-  sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL'
+  sport: 'NFL' | 'NBA' | 'MLB' | 'NHL' | 'MLS' | 'EPL' | 'ALL',
 ): Promise<SportsEvent[]> {
   try {
     const repoGames = await SportsRepo.getUpcomingBySport(sport, 7);
@@ -232,7 +250,11 @@ export async function getUpcomingBySport(
       const d = new Date(e.strTimestamp || e.dateEvent);
       return d >= now && d <= sevenDaysFromNow;
     });
-    filtered.sort((a, b) => new Date(a.strTimestamp || a.dateEvent).getTime() - new Date(b.strTimestamp || b.dateEvent).getTime());
+    filtered.sort(
+      (a, b) =>
+        new Date(a.strTimestamp || a.dateEvent).getTime() -
+        new Date(b.strTimestamp || b.dateEvent).getTime(),
+    );
     return filtered;
   } catch (error) {
     console.error('Error fetching upcoming by sport:', error);
@@ -245,7 +267,7 @@ function isUuid(s: string): boolean {
 }
 
 export async function getResultByEventId(
-  eventId: string
+  eventId: string,
 ): Promise<{ data: SportsEvent | null; error: Error | null }> {
   try {
     if (isUuid(eventId)) {

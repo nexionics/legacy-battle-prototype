@@ -49,9 +49,7 @@ export type RootStackParamList = {
     | undefined;
   BattleDetail: { battleId: string };
   AllResults: { initialSport?: string } | undefined;
-  AllUpcomingGames:
-    | { initialSport?: string; mode?: string }
-    | undefined;
+  AllUpcomingGames: { initialSport?: string; mode?: string } | undefined;
   StartBattle: undefined;
   BattleType: { visibility?: BattleVisibilityParam } | undefined;
   DevDebug: undefined;
@@ -66,9 +64,7 @@ export type RootStackParamList = {
     | undefined;
   AddFriend: undefined;
   StatDuelMode: { visibility?: BattleVisibilityParam } | undefined;
-  StatDuelDetails:
-    | { visibility?: BattleVisibilityParam; battleMode?: BattleMode }
-    | undefined;
+  StatDuelDetails: { visibility?: BattleVisibilityParam; battleMode?: BattleMode } | undefined;
   StatDuelChampion:
     | {
         visibility?: BattleVisibilityParam;
@@ -106,13 +102,18 @@ export type RootStackParamList = {
         opponent?: StatDuelOpponent | null;
       }
     | undefined;
+  Settings: undefined;
 };
 
-export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> =
-  NativeStackScreenProps<AuthStackParamList, ScreenName>;
+export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> = NativeStackScreenProps<
+  AuthStackParamList,
+  ScreenName
+>;
 
-export type TabScreenProps<ScreenName extends keyof TabStackParamList> =
-  BottomTabScreenProps<TabStackParamList, ScreenName>;
+export type TabScreenProps<ScreenName extends keyof TabStackParamList> = BottomTabScreenProps<
+  TabStackParamList,
+  ScreenName
+>;
 
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, ScreenName>;
@@ -144,6 +145,7 @@ export type AllResultsScreenProps = RootStackScreenProps<'AllResults'>;
 export type AllUpcomingGamesScreenProps = RootStackScreenProps<'AllUpcomingGames'>;
 export type FriendsScreenProps = RootStackScreenProps<'Friends'>;
 export type AddFriendScreenProps = RootStackScreenProps<'AddFriend'>;
+export type SettingsScreenProps = RootStackScreenProps<'Settings'>;
 
 // ─── Auth stack screen props (typed navigation + route) ────────────────────
 

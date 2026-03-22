@@ -44,7 +44,9 @@ export default function LoginWelcomeScreen({ navigation }: LoginWelcomeScreenPro
           <Button
             variant="outline"
             onPress={() => handleSocialLogin('Facebook')}
-            leftIcon={<FontAwesome name="facebook" size={sizes.icon20} color={colors.brandFacebook} />}
+            leftIcon={
+              <FontAwesome name="facebook" size={sizes.icon20} color={colors.brandFacebook} />
+            }
             style={styles.socialButton}
           >
             {loginScreenStrings.social.continueWithFacebook}

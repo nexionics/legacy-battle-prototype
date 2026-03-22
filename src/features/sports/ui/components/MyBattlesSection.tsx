@@ -5,12 +5,20 @@ import { AppText, EmptyState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 import type { MyBattlesSectionProps } from '@/shared/types';
 
-export const MyBattlesSection = ({ myBattles, onViewAll, onBattlePress }: MyBattlesSectionProps) => (
+export const MyBattlesSection = ({
+  myBattles,
+  onViewAll,
+  onBattlePress,
+}: MyBattlesSectionProps) => (
   <View style={styles.section}>
     <View style={styles.sectionHeader}>
-      <AppText variant="h3" style={styles.sectionTitle}>My Battles</AppText>
+      <AppText variant="h3" style={styles.sectionTitle}>
+        My Battles
+      </AppText>
       <TouchableOpacity style={styles.seeAllButton} onPress={onViewAll}>
-        <AppText variant="captionLg" style={styles.seeAllText}>View All</AppText>
+        <AppText variant="captionLg" style={styles.seeAllText}>
+          View All
+        </AppText>
         <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
       </TouchableOpacity>
     </View>
@@ -29,7 +37,9 @@ export const MyBattlesSection = ({ myBattles, onViewAll, onBattlePress }: MyBatt
               <AppText variant="h6" style={styles.myBattleItemTitle} numberOfLines={1}>
                 {battle.title}
               </AppText>
-              <AppText variant="captionLg" style={styles.myBattleItemStake}>{battle.stake} BC</AppText>
+              <AppText variant="captionLg" style={styles.myBattleItemStake}>
+                {battle.stake} BC
+              </AppText>
             </View>
           </View>
           <View
@@ -45,10 +55,7 @@ export const MyBattlesSection = ({ myBattles, onViewAll, onBattlePress }: MyBatt
         </TouchableOpacity>
       ))
     ) : (
-      <EmptyState
-        title="No active battles"
-        message="Join or create a battle to get started."
-      />
+      <EmptyState title="No active battles" message="Join or create a battle to get started." />
     )}
   </View>
 );

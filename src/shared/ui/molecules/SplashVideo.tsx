@@ -42,12 +42,7 @@ export const SplashVideo: React.FC<SplashVideoProps> = ({ onFinish }) => {
 
   return (
     <View style={styles.container}>
-      <VideoView
-        style={styles.video}
-        contentFit="cover"
-        player={player}
-        nativeControls={false}
-      />
+      <VideoView style={styles.video} contentFit="cover" player={player} nativeControls={false} />
     </View>
   );
 };

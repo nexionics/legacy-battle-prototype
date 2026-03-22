@@ -1,10 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { crewKeys } from '../keys';
-import {
-  getCrewMembers,
-  getPendingReceived,
-  getBattleSuggestions,
-} from '../api/crew.api';
+import { getCrewMembers, getPendingReceived, getBattleSuggestions } from '../api/crew.api';
 
 async function fetchFriendsData(userId: string) {
   const [membersRes, pendingRes, suggestionsRes] = await Promise.all([

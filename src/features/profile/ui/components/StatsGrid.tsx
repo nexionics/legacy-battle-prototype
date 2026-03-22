@@ -11,25 +11,33 @@ export function StatsGrid({ battleStats, walletBalance }: StatsGridProps) {
         <AppText variant="h5" style={[styles.statValue, styles.statValueGreen]}>
           {battleStats.wins}
         </AppText>
-        <AppText variant="label" style={styles.statLabel}>Wins</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          Wins
+        </AppText>
       </View>
       <View style={[styles.statBox, styles.statBoxRed]}>
         <AppText variant="h5" style={[styles.statValue, styles.statValueRed]}>
           {battleStats.losses}
         </AppText>
-        <AppText variant="label" style={styles.statLabel}>Losses</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          Losses
+        </AppText>
       </View>
       <View style={[styles.statBox, styles.statBoxBlue]}>
         <AppText variant="h5" style={[styles.statValue, styles.statValueBlue]}>
           {battleStats.challenges}
         </AppText>
-        <AppText variant="label" style={styles.statLabel}>Challenges</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          Challenges
+        </AppText>
       </View>
       <View style={[styles.statBox, styles.statBoxGray]}>
         <AppText variant="h5" style={styles.statValue}>
           {Number(walletBalance).toLocaleString()}
         </AppText>
-        <AppText variant="label" style={styles.statLabel}>BC Coins</AppText>
+        <AppText variant="label" style={styles.statLabel}>
+          BC Coins
+        </AppText>
       </View>
     </View>
   );

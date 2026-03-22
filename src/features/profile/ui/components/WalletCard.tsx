@@ -9,7 +9,9 @@ export function WalletCard({ walletBalance }: WalletCardProps) {
   return (
     <View style={styles.bcCard}>
       <View style={styles.bcLeft}>
-        <AppText variant="label" style={styles.bcLabel}>Total Bc</AppText>
+        <AppText variant="label" style={styles.bcLabel}>
+          Total Bc
+        </AppText>
         <AppText variant="h4" style={styles.bcValue}>
           {Number(walletBalance).toLocaleString()} BC
         </AppText>
@@ -19,7 +21,9 @@ export function WalletCard({ walletBalance }: WalletCardProps) {
           <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.viewMoreButton}>
-          <AppText variant="captionLg" style={styles.viewMoreText}>View More</AppText>
+          <AppText variant="captionLg" style={styles.viewMoreText}>
+            View More
+          </AppText>
           <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>

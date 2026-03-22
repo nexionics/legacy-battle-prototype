@@ -70,8 +70,10 @@ export const SportsRepo = {
     if (sportFilter) liveQuery = liveQuery.eq('sport', sportFilter);
 
     const [scheduledResult, liveResult] = await Promise.all([scheduledQuery, liveQuery]);
-    if (scheduledResult.error) console.error('SportsRepo.getUpcomingBySport scheduled error', scheduledResult.error);
-    if (liveResult.error) console.error('SportsRepo.getUpcomingBySport live error', liveResult.error);
+    if (scheduledResult.error)
+      console.error('SportsRepo.getUpcomingBySport scheduled error', scheduledResult.error);
+    if (liveResult.error)
+      console.error('SportsRepo.getUpcomingBySport live error', liveResult.error);
     const scheduled = (scheduledResult.data || []).map(transformToRepoGame);
     const live = (liveResult.data || []).map(transformToRepoGame);
     return [...live, ...scheduled];

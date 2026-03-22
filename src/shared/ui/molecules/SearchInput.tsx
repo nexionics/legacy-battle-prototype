@@ -5,9 +5,7 @@ import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import type { SearchInputProps } from '@/shared/types';
 
-const DEFAULT_LEFT_ICON = (
-  <Ionicons name="search-outline" size={20} color={colors.textSecondary} />
-);
+const DEFAULT_LEFT_ICON = <Ionicons name="search-outline" size={20} color={colors.textSecondary} />;
 
 export function SearchInput({
   value,

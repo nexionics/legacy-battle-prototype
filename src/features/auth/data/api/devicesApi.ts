@@ -27,7 +27,9 @@ export async function postRegisterDevice(
  * Uses `fetch` (not `authenticatedHttp`) so a 401 does not trigger the refresh interceptor
  * while we are tearing down the session in {@link logoutSession}.
  */
-export async function deleteRegisteredDevice(pushToken: string): Promise<ApiResponse<RegisterDeviceResponseData>> {
+export async function deleteRegisteredDevice(
+  pushToken: string,
+): Promise<ApiResponse<RegisterDeviceResponseData>> {
   const encoded = encodeURIComponent(pushToken);
   const path = `/devices/${encoded}`;
   const accessToken = useAuthStore.getState().accessToken?.trim();

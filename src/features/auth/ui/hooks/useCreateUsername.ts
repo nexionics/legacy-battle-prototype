@@ -97,24 +97,20 @@ export function useCreateUsername() {
   };
 
   const onBackPress = () => {
-    Alert.alert(
-      'Log out?',
-      'Going back now will log you out. Are you sure you want to log out?',
-      [
-        { text: 'No', style: 'cancel' },
-        {
-          text: 'Yes',
-          style: 'destructive',
-          onPress: async () => {
-            await logoutSession();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
-          },
+    Alert.alert('Log out?', 'Going back now will log you out. Are you sure you want to log out?', [
+      { text: 'No', style: 'cancel' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: async () => {
+          await logoutSession();
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
         },
-      ],
-    );
+      },
+    ]);
   };
 
   return {

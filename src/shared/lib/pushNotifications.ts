@@ -51,8 +51,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
     return undefined;
   }
 
-  const projectId =
-    Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
 
   if (!projectId || typeof projectId !== 'string') {
     logRegistrationError('Project ID not found in Expo config.');
@@ -64,11 +63,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
     return pushTokenString;
   } catch (error: unknown) {
     const detail = error instanceof Error ? error.message : String(error);
-    if (
-      detail.includes('FirebaseApp') ||
-      detail.includes('Firebase') ||
-      detail.includes('FCM')
-    ) {
+    if (detail.includes('FirebaseApp') || detail.includes('Firebase') || detail.includes('FCM')) {
       logRegistrationError(
         `Failed to get push token (Android needs google-services.json + rebuild). ${detail}`,
       );

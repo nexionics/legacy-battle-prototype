@@ -7,12 +7,16 @@ import { EXPLORE_CATEGORIES } from '@/shared/constants';
 export function CategoriesSection() {
   return (
     <View style={styles.section}>
-      <AppText variant="h4" style={{ marginBottom: spacing[2] }}>Categories</AppText>
+      <AppText variant="h4" style={{ marginBottom: spacing[2] }}>
+        Categories
+      </AppText>
       <View style={styles.categoriesGrid}>
         {EXPLORE_CATEGORIES.map(({ label, emoji }) => (
           <TouchableOpacity key={label} style={styles.categoryCard}>
             <View style={styles.categoryIcon}>
-              <AppText variant="captionSm" style={{ fontSize: 24 }}>{emoji}</AppText>
+              <AppText variant="captionSm" style={{ fontSize: 24 }}>
+                {emoji}
+              </AppText>
             </View>
             <AppText variant="label">{label}</AppText>
           </TouchableOpacity>

@@ -16,11 +16,7 @@ export function SelectionModal<T extends string = string>({
 }: SelectionModalProps<T>) {
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPress={onClose}
-      >
+      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>
         <View style={styles.sheet} onStartShouldSetResponder={() => true}>
           <View style={styles.header}>
             <AppText variant="h5">{title}</AppText>

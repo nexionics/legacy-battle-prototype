@@ -23,14 +23,8 @@ import type { FriendsScreenProps } from '@/shared/types';
 
 export default function FriendsScreen({ navigation }: FriendsScreenProps) {
   const { user } = useAuth();
-  const {
-    crewMembers,
-    pendingReceived,
-    suggestions,
-    friendsLoading,
-    friendsRefreshing,
-    refetch,
-  } = useCrew(user?.id);
+  const { crewMembers, pendingReceived, suggestions, friendsLoading, friendsRefreshing, refetch } =
+    useCrew(user?.id);
 
   const acceptMutation = useAcceptRequest(user?.id);
   const declineMutation = useDeclineRequest(user?.id);
@@ -186,11 +180,7 @@ export default function FriendsScreen({ navigation }: FriendsScreenProps) {
                       borderColor={colors.primary}
                     />
                   </View>
-                  <AppText
-                    variant="captionSm"
-                    style={{ textAlign: 'center' }}
-                    numberOfLines={1}
-                  >
+                  <AppText variant="captionSm" style={{ textAlign: 'center' }} numberOfLines={1}>
                     {member.display_name || member.username}
                   </AppText>
                 </TouchableOpacity>

@@ -29,7 +29,9 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
           </AppText>
         </View>
         <View style={styles.entryFee}>
-          <AppText variant="captionSm" style={{ fontSize: 12 }}>🪙</AppText>
+          <AppText variant="captionSm" style={{ fontSize: 12 }}>
+            🪙
+          </AppText>
           <AppText variant="captionSm" color={colors.textSecondary} style={{ fontSize: 10 }}>
             {battle.stake || 50} Bc Entry
           </AppText>
@@ -42,12 +44,18 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
 
       <View style={styles.battlePlayers}>
         <View style={styles.playerBadge}>
-          <AppText variant="captionSm" style={{ fontSize: 12 }}>🏈</AppText>
+          <AppText variant="captionSm" style={{ fontSize: 12 }}>
+            🏈
+          </AppText>
         </View>
         <AppText variant="captionSm">Mahomes</AppText>
-        <AppText variant="captionSm" color={colors.textSecondary}>Vs</AppText>
+        <AppText variant="captionSm" color={colors.textSecondary}>
+          Vs
+        </AppText>
         <View style={styles.playerBadge}>
-          <AppText variant="captionSm" style={{ fontSize: 12 }}>🏈</AppText>
+          <AppText variant="captionSm" style={{ fontSize: 12 }}>
+            🏈
+          </AppText>
         </View>
         <AppText variant="captionSm">Burrow</AppText>
       </View>
@@ -68,7 +76,9 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
           </View>
         )}
         <TouchableOpacity style={styles.joinButton}>
-          <AppText variant="buttonMd" color={colors.white}>Join</AppText>
+          <AppText variant="buttonMd" color={colors.white}>
+            Join
+          </AppText>
         </TouchableOpacity>
       </View>
     </View>

@@ -23,15 +23,8 @@ type HomeScreenProps = CompositeScreenProps<
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const { user } = useAuth();
-  const {
-    upcomingGames,
-    recentResults,
-    quickPicks,
-    myBattles,
-    homeLoading,
-    homeError,
-    refetch,
-  } = useHomeData(user?.id);
+  const { upcomingGames, recentResults, quickPicks, myBattles, homeLoading, homeError, refetch } =
+    useHomeData(user?.id);
 
   if (homeLoading) {
     return (
@@ -82,7 +75,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           style={styles.startBattleButton}
           onPress={() => navigation.navigate('BattleType')}
         >
-          <AppText variant="buttonLg" style={styles.startBattleText}>Start Battle Now</AppText>
+          <AppText variant="buttonLg" style={styles.startBattleText}>
+            Start Battle Now
+          </AppText>
           <Ionicons name="flash" size={20} color={colors.white} />
         </TouchableOpacity>
         <RecentResultsSection

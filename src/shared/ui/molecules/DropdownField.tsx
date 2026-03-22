@@ -21,11 +21,7 @@ export function DropdownField({
         </AppText>
       </View>
       <TouchableOpacity style={styles.field} onPress={onPress}>
-        <AppText
-          variant="body2"
-          color={value ? colors.text : colors.muted}
-          style={styles.value}
-        >
+        <AppText variant="body2" color={value ? colors.text : colors.muted} style={styles.value}>
           {value || placeholder}
         </AppText>
         <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
