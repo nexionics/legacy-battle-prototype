@@ -144,7 +144,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           icon="shield-checkmark-outline"
           title="Privacy & Policy"
           subtitle="Personal Information's"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('PrivacyPolicy')}
           iconColor="#FFD3A3"
           iconBgColor="#FEEEE633"
         />
@@ -152,7 +152,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           icon="mail-outline"
           title="Contact Us"
           subtitle="Personal Information's"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('ContactUs')}
           iconColor="#FFD3A3"
           iconBgColor="#FEEEE633"
         />

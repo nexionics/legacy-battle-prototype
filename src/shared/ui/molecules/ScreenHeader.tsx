@@ -9,7 +9,7 @@ export function ScreenHeader({ title, onBack, rightSlot, centerIcon, style }: Sc
     <View style={[styles.container, style]}>
       {onBack ? (
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Ionicons name="chevron-back" size={20} color={colors.white} />
+          <Ionicons name="arrow-back" size={24} color={colors.white} />
         </TouchableOpacity>
       ) : (
         <View style={styles.placeholder} />

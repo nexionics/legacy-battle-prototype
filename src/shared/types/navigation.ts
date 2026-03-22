@@ -104,6 +104,8 @@ export type RootStackParamList = {
     | undefined;
   Settings: undefined;
   AccountDetails: undefined;
+  PrivacyPolicy: undefined;
+  ContactUs: undefined;
 };
 
 export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> = NativeStackScreenProps<
@@ -148,6 +150,8 @@ export type FriendsScreenProps = RootStackScreenProps<'Friends'>;
 export type AddFriendScreenProps = RootStackScreenProps<'AddFriend'>;
 export type SettingsScreenProps = RootStackScreenProps<'Settings'>;
 export type AccountDetailsScreenProps = RootStackScreenProps<'AccountDetails'>;
+export type PrivacyPolicyScreenProps = RootStackScreenProps<'PrivacyPolicy'>;
+export type ContactUsScreenProps = RootStackScreenProps<'ContactUs'>;
 
 // ─── Auth stack screen props (typed navigation + route) ────────────────────
 

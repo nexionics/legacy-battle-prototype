@@ -80,6 +80,8 @@ export type {
   ResetPasswordScreenProps,
   SettingsScreenProps,
   AccountDetailsScreenProps,
+  PrivacyPolicyScreenProps,
+  ContactUsScreenProps,
 } from './navigation';
 export type { LevelInfo, ConnectionStatus } from './profile';
 export type { SportFilter } from './sports';

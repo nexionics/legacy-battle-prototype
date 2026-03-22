@@ -16,7 +16,13 @@ import {
   StatDuelConfirmScreen,
 } from '@/features/battles';
 import { FriendsScreen, AddFriendScreen } from '@/features/crew';
-import { DevDebugScreen, SettingsScreen, AccountDetailsScreen } from '@/features/profile';
+import {
+  DevDebugScreen,
+  SettingsScreen,
+  AccountDetailsScreen,
+  PrivacyPolicyScreen,
+  ContactUsScreen,
+} from '@/features/profile';
 import { AllResultsScreen, AllUpcomingGamesScreen } from '@/features/sports';
 import { RootStackParamList } from './types';
 import { MainTabs } from './BottomTab';
@@ -40,6 +46,8 @@ export default function AppStack() {
       <Stack.Screen name="AddFriend" component={AddFriendScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="AccountDetails" component={AccountDetailsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+      <Stack.Screen name="ContactUs" component={ContactUsScreen} />
       <Stack.Screen name="StatDuelMode" component={StatDuelModeScreen} />
       <Stack.Screen name="StatDuelDetails" component={StatDuelDetailsScreen} />
       <Stack.Screen name="StatDuelChampion" component={StatDuelChampionScreen} />
