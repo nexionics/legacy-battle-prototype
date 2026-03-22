@@ -11,6 +11,11 @@ function isAuthRefreshRequest(config: InternalAxiosRequestConfig): boolean {
   return url.includes('/auth/refresh');
 }
 
+function isAuthLogoutRequest(config: InternalAxiosRequestConfig): boolean {
+  const url = config.url ?? '';
+  return url.includes('/auth/logout');
+}
+
 let refreshInFlight: Promise<string | null> | null = null;
 
 async function refreshAccessToken(): Promise<string | null> {
@@ -42,10 +47,6 @@ async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-/**
- * On HTTP 401 from an authenticated request, exchanges `refreshToken` for new tokens
- * and retries the original request once. Deduplicates concurrent refresh calls.
- */
 authenticatedHttp.interceptors.response.use(async (response) => {
   const config = response.config as RequestWithRetry;
 
@@ -53,8 +54,7 @@ authenticatedHttp.interceptors.response.use(async (response) => {
     return response;
   }
 
-  /** Refresh uses the same client; a 401 here must not trigger another refresh. */
-  if (isAuthRefreshRequest(config)) {
+  if (isAuthRefreshRequest(config) || isAuthLogoutRequest(config)) {
     return response;
   }
 

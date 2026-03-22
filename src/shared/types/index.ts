@@ -83,7 +83,12 @@ export type {
   PrivacyPolicyScreenProps,
   ContactUsScreenProps,
 } from './navigation';
-export type { LevelInfo, ConnectionStatus } from './profile';
+export type {
+  LevelInfo,
+  ConnectionStatus,
+  UserPreferences,
+  UpdateUserPreferences,
+} from './profile';
 export type { SportFilter } from './sports';
 export type { OTPInputProps, UseOTPInputOptions, UseOTPInputReturn } from './otp';
 export type {

@@ -4,18 +4,43 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { spacing, radii } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader, SettingSection, SettingRow } from '@/shared/ui';
-import type { SettingsScreenProps } from '@/shared/types';
+import type { SettingsScreenProps, UpdateUserPreferences } from '@/shared/types';
+import { usePreferencesQuery } from '../../data/queries/usePreferencesQuery';
+import { useUpdatePreferences } from '../../data/mutations/useUpdatePreferences';
+import { ActivityIndicator, Alert } from 'react-native';
+import { logoutSession } from '@/features/auth/data/logoutSession';
 
 export default function SettingsScreen({ navigation }: SettingsScreenProps) {
   const colors = useThemeColors();
-  const [notifications, setNotifications] = React.useState({
-    challenges: true,
-    updates: true,
-    system: false,
-  });
+  const { data: preferencesData, isLoading, error } = usePreferencesQuery();
+  const updatePreferences = useUpdatePreferences();
 
-  const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+  const preferences =
+    preferencesData && 'success' in preferencesData && preferencesData.success
+      ? preferencesData.data
+      : null;
+
+  const togglePreference = (key: keyof UpdateUserPreferences) => {
+    if (!preferences || !('bcUpdatesEnabled' in preferences)) return;
+    const currentValue = preferences[key as keyof typeof preferences];
+    updatePreferences.mutate({ [key]: !currentValue });
+  };
+
+  const handleLogout = () => {
+    Alert.alert('Log Out', 'Are you sure you want to log out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Log Out',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logoutSession();
+          } catch (error) {
+            Alert.alert('Error', 'Failed to log out. Please try again.');
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -54,23 +79,39 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           iconColor="#EF4444"
           iconBgColor="#EF444433"
           rightSlot={
-            <TouchableOpacity onPress={() => toggleNotification('challenges')}>
-              <View
-                style={[
-                  styles.switchTrack,
-                  {
-                    backgroundColor: notifications.challenges ? colors.primary : colors.black,
-                  },
-                ]}
-              >
+            isLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <TouchableOpacity onPress={() => togglePreference('challengeDetailsEnabled')}>
                 <View
                   style={[
-                    styles.switchThumb,
-                    { transform: [{ translateX: notifications.challenges ? 20 : 0 }] },
+                    styles.switchTrack,
+                    {
+                      backgroundColor:
+                        preferences && 'challengeDetailsEnabled' in preferences && preferences.challengeDetailsEnabled
+                          ? colors.primary
+                          : colors.black,
+                    },
                   ]}
-                />
-              </View>
-            </TouchableOpacity>
+                >
+                  <View
+                    style={[
+                      styles.switchThumb,
+                      {
+                        transform: [
+                          {
+                            translateX:
+                              preferences && 'challengeDetailsEnabled' in preferences && preferences.challengeDetailsEnabled
+                                ? 20
+                                : 0,
+                          },
+                        ],
+                      },
+                    ]}
+                  />
+                </View>
+              </TouchableOpacity>
+            )
           }
         />
         <SettingRow
@@ -81,23 +122,39 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           iconColor="#FDE047"
           iconBgColor="#FDE04733"
           rightSlot={
-            <TouchableOpacity onPress={() => toggleNotification('updates')}>
-              <View
-                style={[
-                  styles.switchTrack,
-                  {
-                    backgroundColor: notifications.updates ? colors.primary : colors.black,
-                  },
-                ]}
-              >
+            isLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <TouchableOpacity onPress={() => togglePreference('bcUpdatesEnabled')}>
                 <View
                   style={[
-                    styles.switchThumb,
-                    { transform: [{ translateX: notifications.updates ? 20 : 0 }] },
+                    styles.switchTrack,
+                    {
+                      backgroundColor:
+                        preferences && 'bcUpdatesEnabled' in preferences && preferences.bcUpdatesEnabled
+                          ? colors.primary
+                          : colors.black,
+                    },
                   ]}
-                />
-              </View>
-            </TouchableOpacity>
+                >
+                  <View
+                    style={[
+                      styles.switchThumb,
+                      {
+                        transform: [
+                          {
+                            translateX:
+                              preferences && 'bcUpdatesEnabled' in preferences && preferences.bcUpdatesEnabled
+                                ? 20
+                                : 0,
+                          },
+                        ],
+                      },
+                    ]}
+                  />
+                </View>
+              </TouchableOpacity>
+            )
           }
         />
         <SettingRow
@@ -108,21 +165,39 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           iconColor="#94A3B8"
           iconBgColor="#94A3B833"
           rightSlot={
-            <TouchableOpacity onPress={() => toggleNotification('system')}>
-              <View
-                style={[
-                  styles.switchTrack,
-                  { backgroundColor: notifications.system ? colors.primary : colors.black },
-                ]}
-              >
+            isLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <TouchableOpacity onPress={() => togglePreference('systemUpdatesEnabled')}>
                 <View
                   style={[
-                    styles.switchThumb,
-                    { transform: [{ translateX: notifications.system ? 20 : 0 }] },
+                    styles.switchTrack,
+                    {
+                      backgroundColor:
+                        preferences && 'systemUpdatesEnabled' in preferences && preferences.systemUpdatesEnabled
+                          ? colors.primary
+                          : colors.black,
+                    },
                   ]}
-                />
-              </View>
-            </TouchableOpacity>
+                >
+                  <View
+                    style={[
+                      styles.switchThumb,
+                      {
+                        transform: [
+                          {
+                            translateX:
+                              preferences && 'systemUpdatesEnabled' in preferences && preferences.systemUpdatesEnabled
+                                ? 20
+                                : 0,
+                          },
+                        ],
+                      },
+                    ]}
+                  />
+                </View>
+              </TouchableOpacity>
+            )
           }
         />
       </SettingSection>
@@ -168,7 +243,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
             styles.logoutButton,
             { backgroundColor: colors.error + '20', borderColor: colors.error + '40' },
           ]}
-          onPress={() => {}}
+          onPress={handleLogout}
         >
           <AppText variant="buttonMd" style={{ color: colors.error }}>
             Log Out
