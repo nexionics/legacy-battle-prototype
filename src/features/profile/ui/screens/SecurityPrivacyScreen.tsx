@@ -24,6 +24,8 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
   const user = useAuthStore((s) => s.user);
   const deviceId = useAuthStore((s) => s.deviceId);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const setBiometricEnabledStore = useAuthStore((s) => s.setBiometricEnabled);
+  const isBiometricEnabledStore = useAuthStore((s) => s.isBiometricEnabled);
 
   useEffect(() => {
     void loadBiometricStatus();
@@ -38,7 +40,11 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
       if (available) {
         const enrolled = await getBiometricsEnrolled();
         const requested = await getBiometricsRequested();
-        setBiometricsEnabled(enrolled || requested);
+        const enabled = enrolled || requested;
+        setBiometricsEnabled(enabled);
+        if (enabled !== isBiometricEnabledStore) {
+          setBiometricEnabledStore(enabled);
+        }
       }
     } catch (error) {
       console.error('[SecurityPrivacy] Error loading biometric status:', error);
@@ -67,19 +73,23 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
           if (result.ok) {
             await setBiometricsRequested(true);
             setBiometricsEnabled(true);
+            setBiometricEnabledStore(true);
             showToast('success', 'Biometric authentication enabled successfully!');
           } else {
             showToast('fail', 'Failed to enable biometric authentication');
             setBiometricsEnabled(false);
+            setBiometricEnabledStore(false);
           }
         } else {
           await setBiometricsRequested(true);
           setBiometricsEnabled(true);
+          setBiometricEnabledStore(true);
           showToast('success', 'Biometric authentication enabled');
         }
       } else {
         await setBiometricsRequested(false);
         setBiometricsEnabled(false);
+        setBiometricEnabledStore(false);
         showToast('success', 'Biometric authentication disabled');
       }
     } catch (error) {

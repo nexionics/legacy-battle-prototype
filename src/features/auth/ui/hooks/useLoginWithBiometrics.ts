@@ -8,9 +8,10 @@ import { useToast } from '@/app/providers/useToast';
 import { getBiometricSecureItem } from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useLoginMutation } from '../../data/api/authMutations';
-import { signInWithBiometrics } from '../../lib/biometrics';
+import { rnBiometrics, signInWithBiometrics } from '../../lib/biometrics';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings } from '../../string';
+import { useProfileStore } from '@/features/profile/data/store/profile.store';
 import { biometricPasswordLoginSchema, type BiometricPasswordLoginFormValues } from './validations';
 
 function formatDisplayNameFromEmail(email: string): string {
@@ -47,6 +48,16 @@ export function useLoginWithBiometrics() {
 
   useEffect(() => {
     void (async () => {
+      if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
+        const currentUser = useAuthStore.getState().user;
+        const profileName = useProfileStore.getState().displayName;
+        setAccountEmail(currentUser?.email || null);
+        setDisplayName(
+          profileName ||
+            (currentUser?.email ? formatDisplayNameFromEmail(currentUser.email) : 'User'),
+        );
+        return;
+      }
       const email = await getBiometricSecureItem('biometric_email');
       if (!email) {
         navigation.replace('EmailLogin');
@@ -61,6 +72,7 @@ export function useLoginWithBiometrics() {
     (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
       setAuthTokens(accessToken, refreshToken);
       setUser({ id: userId });
+      useAuthStore.getState().setLocallyUnlocked(true);
       if (!hasUsername) {
         setNeedsUsername(true);
         navigation.navigate('CreateUsername');
@@ -76,6 +88,16 @@ export function useLoginWithBiometrics() {
     biometricInFlight.current = true;
     setBiometricBusy(true);
     try {
+      if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().isBiometricEnabled) {
+        const { success } = await rnBiometrics.simplePrompt({
+          promptMessage: 'Unlock Legacy Battle',
+        });
+        if (success) {
+          useAuthStore.getState().setLocallyUnlocked(true);
+          return;
+        }
+      }
+
       const outcome = await signInWithBiometrics();
       if (!outcome.ok) {
         if (outcome.reason === 'error') {

@@ -11,11 +11,11 @@ interface AuthStore {
   needsUsername: boolean;
   accessToken: string | null;
   refreshToken: string | null;
-  /** Last registered Expo push token (for DELETE /devices/{token} on logout). */
   expoPushToken: string | null;
-  /** UUID from backend for the registered device. */
   deviceId: string | null;
   user: UserData | null;
+  isBiometricEnabled: boolean;
+  isLocallyUnlocked: boolean;
   setLoading: (loading: boolean) => void;
   setExpoPushToken: (token: string | null) => void;
   setDeviceId: (id: string | null) => void;
@@ -23,6 +23,8 @@ interface AuthStore {
   setNeedsUsername: (needs: boolean) => void;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setUser: (user: UserData | null) => void;
+  setBiometricEnabled: (enabled: boolean) => void;
+  setLocallyUnlocked: (unlocked: boolean) => void;
   setHasHydrated: (state: boolean) => void;
   _hasHydrated: boolean;
   logout: () => void;
@@ -39,6 +41,8 @@ export const useAuthStore = create<AuthStore>()(
       expoPushToken: null,
       deviceId: null,
       user: null,
+      isBiometricEnabled: false,
+      isLocallyUnlocked: false,
       _hasHydrated: false,
       setLoading: (loading) => set({ isLoading: loading }),
       setAuthTokens: (accessToken, refreshToken) =>
@@ -52,6 +56,8 @@ export const useAuthStore = create<AuthStore>()(
       setUser: (user) => set({ user }),
       setDeviceId: (deviceId) => set({ deviceId }),
       setExpoPushToken: (expoPushToken) => set({ expoPushToken }),
+      setBiometricEnabled: (isBiometricEnabled) => set({ isBiometricEnabled }),
+      setLocallyUnlocked: (isLocallyUnlocked) => set({ isLocallyUnlocked }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
       logout: () =>
         set(() => {
@@ -64,6 +70,8 @@ export const useAuthStore = create<AuthStore>()(
             expoPushToken: null,
             deviceId: null,
             user: null,
+            isBiometricEnabled: false,
+            isLocallyUnlocked: false,
           };
         }),
     }),
@@ -81,6 +89,7 @@ export const useAuthStore = create<AuthStore>()(
         expoPushToken: state.expoPushToken,
         deviceId: state.deviceId,
         user: state.user,
+        isBiometricEnabled: state.isBiometricEnabled,
       }),
     },
   ),

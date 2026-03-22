@@ -9,3 +9,4 @@ export {
 export { ToastProvider, ToastContext } from './ToastProvider';
 export { useToast } from './useToast';
 export { PushNotificationProvider } from './PushNotificationProvider';
+export { AppLockProvider } from './AppLockProvider';

@@ -24,12 +24,20 @@ const headerOptions: NativeStackNavigationOptions = { headerShown: false };
 
 type AuthEntryRoute = 'CreateUsername' | 'LoginWithBiometrics' | 'EmailLogin';
 
-const AuthStack = () => {
+interface AuthStackProps {
+  initialRoute?: keyof AuthStackParamList;
+}
+
+const AuthStack = ({ initialRoute }: AuthStackProps) => {
   const accessToken = useAuthStore((s) => s.accessToken);
   const needsUsername = useAuthStore((s) => s.needsUsername);
   const [initialRouteName, setInitialRouteName] = useState<AuthEntryRoute | null>(null);
 
   useEffect(() => {
+    if (initialRoute) {
+      setInitialRouteName(initialRoute as AuthEntryRoute);
+      return;
+    }
     let cancelled = false;
 
     void (async () => {
@@ -45,7 +53,7 @@ const AuthStack = () => {
     return () => {
       cancelled = true;
     };
-  }, [accessToken, needsUsername]);
+  }, [accessToken, needsUsername, initialRoute]);
 
   if (initialRouteName === null) {
     return (

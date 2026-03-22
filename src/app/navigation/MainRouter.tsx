@@ -10,6 +10,8 @@ export default function MainRouter() {
   const needsUsername = useAuthStore((s) => s.needsUsername);
   const accessToken = useAuthStore((s) => s.accessToken);
   const _hasHydrated = useAuthStore((s) => s._hasHydrated);
+  const isBiometricEnabled = useAuthStore((s) => s.isBiometricEnabled);
+  const isLocallyUnlocked = useAuthStore((s) => s.isLocallyUnlocked);
 
   if (!_hasHydrated || isLoading) {
     return (
@@ -20,8 +22,19 @@ export default function MainRouter() {
   }
 
   const inMainApp = Boolean(accessToken && isAuthenticated && !needsUsername);
+  const showBiometricLock = inMainApp && isBiometricEnabled && !isLocallyUnlocked;
 
-  return <NavigationContainer>{inMainApp ? <AppStack /> : <AuthStack />}</NavigationContainer>;
+  return (
+    <NavigationContainer>
+      {showBiometricLock ? (
+        <AuthStack initialRoute="LoginWithBiometrics" />
+      ) : inMainApp ? (
+        <AppStack />
+      ) : (
+        <AuthStack />
+      )}
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({

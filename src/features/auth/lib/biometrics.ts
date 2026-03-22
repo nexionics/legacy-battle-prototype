@@ -13,7 +13,7 @@ import {
 } from '@/features/auth/data/api/biometricApi';
 import { useAuthStore } from '../data/store/auth.store';
 
-const rnBiometrics = new ReactNativeBiometrics();
+export const rnBiometrics = new ReactNativeBiometrics();
 
 export async function logout(): Promise<void> {
   try {

@@ -8,6 +8,7 @@ import {
   PushNotificationProvider,
   ThemeProvider,
   ToastProvider,
+  AppLockProvider,
 } from '@/app/providers';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useCachedResources } from '@/shared/hooks';
@@ -33,7 +34,9 @@ function App() {
             <PushNotificationProvider>
               <ToastProvider>
                 <BottomSheetModalProvider>
-                  <MainRouter />
+                  <AppLockProvider>
+                    <MainRouter />
+                  </AppLockProvider>
                 </BottomSheetModalProvider>
               </ToastProvider>
             </PushNotificationProvider>
