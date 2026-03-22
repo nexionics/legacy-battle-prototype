@@ -43,7 +43,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
 
   const walletBalance = Number(profile?.walletBalance || 0).toFixed(2);
   const xpValue = profile?.xp || 0;
-  const levelInfo = getLevelInfo(xpValue);
+  const levelInfo = getLevelInfo(xpValue, profile?.level);
 
   if (profileLoading) {
     return (
@@ -62,6 +62,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           email={user?.email ?? undefined}
           xp={xpValue}
           avatarUrl={profile?.avatarUrl}
+          level={profile?.level}
         />
 
         <StatsGrid battleStats={battleStats} walletBalance={walletBalance} />

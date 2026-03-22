@@ -296,6 +296,7 @@ export interface ProfileHeaderProps {
   email: string | undefined;
   xp: number;
   avatarUrl?: string | null;
+  level?: string;
 }
 
 export interface ProfileMenuProps {

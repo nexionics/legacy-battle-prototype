@@ -8,12 +8,19 @@ import { getLevelInfo, getLevelNumber } from '@/features/profile/helpers/level';
 import type { ProfileHeaderProps, RootStackParamList } from '@/shared/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export function ProfileHeader({ displayName, username, email, xp, avatarUrl }: ProfileHeaderProps) {
+export function ProfileHeader({
+  displayName,
+  username,
+  email,
+  xp,
+  avatarUrl,
+  level,
+}: ProfileHeaderProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
   const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
 
-  const levelInfo = getLevelInfo(xp);
+  const levelInfo = getLevelInfo(xp, level);
   const levelNumber = getLevelNumber(xp);
 
   return (

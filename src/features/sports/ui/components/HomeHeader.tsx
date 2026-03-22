@@ -12,13 +12,7 @@ export type HomeHeaderProps = {
   level?: string | null;
 };
 
-export function HomeHeader({
-  displayName,
-  username,
-  email,
-  avatarUrl,
-  level,
-}: HomeHeaderProps) {
+export function HomeHeader({ displayName, username, email, avatarUrl }: HomeHeaderProps) {
   const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
   const nameLine = displayName || username || email?.split('@')[0] || 'Player';
 
@@ -43,11 +37,6 @@ export function HomeHeader({
           <AppText variant="h4" style={styles.usernameText}>
             {nameLine}
           </AppText>
-          {level ? (
-            <AppText variant="captionSm" style={styles.levelText}>
-              {level}
-            </AppText>
-          ) : null}
         </View>
       </View>
       <TouchableOpacity style={styles.notificationButton}>
@@ -102,11 +91,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: fontSizes.lg,
     fontWeight: 'bold',
-  },
-  levelText: {
-    color: colors.textSecondary,
-    fontSize: fontSizes.xs,
-    marginTop: 2,
   },
   notificationButton: {
     position: 'relative',

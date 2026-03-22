@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet } from 'react-native';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 
@@ -33,12 +32,6 @@ export function StatsCard({ xp, walletBalance }: StatsCardProps) {
           </AppText>
         </View>
       </View>
-      <TouchableOpacity style={styles.inviteBanner}>
-        <AppText variant="captionSm" style={styles.inviteText}>
-          Live sports data from TheSportsDB
-        </AppText>
-        <Ionicons name="arrow-forward" size={16} color={colors.white} />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -53,7 +46,6 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing[4],
   },
   statItem: {},
   statLabel: {
@@ -64,17 +56,5 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: fontSizes.xl,
     fontWeight: 'bold',
-  },
-  inviteBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    borderRadius: radii.lg,
-    padding: spacing[2],
-  },
-  inviteText: {
-    color: colors.white,
-    fontSize: fontSizes.xs,
   },
 });

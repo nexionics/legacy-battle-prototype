@@ -96,7 +96,6 @@ export function useLogin() {
           name,
         });
         if (regResult.success) {
-          console.log('[Auth] Device registered successfully:', regResult.data.id);
           currentDeviceId = regResult.data.id;
           setDeviceId(currentDeviceId);
           setExpoPushToken(token);
@@ -114,11 +113,6 @@ export function useLogin() {
     }
 
     const wantBiometricsPref = await getBiometricsRequested();
-    console.log('[Auth] Biometric check:', {
-      wantBiometricsPref,
-      isEnrolled: authData.isBiometricEnrolled,
-      currentDeviceId,
-    });
 
     if (wantBiometricsPref && !authData.isBiometricEnrolled && currentDeviceId && email) {
       const enroll = await enrollBiometrics(authData.accessToken, email, currentDeviceId);

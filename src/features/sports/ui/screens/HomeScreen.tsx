@@ -26,12 +26,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const { user } = useAuth();
   const { upcomingGames, recentResults, quickPicks, myBattles, homeLoading, homeError, refetch } =
     useHomeData(user?.id);
-  const {
-    profile,
-    profileLoading,
-    profileError,
-    refetch: refetchProfile,
-  } = useProfile(user?.id);
+  const { profile, profileLoading, profileError, refetch: refetchProfile } = useProfile(user?.id);
 
   const waitingForProfile = Boolean(user?.id) && profileLoading;
 
@@ -66,12 +61,8 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           username={profile?.username}
           email={user?.email}
           avatarUrl={profile?.avatarUrl}
-          level={profile?.level}
         />
-        <StatsCard
-          xp={profile?.xp ?? 0}
-          walletBalance={Number(profile?.walletBalance ?? 0)}
-        />
+        <StatsCard xp={profile?.xp ?? 0} walletBalance={Number(profile?.walletBalance ?? 0)} />
         <QuickPicksSection
           quickPicks={quickPicks}
           onViewAll={() => navigation.navigate('Battles')}
