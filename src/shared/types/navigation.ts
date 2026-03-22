@@ -8,6 +8,9 @@ export type AuthStackParamList = {
   EmailLogin: undefined;
   SignUp: undefined;
   OTPVerification: { email: string; reference: string };
+  ForgotPassword: undefined;
+  VerifyResetOTP: { email: string; reference: string };
+  ResetPassword: { reference: string };
   CreateUsername: undefined;
 };
 
@@ -148,3 +151,6 @@ export type EmailLoginScreenProps = AuthScreenProps<'EmailLogin'>;
 export type SignUpScreenProps = AuthScreenProps<'SignUp'>;
 export type OTPVerificationScreenProps = AuthScreenProps<'OTPVerification'>;
 export type CreateUsernameScreenProps = AuthScreenProps<'CreateUsername'>;
+export type ForgotPasswordScreenProps = AuthScreenProps<'ForgotPassword'>;
+export type VerifyResetOTPScreenProps = AuthScreenProps<'VerifyResetOTP'>;
+export type ResetPasswordScreenProps = AuthScreenProps<'ResetPassword'>;

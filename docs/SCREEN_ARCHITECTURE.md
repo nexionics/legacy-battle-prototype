@@ -130,20 +130,18 @@ useScreenHook.ts -> ScreenContainer.tsx -> Screen.tsx -> components/*
 
 ## 12. String Management Rules
 
-1. **Do not use a global strings.ts file**
-   - Avoid a single file containing all app strings.
+1. **Avoid one giant app-wide strings file**
+   - Prefer per-feature or per-screen modules; do not put every screen’s copy in a single global file.
 2. **Do not hardcode strings in components**
    - Avoid inline strings unless trivial.
-3. **Use screen-level or feature-level string files**
-   - Place strings close to where they are used:
-     - Example: `Login/login.strings.ts`
+3. **Use screen-level or feature-level string modules**
+   - Place strings close to where they are used (e.g. `features/<feature>/string.ts` for a whole feature, or co-located `*.strings.ts` where a screen owns its copy exclusively).
 4. **Namespace strings**
    - Export objects like:
      - `loginStrings.title`
      - `receiptStrings.summary`
 5. **Extract shared strings only when reused**
-   - Place in feature-level shared string files:
-     - Example: `features/auth/strings/auth.strings.ts`
+   - For auth, all copy lives in one module: `features/auth/string.ts` (named exports per area: `loginScreenStrings`, etc.).
 6. **Avoid generic shared strings**
    - Do not create vague keys like `title`, `label`, etc.
 7. **Prepare for localization**

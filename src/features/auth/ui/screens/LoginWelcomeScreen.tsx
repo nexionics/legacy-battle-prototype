@@ -2,7 +2,7 @@ import { View, StyleSheet, Image, Alert } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { Screen, AppText, AuthHeader, PatternBackground, Button } from '@/shared/ui';
 import { borderWidths, colors, spacing, sizes, scaleLayout } from '@/shared/constants/theme';
-import { authStrings, loginScreenStrings } from '../../strings';
+import { authStrings, loginScreenStrings } from '../../string';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { LoginWelcomeScreenProps } from '@/shared/types';
 

@@ -8,6 +8,9 @@ import {
   EmailLoginScreen,
   SignUpScreen,
   OTPVerificationScreen,
+  ForgotPasswordScreen,
+  VerifyResetOTPScreen,
+  ResetPasswordScreen,
   CreateUsernameScreen,
   useAuthStore,
 } from '@/features/auth';
@@ -26,6 +29,9 @@ const AuthStack = () => {
       <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="VerifyResetOTP" component={VerifyResetOTPScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
       <Stack.Screen name="CreateUsername" component={CreateUsernameScreen} />
     </Stack.Navigator>
   );

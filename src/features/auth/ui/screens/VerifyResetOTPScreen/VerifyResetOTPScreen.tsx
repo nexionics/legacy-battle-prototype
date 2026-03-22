@@ -11,14 +11,20 @@ import {
   OTPInput,
 } from '@/shared/ui';
 import { OTP_LENGTH } from '@/shared/constants';
-import { colors, spacing, sizes, fontSizes, fontWeights } from '@/shared/constants/theme';
-import type { OTPVerificationScreenProps } from '@/shared/types';
+import {
+  colors,
+  spacing,
+  sizes,
+  fontSizes,
+  fontWeights,
+} from '@/shared/constants/theme';
+import type { VerifyResetOTPScreenProps } from '@/shared/types';
 import { formatMmSs } from '@/shared/utils/helpers';
-import type { UseOtpVerificationReturn } from '../../hooks/hooks.types';
+import type { UseVerifyResetOtpReturn } from '../../hooks/hooks.types';
 
-export type OTPVerificationViewProps = OTPVerificationScreenProps & UseOtpVerificationReturn;
+export type VerifyResetOTPViewProps = VerifyResetOTPScreenProps & UseVerifyResetOtpReturn;
 
-export function OTPVerificationScreen({
+export function VerifyResetOTPScreen({
   navigation,
   onCodeChange,
   onSubmit,
@@ -30,8 +36,10 @@ export function OTPVerificationScreen({
   cooldownSec,
   displayEmail,
   loginScreenStrings,
-  otpVerificationScreenStrings,
-}: OTPVerificationViewProps) {
+  forgotPasswordFlowStrings,
+}: VerifyResetOTPViewProps) {
+  const copy = forgotPasswordFlowStrings.verifyResetOtp;
+
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
@@ -45,9 +53,9 @@ export function OTPVerificationScreen({
         </View>
 
         <View style={styles.titleContainer}>
-          <AppText variant="h2">{otpVerificationScreenStrings.headings.verifyEmail}</AppText>
+          <AppText variant="h2">{copy.title}</AppText>
           <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
-            {otpVerificationScreenStrings.body.codeSentLeadIn}
+            {copy.codeSentLeadIn}
             {'\n'}
             <AppText variant="body1" color={colors.text}>
               {displayEmail}
@@ -69,12 +77,12 @@ export function OTPVerificationScreen({
 
         <View style={styles.resendBlock}>
           <AppText variant="body2" color={colors.textSecondary} style={styles.resendPrompt}>
-            {otpVerificationScreenStrings.resend.prompt}
+            {copy.resendPrompt}
           </AppText>
           {cooldownSec > 0 ? (
             <View style={styles.countdownRow} accessibilityLiveRegion="polite">
               <AppText variant="body2" color={colors.textSecondary}>
-                {otpVerificationScreenStrings.resend.availableIn}{' '}
+                {copy.resendAvailableIn}{' '}
               </AppText>
               <AppText
                 variant="body1"
@@ -86,12 +94,9 @@ export function OTPVerificationScreen({
               </AppText>
             </View>
           ) : (
-            <TouchableOpacity onPress={onResend} disabled={resendDisabled} style={styles.resendCta}>
-              <AppText
-                variant="label"
-                color={resendDisabled ? colors.textSecondary : colors.primary}
-              >
-                {otpVerificationScreenStrings.resend.cta}
+            <TouchableOpacity onPress={() => void onResend()} disabled={resendDisabled} style={styles.resendCta}>
+              <AppText variant="label" color={resendDisabled ? colors.textSecondary : colors.primary}>
+                {copy.resendCta}
               </AppText>
             </TouchableOpacity>
           )}
@@ -103,9 +108,9 @@ export function OTPVerificationScreen({
           disabled={!isValid || isSubmitting}
           onPress={onSubmit}
           style={styles.verifyButton}
-          rightIcon={<Ionicons name="mail-outline" size={sizes.icon20} color={colors.white} />}
+          rightIcon={<Ionicons name="shield-checkmark-outline" size={sizes.icon20} color={colors.white} />}
         >
-          {otpVerificationScreenStrings.primaryCta.verifyEmail}
+          {copy.verifyCta}
         </Button>
       </View>
     </Screen>

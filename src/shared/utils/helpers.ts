@@ -1,5 +1,6 @@
 import type { ApiError, ApiResponse } from '@/shared/types/apiEnvelope';
 import type { LoginRequest, LoginResponseData } from '@/shared/types/authLoginApi';
+import { NormalizedCheckUsername } from '../types/ui';
 
 /**
  * Extracts up to `maxDigits` numeric characters from an arbitrary string.
@@ -45,11 +46,12 @@ export function formatUsernameForApi(raw: string): string {
     .replace(/^_|_$/g, '');
 }
 
-/** Result of normalizing a check-username API `data` payload for UI and validation. */
-export type NormalizedCheckUsername = {
-  available: boolean;
-  message: string;
-};
+/** Formats seconds as `M:SS` (e.g. countdown timers). */
+export function formatMmSs(totalSeconds: number): string {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
 /**
  * Maps the inner `data` object from a successful check-username API response into a stable

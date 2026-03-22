@@ -21,6 +21,14 @@ import type {
   SetUsernameRequest,
   SetUsernameResponseData,
   LogoutResponseData,
+  ForgotPasswordRequest,
+  ForgotPasswordResponseData,
+  VerifyResetOtpRequest,
+  VerifyResetOtpResponseData,
+  ResendResetOtpRequest,
+  ResendResetOtpResponseData,
+  ResetPasswordRequest,
+  ResetPasswordResponseData,
 } from './types';
 
 export async function postLogin(body: LoginRequest): Promise<ApiResponse<LoginResponseData>> {
@@ -89,6 +97,58 @@ export async function postSetUsername(
   try {
     const res = await authenticatedHttp.post(path, body);
     return parseApiResponse<SetUsernameResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postForgotPassword(
+  body: ForgotPasswordRequest,
+): Promise<ApiResponse<ForgotPasswordResponseData>> {
+  const path = '/auth/forgot-password';
+  try {
+    const res = await authHttp.post(path, body);
+    return parseApiResponse<ForgotPasswordResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postVerifyResetOtp(
+  body: VerifyResetOtpRequest,
+): Promise<ApiResponse<VerifyResetOtpResponseData>> {
+  const path = '/auth/verify-reset-otp';
+  try {
+    const res = await authHttp.post(path, body);
+    return parseApiResponse<VerifyResetOtpResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postResendResetOtp(
+  body: ResendResetOtpRequest,
+): Promise<ApiResponse<ResendResetOtpResponseData>> {
+  const path = '/auth/resend-reset-otp';
+  try {
+    const res = await authHttp.post(path, body);
+    return parseApiResponse<ResendResetOtpResponseData>(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function postResetPassword(
+  body: ResetPasswordRequest,
+): Promise<ApiResponse<ResetPasswordResponseData>> {
+  const path = '/auth/reset-password';
+  try {
+    const res = await authHttp.post(path, body);
+    return parseApiResponse<ResetPasswordResponseData>(path, res.status, res.data as object);
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Network error';
     return networkFailure(path, message);

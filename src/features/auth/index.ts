@@ -9,3 +9,6 @@ export { default as EmailLoginScreen } from './ui/screens/EmailLoginScreen/Email
 export { default as SignUpScreen } from './ui/screens/SignUpScreen/SignUpScreenContainer';
 export { default as OTPVerificationScreen } from './ui/screens/OTPVerificationScreen/OTPVerificationScreenContainer';
 export { default as CreateUsernameScreen } from './ui/screens/CreateUsernameScreen/CreateUsernameScreenContainer';
+export { default as ForgotPasswordScreen } from './ui/screens/ForgotPasswordScreen/ForgotPasswordScreenContainer';
+export { default as VerifyResetOTPScreen } from './ui/screens/VerifyResetOTPScreen/VerifyResetOTPScreenContainer';
+export { default as ResetPasswordScreen } from './ui/screens/ResetPasswordScreen/ResetPasswordScreenContainer';

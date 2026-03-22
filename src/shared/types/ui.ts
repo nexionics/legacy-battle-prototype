@@ -67,6 +67,15 @@ export type ButtonProps = {
   hitSlop?: { top?: number; bottom?: number; left?: number; right?: number } | number;
 };
 
+export type LabeledSwitchProps = {
+  label: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+  disabled?: boolean;
+  style?: ViewStyle;
+  accessibilityLabel?: string;
+};
+
 export type InputProps = TextInputProps & {
   label?: string;
   error?: string;
@@ -379,3 +388,8 @@ export interface IconProps {
   fill?: string;
   [key: string]: unknown;
 }
+
+export type NormalizedCheckUsername = {
+  available: boolean;
+  message: string;
+};

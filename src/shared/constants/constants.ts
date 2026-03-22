@@ -11,6 +11,11 @@ import type { SelectionOption } from '@/shared/types';
 
 export const TIMEOUT_DEFAULT_DELAY = 2000;
 
+export const VERIFY_OTP_COOLDOWN_SEC = 120;
+
+/** Digit count for email / reset OTP inputs (must match API and validation). */
+export const OTP_LENGTH = 5;
+
 // ─── Battles list tabs ─────────────────────────────────────────────────────
 
 export const BATTLES_LIST_TABS: { key: string; label: string }[] = [

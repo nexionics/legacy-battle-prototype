@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -8,11 +8,13 @@ import {
   PatternBackground,
   AuthOrGoogleFooter,
   Button,
+  AppText,
+  LabeledSwitch,
 } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { EmailLoginScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
-import type { UseLoginReturn } from '../../hooks/useLogin.types';
+import type { UseLoginReturn } from '../../hooks/hooks.types';
 
 export type EmailLoginViewProps = EmailLoginScreenProps & UseLoginReturn;
 
@@ -26,6 +28,9 @@ export function EmailLoginScreen({
   onBeforeBack,
   onGooglePress,
   onFooterLinkPress,
+  onForgotPasswordPress,
+  biometricsEnabled,
+  onBiometricsToggle,
   loginScreenStrings,
   signUpScreenStrings,
 }: EmailLoginViewProps) {
@@ -64,21 +69,42 @@ export function EmailLoginScreen({
             )}
           />
 
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder={loginScreenStrings.emailLoginForm.passwordPlaceholder}
-                isPassword
-                editable={!isSubmitting}
-                error={errors.password?.message}
-                containerStyle={styles.inputContainer}
-              />
-            )}
+          <View>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  placeholder={loginScreenStrings.emailLoginForm.passwordPlaceholder}
+                  isPassword
+                  editable={!isSubmitting}
+                  error={errors.password?.message}
+                  containerStyle={styles.inputContainer}
+                />
+              )}
+            />
+            <View style={styles.forgotPasswordRow}>
+              <TouchableOpacity
+                onPress={onForgotPasswordPress}
+                disabled={isSubmitting}
+                accessibilityRole="button"
+                accessibilityLabel={loginScreenStrings.emailLoginForm.forgotPassword}
+              >
+                <AppText variant="body2" color={colors.primary}>
+                  {loginScreenStrings.emailLoginForm.forgotPassword}
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <LabeledSwitch
+            label={loginScreenStrings.emailLoginForm.enableBiometrics}
+            value={biometricsEnabled}
+            onValueChange={onBiometricsToggle}
+            disabled={isSubmitting}
           />
 
           <Button
@@ -117,6 +143,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     gap: spacing[2],
+  },
+  forgotPasswordRow: {
+    alignSelf: 'stretch',
+    alignItems: 'flex-end',
+    marginTop: spacing[3],
   },
   submitButton: {
     marginTop: spacing[2],

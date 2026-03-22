@@ -1,17 +1,35 @@
 import { useMutation } from '@tanstack/react-query';
-import { postLogin, postRefreshToken, postResendOtp, postSignup, postVerifyOtp } from './authApi';
+import {
+  postForgotPassword,
+  postLogin,
+  postRefreshToken,
+  postResendOtp,
+  postResendResetOtp,
+  postResetPassword,
+  postSignup,
+  postVerifyOtp,
+  postVerifyResetOtp,
+} from './authApi';
 import type {
   ApiResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponseData,
   LoginRequest,
   LoginResponseData,
   RefreshTokenRequest,
   RefreshTokenResponseData,
   ResendOtpRequest,
   ResendOtpResponseData,
+  ResendResetOtpRequest,
+  ResendResetOtpResponseData,
+  ResetPasswordRequest,
+  ResetPasswordResponseData,
   SignupRequest,
   SignupResponseData,
   VerifyOtpRequest,
   VerifyOtpResponseData,
+  VerifyResetOtpRequest,
+  VerifyResetOtpResponseData,
 } from './types';
 
 export function useLoginMutation() {
@@ -41,5 +59,29 @@ export function useResendOtpMutation() {
 export function useRefreshTokenMutation() {
   return useMutation<ApiResponse<RefreshTokenResponseData>, Error, RefreshTokenRequest>({
     mutationFn: (payload: RefreshTokenRequest) => postRefreshToken(payload),
+  });
+}
+
+export function useForgotPasswordMutation() {
+  return useMutation<ApiResponse<ForgotPasswordResponseData>, Error, ForgotPasswordRequest>({
+    mutationFn: (payload: ForgotPasswordRequest) => postForgotPassword(payload),
+  });
+}
+
+export function useVerifyResetOtpMutation() {
+  return useMutation<ApiResponse<VerifyResetOtpResponseData>, Error, VerifyResetOtpRequest>({
+    mutationFn: (payload: VerifyResetOtpRequest) => postVerifyResetOtp(payload),
+  });
+}
+
+export function useResendResetOtpMutation() {
+  return useMutation<ApiResponse<ResendResetOtpResponseData>, Error, ResendResetOtpRequest>({
+    mutationFn: (payload: ResendResetOtpRequest) => postResendResetOtp(payload),
+  });
+}
+
+export function useResetPasswordMutation() {
+  return useMutation<ApiResponse<ResetPasswordResponseData>, Error, ResetPasswordRequest>({
+    mutationFn: (payload: ResetPasswordRequest) => postResetPassword(payload),
   });
 }

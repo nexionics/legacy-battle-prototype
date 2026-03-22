@@ -14,7 +14,7 @@ import {
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { CreateUsernameScreenProps } from '@/shared/types';
 import { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
-import type { UseCreateUsernameReturn } from '../../hooks/useCreateUsername.types';
+import type { UseCreateUsernameReturn } from '../../hooks/hooks.types';
 
 export type CreateUsernameViewProps = CreateUsernameScreenProps & UseCreateUsernameReturn;
 

@@ -13,7 +13,7 @@ import {
 import { colors, spacing, fontSizes, sizes } from '@/shared/constants/theme';
 import type { SignUpScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
-import type { UseSignupReturn } from '../../hooks/useSignup.types';
+import type { UseSignupReturn } from '../../hooks/hooks.types';
 
 export type SignUpViewProps = SignUpScreenProps & UseSignupReturn;
 

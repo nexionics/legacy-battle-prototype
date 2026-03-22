@@ -74,6 +74,9 @@ export type {
   SignUpScreenProps,
   OTPVerificationScreenProps,
   CreateUsernameScreenProps,
+  ForgotPasswordScreenProps,
+  VerifyResetOTPScreenProps,
+  ResetPasswordScreenProps,
 } from './navigation';
 export type { LevelInfo, ConnectionStatus } from './profile';
 export type { SportFilter } from './sports';
@@ -89,6 +92,7 @@ export type {
   ButtonVariant,
   ButtonProps,
   InputProps,
+  LabeledSwitchProps,
   ScreenHeaderProps,
   AuthHeaderProps,
   PatternBackgroundProps,

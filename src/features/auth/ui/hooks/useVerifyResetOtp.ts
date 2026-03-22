@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -6,24 +6,22 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { useToast } from '@/app/providers/useToast';
 import { OTP_LENGTH } from '@/shared/constants';
-import { useAuthStore } from '../../data/store/auth.store';
-import { useResendOtpMutation, useVerifyOtpMutation } from '../../data/api/authMutations';
+import { useResendResetOtpMutation, useVerifyResetOtpMutation } from '../../data/api/authMutations';
 import type { AuthStackParamList } from '@/shared/types';
-import { loginScreenStrings, otpVerificationScreenStrings } from '../../string';
+import { forgotPasswordFlowStrings, loginScreenStrings } from '../../string';
 import { otpSchema, type OtpFormValues } from './validations';
 import { VERIFY_OTP_COOLDOWN_SEC } from '@/shared/constants';
 
-type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
-type OtpRoute = RouteProp<AuthStackParamList, 'OTPVerification'>;
 
-export function useOtpVerification() {
+type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
+type VerifyResetRoute = RouteProp<AuthStackParamList, 'VerifyResetOTP'>;
+
+export function useVerifyResetOtp() {
   const navigation = useNavigation<AuthNav>();
-  const route = useRoute<OtpRoute>();
+  const route = useRoute<VerifyResetRoute>();
   const { showToast } = useToast();
-  const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
-  const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
-  const verifyMutation = useVerifyOtpMutation();
-  const resendMutation = useResendOtpMutation();
+  const verifyMutation = useVerifyResetOtpMutation();
+  const resendMutation = useResendResetOtpMutation();
 
   const [cooldownSec, setCooldownSec] = useState(VERIFY_OTP_COOLDOWN_SEC);
   const missingSessionHandled = useRef(false);
@@ -41,15 +39,15 @@ export function useOtpVerification() {
     if (missingSessionHandled.current) return;
     if (!reference || !email) {
       missingSessionHandled.current = true;
-      showToast('fail', 'Missing verification session');
+      showToast('fail', 'Missing reset session');
       navigation.goBack();
     }
   }, [email, navigation, reference, showToast]);
 
   useEffect(() => {
     if (cooldownSec <= 0) return;
-    const id = setInterval(() => setCooldownSec((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(id);
+    const t = setTimeout(() => setCooldownSec((s) => Math.max(0, s - 1)), 1000);
+    return () => clearTimeout(t);
   }, [cooldownSec]);
 
   const onCodeChange = useCallback(
@@ -71,9 +69,9 @@ export function useOtpVerification() {
       return;
     }
 
-    setAuthTokens(result.data.accessToken, result.data.refreshToken);
-    setNeedsUsername(true);
-    navigation.navigate('CreateUsername');
+    navigation.navigate('ResetPassword', {
+      reference: result.data.reference,
+    });
   };
 
   const onResend = async () => {
@@ -86,7 +84,7 @@ export function useOtpVerification() {
       return;
     }
 
-    showToast('success', otpVerificationScreenStrings.resend.successToast);
+    showToast('success', forgotPasswordFlowStrings.verifyResetOtp.resendSuccessToast);
     setCooldownSec(VERIFY_OTP_COOLDOWN_SEC);
   };
 
@@ -102,7 +100,7 @@ export function useOtpVerification() {
     cooldownSec,
     displayEmail: email,
     onCodeChange,
+    forgotPasswordFlowStrings,
     loginScreenStrings,
-    otpVerificationScreenStrings,
   };
 }

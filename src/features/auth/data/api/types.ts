@@ -71,3 +71,45 @@ export interface RegisterDeviceRequest {
 export type RegisterDeviceResponseData = Record<string, unknown>;
 
 export type ListDevicesResponseData = unknown[];
+
+/** POST /auth/forgot-password */
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ForgotPasswordResponseData {
+  message: string;
+  reference: string;
+}
+
+/** POST /auth/verify-reset-otp */
+export interface VerifyResetOtpRequest {
+  otp: string;
+  reference: string;
+}
+
+export interface VerifyResetOtpResponseData {
+  message: string;
+  reference: string;
+}
+
+/** POST /auth/resend-reset-otp */
+export interface ResendResetOtpRequest {
+  email: string;
+}
+
+export interface ResendResetOtpResponseData {
+  message?: string;
+  sent?: boolean;
+}
+
+/** POST /auth/reset-password */
+export interface ResetPasswordRequest {
+  reference: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponseData {
+  message: string;
+  reference: string;
+}

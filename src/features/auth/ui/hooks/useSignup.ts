@@ -6,8 +6,8 @@ import { Alert } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
 import { useSignupMutation } from '../../data/api/authMutations';
 import type { AuthStackParamList } from '@/shared/types';
-import { authStrings, loginScreenStrings, signUpScreenStrings } from '../../strings';
-import { signUpSchema, type SignUpFormValues } from './useSignup.validation';
+import { authStrings, loginScreenStrings, signUpScreenStrings } from '../../string';
+import { signUpSchema, type SignUpFormValues } from './validations';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 

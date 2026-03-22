@@ -9,10 +9,10 @@ import { logoutSession } from '../../data/logoutSession';
 import { useAuthStore } from '../../data/store/auth.store';
 import type { AuthStackParamList } from '@/shared/types';
 import { getCheckUsername, postSetUsername } from '../../data/api/authApi';
-import { createUsernameScreenStrings, loginScreenStrings } from '../../strings';
+import { createUsernameScreenStrings, loginScreenStrings } from '../../string';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import { formatUsernameForApi } from '@/shared/utils/helpers';
-import { createUsernameSchema, type CreateUsernameFormValues } from './useCreateUsername.validation';
+import { createUsernameSchema, type CreateUsernameFormValues } from './validations';
 
 export function useCreateUsername() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
