@@ -17,9 +17,9 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
   const { profile, profileLoading } = useProfile(user?.id);
   const updateAvatar = useUpdateAvatar(user?.id);
 
-  const displayName = profile?.display_name || 'Chinaza Darlington';
-  const email = user?.email || 'Chinazadarlington27@Gmail.com';
-  const avatarUrl = profile?.avatar_url;
+  const displayName = profile?.displayName || 'Legacy Battles';
+  const email = user?.email || 'legend@legacybattles.com';
+  const avatarUrl = profile?.avatarUrl;
 
   const handleEditAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({

@@ -51,9 +51,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./google-services.json",
-      "permissions": [
-        "android.permission.INTERNET"
-      ],
+      "permissions": ["android.permission.INTERNET"],
       "package": "com.legacybattle.android"
     },
     "web": {

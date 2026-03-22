@@ -88,6 +88,7 @@ export type {
   ConnectionStatus,
   UserPreferences,
   UpdateUserPreferences,
+  CrewCounts,
 } from './profile';
 export type { SportFilter } from './sports';
 export type { OTPInputProps, UseOTPInputOptions, UseOTPInputReturn } from './otp';

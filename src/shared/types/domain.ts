@@ -1,13 +1,21 @@
 export type UserProfile = {
   id: string;
   username: string | null;
-  display_name: string | null;
-  avatar_url: string | null;
+  displayName: string | null;
+  avatarUrl: string | null;
+  bio: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
+  facebookUrl: string | null;
+  favoriteSports: string[];
   xp: number;
   level: string;
-  wallet_balance: number;
-  created_at: string;
-  updated_at: string;
+  wins: number;
+  losses: number;
+  challenges: number;
+  walletBalance?: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type BattleStatus = 'open' | 'active' | 'completed' | 'canceled';

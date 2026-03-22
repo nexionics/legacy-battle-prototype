@@ -24,7 +24,7 @@ function Badge({ count, variant = 'default' }: { count: number; variant?: 'defau
 
 export function ProfileMenu({
   crewCount,
-  pendingCrewCount,
+  followingCount,
   themeMode,
   onToggleTheme,
   onCrewPress,
@@ -44,7 +44,7 @@ export function ProfileMenu({
           onPress={onCrewPress}
           rightSlot={
             <>
-              {pendingCrewCount > 0 && <Badge count={pendingCrewCount} variant="pending" />}
+              {followingCount > 0 && <Badge count={followingCount} variant="pending" />}
               <Badge count={crewCount} />
             </>
           }

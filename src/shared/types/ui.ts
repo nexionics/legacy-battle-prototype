@@ -295,11 +295,12 @@ export interface ProfileHeaderProps {
   username: string | undefined;
   email: string | undefined;
   xp: number;
+  avatarUrl?: string | null;
 }
 
 export interface ProfileMenuProps {
   crewCount: number;
-  pendingCrewCount: number;
+  followingCount: number;
   themeMode: 'dark' | 'light';
   onToggleTheme: () => void;
   onCrewPress: () => void;

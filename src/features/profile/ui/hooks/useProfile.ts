@@ -17,7 +17,7 @@ export function useProfile(userId: string | undefined) {
   const profile = data?.profile ?? null;
   const battleStats = data?.battleStats ?? { wins: 0, losses: 0, challenges: 0 };
   const crewCount = data?.crewCount ?? 0;
-  const pendingCrewCount = data?.pendingCrewCount ?? 0;
+  const followingCount = data?.followingCount ?? 0;
 
   useEffect(() => {
     if (!userId) return;
@@ -29,7 +29,7 @@ export function useProfile(userId: string | undefined) {
               profile: nextProfile,
               battleStats: { wins: 0, losses: 0, challenges: 0 },
               crewCount: 0,
-              pendingCrewCount: 0,
+              followingCount: 0,
             },
       );
     });
@@ -39,10 +39,10 @@ export function useProfile(userId: string | undefined) {
   }, [userId, queryClient]);
 
   useEffect(() => {
-    if (profile?.display_name !== undefined) {
-      setDisplayName(profile.display_name || '');
+    if (profile?.displayName !== undefined) {
+      setDisplayName(profile.displayName || '');
     }
-  }, [profile?.display_name]);
+  }, [profile?.displayName]);
 
   const saveProfile = async (): Promise<{ error?: { message: string } }> => {
     if (!userId) return {};
@@ -69,7 +69,7 @@ export function useProfile(userId: string | undefined) {
     setIsEditing,
     battleStats,
     crewCount,
-    pendingCrewCount,
+    followingCount,
     saveProfile,
     refetch: profileQuery.refetch,
   };

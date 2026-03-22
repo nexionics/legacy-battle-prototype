@@ -27,3 +27,8 @@ export interface UserPreferences {
 export type UpdateUserPreferences = Partial<
   Omit<UserPreferences, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
 >;
+
+export interface CrewCounts {
+  members: number;
+  following: number;
+}

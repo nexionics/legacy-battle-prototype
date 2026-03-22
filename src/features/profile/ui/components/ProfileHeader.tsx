@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors as staticColors, spacing, fontSizes } from '@/shared/theme';
@@ -8,7 +8,7 @@ import { getLevelInfo, getLevelNumber } from '@/features/profile/helpers/level';
 import type { ProfileHeaderProps, RootStackParamList } from '@/shared/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export function ProfileHeader({ displayName, username, email, xp }: ProfileHeaderProps) {
+export function ProfileHeader({ displayName, username, email, xp, avatarUrl }: ProfileHeaderProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
   const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
@@ -42,9 +42,13 @@ export function ProfileHeader({ displayName, username, email, xp }: ProfileHeade
               { backgroundColor: colors.card, borderColor: colors.inputBorder },
             ]}
           >
-            <AppText variant="h1" style={[styles.avatarText, { color: colors.text }]}>
-              {avatarInitials}
-            </AppText>
+            {avatarUrl ? (
+              <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+            ) : (
+              <AppText variant="h1" style={[styles.avatarText, { color: colors.text }]}>
+                {avatarInitials}
+              </AppText>
+            )}
           </View>
         </View>
 
@@ -153,5 +157,10 @@ const styles = StyleSheet.create({
   },
   levelXpText: {
     fontSize: fontSizes.sm,
+  },
+  avatarImage: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
   },
 });

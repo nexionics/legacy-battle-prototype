@@ -4,19 +4,19 @@ import { getProfileById, getBattleStats, getCrewCounts } from '../api/profile.ap
 import type { UserProfile } from '@/shared/types';
 
 async function fetchProfileWithStats(userId: string) {
-  const { data: profile, error } = await getProfileById(userId);
-  if (error) throw error;
+  const profileRes = await getProfileById(userId);
+  if (!profileRes.success) throw new Error('Profile fetch failed');
 
-  const [battleStats, crewCounts] = await Promise.all([
-    getBattleStats(userId),
-    getCrewCounts(userId),
-  ]);
+  const [statsRes, crewRes] = await Promise.all([getBattleStats(userId), getCrewCounts(userId)]);
+
+  if (!statsRes.success) throw new Error('Stats fetch failed');
+  if (!crewRes.success) throw new Error('Crew counts fetch failed');
 
   return {
-    profile: profile as UserProfile,
-    battleStats,
-    crewCount: crewCounts.crewCount,
-    pendingCrewCount: crewCounts.pendingCount,
+    profile: profileRes.data,
+    battleStats: statsRes.data,
+    crewCount: crewRes.data.members,
+    followingCount: crewRes.data.following,
   };
 }
 

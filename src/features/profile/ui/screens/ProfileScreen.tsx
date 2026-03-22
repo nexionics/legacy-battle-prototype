@@ -36,7 +36,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     setIsEditing,
     battleStats,
     crewCount,
-    pendingCrewCount,
+    followingCount,
     saveProfile,
     refetch,
   } = useProfile(user?.id);
@@ -67,7 +67,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     ]);
   };
 
-  const walletBalance = Number(profile?.wallet_balance || 0).toFixed(2);
+  const walletBalance = Number(profile?.walletBalance || 0).toFixed(2);
   const xpValue = profile?.xp || 0;
   const levelInfo = getLevelInfo(xpValue);
 
@@ -91,10 +91,11 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ProfileHeader
-          displayName={profile?.display_name ?? undefined}
+          displayName={profile?.displayName ?? undefined}
           username={profile?.username ?? undefined}
           email={user?.email ?? undefined}
           xp={xpValue}
+          avatarUrl={profile?.avatarUrl}
         />
 
         <StatsGrid battleStats={battleStats} walletBalance={walletBalance} />
@@ -105,7 +106,7 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
 
         <ProfileMenu
           crewCount={crewCount}
-          pendingCrewCount={pendingCrewCount}
+          followingCount={followingCount}
           themeMode={mode}
           onToggleTheme={toggleTheme}
           onCrewPress={() => navigation.navigate('Friends')}
