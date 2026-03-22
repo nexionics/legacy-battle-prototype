@@ -1,34 +1,62 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes } from '@/shared/theme';
 
-export const HomeHeader = () => (
-  <View style={styles.header}>
-    <View style={styles.headerLeft}>
-      <View style={styles.avatarContainer}>
-        <View style={styles.avatar}>
-          <AppText variant="body1" style={styles.avatarText}>
-            LB
+export type HomeHeaderProps = {
+  displayName?: string | null;
+  username?: string | null;
+  email?: string | null;
+  avatarUrl?: string | null;
+  level?: string | null;
+};
+
+export function HomeHeader({
+  displayName,
+  username,
+  email,
+  avatarUrl,
+  level,
+}: HomeHeaderProps) {
+  const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
+  const nameLine = displayName || username || email?.split('@')[0] || 'Player';
+
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerLeft}>
+        <View style={styles.avatarContainer}>
+          <View style={styles.avatar}>
+            {avatarUrl ? (
+              <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
+            ) : (
+              <AppText variant="body1" style={styles.avatarText}>
+                {avatarInitials}
+              </AppText>
+            )}
+          </View>
+        </View>
+        <View style={styles.welcomeContainer}>
+          <AppText variant="captionLg" style={styles.welcomeText}>
+            Welcome Back
           </AppText>
+          <AppText variant="h4" style={styles.usernameText}>
+            {nameLine}
+          </AppText>
+          {level ? (
+            <AppText variant="captionSm" style={styles.levelText}>
+              {level}
+            </AppText>
+          ) : null}
         </View>
       </View>
-      <View style={styles.welcomeContainer}>
-        <AppText variant="captionLg" style={styles.welcomeText}>
-          Welcome Back
-        </AppText>
-        <AppText variant="h4" style={styles.usernameText}>
-          Champion
-        </AppText>
-      </View>
+      <TouchableOpacity style={styles.notificationButton}>
+        <Ionicons name="notifications-outline" size={24} color={colors.text} />
+        <View style={styles.notificationBadge} />
+      </TouchableOpacity>
     </View>
-    <TouchableOpacity style={styles.notificationButton}>
-      <Ionicons name="notifications-outline" size={24} color={colors.text} />
-      <View style={styles.notificationBadge} />
-    </TouchableOpacity>
-  </View>
-);
+  );
+}
 
 const styles = StyleSheet.create({
   header: {
@@ -60,6 +88,11 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.md,
     fontWeight: 'bold',
   },
+  avatarImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
   welcomeContainer: {},
   welcomeText: {
     color: colors.textSecondary,
@@ -69,6 +102,11 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: fontSizes.lg,
     fontWeight: 'bold',
+  },
+  levelText: {
+    color: colors.textSecondary,
+    fontSize: fontSizes.xs,
+    marginTop: 2,
   },
   notificationButton: {
     position: 'relative',

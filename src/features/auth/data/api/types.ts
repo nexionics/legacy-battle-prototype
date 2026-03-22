@@ -145,11 +145,13 @@ export interface BiometricVerifyResponseData {
   refreshToken: string;
   userId: string;
   hasUsername?: boolean;
+  isBiometricEnrolled?: boolean;
 }
 
 /** POST /auth/social/google */
 export interface GoogleSocialAuthRequest {
   idToken: string;
+  deviceId?: string;
 }
 
 export interface GoogleSocialAuthResponseData {
@@ -157,5 +159,7 @@ export interface GoogleSocialAuthResponseData {
   refreshToken: string;
   hasUsername: boolean;
   userId: string;
+  email?: string;
+  isBiometricEnrolled?: boolean;
   outcome?: 'AUTHENTICATED';
 }

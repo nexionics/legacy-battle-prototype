@@ -4,34 +4,44 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 
-export const StatsCard = () => (
-  <View style={styles.statsCard}>
-    <View style={styles.statsRow}>
-      <View style={styles.statItem}>
-        <AppText variant="label" style={styles.statLabel}>
-          Total XP
-        </AppText>
-        <AppText variant="h4" style={styles.statValue}>
-          1,247 XP
-        </AppText>
+export type StatsCardProps = {
+  xp: number;
+  walletBalance: number;
+};
+
+export function StatsCard({ xp, walletBalance }: StatsCardProps) {
+  const xpDisplay = `${xp.toLocaleString()} XP`;
+  const bcDisplay = `${Number(walletBalance).toLocaleString()} BC`;
+
+  return (
+    <View style={styles.statsCard}>
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
+          <AppText variant="label" style={styles.statLabel}>
+            Total XP
+          </AppText>
+          <AppText variant="h4" style={styles.statValue}>
+            {xpDisplay}
+          </AppText>
+        </View>
+        <View style={styles.statItem}>
+          <AppText variant="label" style={styles.statLabel}>
+            Battle Coins
+          </AppText>
+          <AppText variant="h4" style={styles.statValue}>
+            {bcDisplay}
+          </AppText>
+        </View>
       </View>
-      <View style={styles.statItem}>
-        <AppText variant="label" style={styles.statLabel}>
-          Battle Coins
+      <TouchableOpacity style={styles.inviteBanner}>
+        <AppText variant="captionSm" style={styles.inviteText}>
+          Live sports data from TheSportsDB
         </AppText>
-        <AppText variant="h4" style={styles.statValue}>
-          2,000 BC
-        </AppText>
-      </View>
+        <Ionicons name="arrow-forward" size={16} color={colors.white} />
+      </TouchableOpacity>
     </View>
-    <TouchableOpacity style={styles.inviteBanner}>
-      <AppText variant="captionSm" style={styles.inviteText}>
-        Live sports data from TheSportsDB
-      </AppText>
-      <Ionicons name="arrow-forward" size={16} color={colors.white} />
-    </TouchableOpacity>
-  </View>
-);
+  );
+}
 
 const styles = StyleSheet.create({
   statsCard: {

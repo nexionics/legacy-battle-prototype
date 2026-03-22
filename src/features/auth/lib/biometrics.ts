@@ -50,7 +50,19 @@ export async function enrollBiometrics(
       return { ok: false };
     }
 
+    console.log('[Biometrics] Sensor available, starting simplePrompt...');
+    const { success } = await rnBiometrics.simplePrompt({
+      promptMessage: 'Authorize Biometric Enrollment',
+    });
+
+    if (!success) {
+      console.log('[Biometrics] User cancelled simplePrompt');
+      return { ok: false };
+    }
+
+    console.log('[Biometrics] Creating hardware keys...');
     const { publicKey } = await rnBiometrics.createKeys();
+    console.log('[Biometrics] Keys created, enrolling on server...');
 
     const result = await postBiometricEnroll({
       publicKey,
@@ -58,16 +70,20 @@ export async function enrollBiometrics(
     });
 
     if (!result.success) {
+      console.log('[Biometrics] Server enrollment failed:', result.error);
       await deleteBiometricSecureItem('biometrics_requested');
       return { ok: false };
     }
+
+    console.log('[Biometrics] Enrollment successful');
 
     await setBiometricSecureItem('biometrics_enrolled', 'true');
     await setBiometricSecureItem('biometric_public_key', publicKey);
     await setBiometricSecureItem('biometric_email', userEmail);
     await deleteBiometricSecureItem('biometrics_requested');
     return { ok: true };
-  } catch {
+  } catch (err) {
+    console.error('[Biometrics] Enrollment caught error:', err);
     await deleteBiometricSecureItem('biometrics_requested');
     return { ok: false };
   }

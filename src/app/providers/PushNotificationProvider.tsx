@@ -26,7 +26,7 @@ export const PushNotificationProvider: React.FC<{ children: React.ReactNode }> =
   }, []);
 
   useEffect(() => {
-    if (!accessToken || !isAuthenticated || needsUsername) {
+    if (!accessToken || !isAuthenticated || needsUsername || !!useAuthStore.getState().deviceId) {
       return;
     }
 

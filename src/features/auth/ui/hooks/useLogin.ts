@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
+import * as Device from 'expo-device';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +14,8 @@ import { requestGoogleIdToken } from '../../lib/googleSignIn';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings, signUpScreenStrings } from '../../string';
 import { loginSchema, type LoginFormValues } from './validations';
+import { registerForPushNotificationsAsync } from '@/shared/lib/pushNotifications';
+import { postRegisterDevice } from '../../data/api/devicesApi';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 
@@ -22,6 +26,8 @@ export function useLogin() {
   const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const deviceId = useAuthStore((s) => s.deviceId);
+  const setDeviceId = useAuthStore((s) => s.setDeviceId);
+  const setExpoPushToken = useAuthStore((s) => s.setExpoPushToken);
   const loginMutation = useLoginMutation();
   const googleSocialMutation = useGoogleSocialAuthMutation();
   const [wantBiometrics, setWantBiometrics] = useState(false);
@@ -62,29 +68,73 @@ export function useLogin() {
     }
 
     if (result.data.outcome === 'AUTHENTICATED') {
-      setAuthTokens(result.data.accessToken, result.data.refreshToken);
-      setUser({ id: result.data.userId, email: data.email });
-
-      if (result.data.isBiometricEnrolled) {
-        await setBiometricsRequested(true);
-        setWantBiometrics(true);
-      }
-
-      const wantBiometrics = await getBiometricsRequested();
-      if (wantBiometrics && !result.data.isBiometricEnrolled && deviceId) {
-        const enroll = await enrollBiometrics(result.data.accessToken, data.email, deviceId);
-        if (!enroll.ok) {
-          showToast('fail', loginScreenStrings.emailLoginForm.biometricsEnrollCancelledToast);
-        }
-      }
-
-      if (!result.data.hasUsername) {
-        setNeedsUsername(true);
-        navigation.navigate('CreateUsername');
-        return;
-      }
-      setNeedsUsername(false);
+      await handlePostLogin(result.data, data.email);
     }
+  };
+
+  const handlePostLogin = async (
+    authData: {
+      accessToken: string;
+      refreshToken: string;
+      userId: string;
+      hasUsername?: boolean;
+      isBiometricEnrolled?: boolean;
+    },
+    email?: string,
+  ) => {
+    setAuthTokens(authData.accessToken, authData.refreshToken);
+    setUser({ id: authData.userId, email });
+
+    let currentDeviceId = deviceId;
+    if (!currentDeviceId) {
+      const token = await registerForPushNotificationsAsync();
+      if (token) {
+        const name = Device.modelName ?? Device.deviceName ?? 'Unknown Device';
+        const regResult = await postRegisterDevice({
+          token,
+          type: Platform.OS,
+          name,
+        });
+        if (regResult.success) {
+          console.log('[Auth] Device registered successfully:', regResult.data.id);
+          currentDeviceId = regResult.data.id;
+          setDeviceId(currentDeviceId);
+          setExpoPushToken(token);
+        } else {
+          console.error('[Auth] Device registration failed:', regResult.error);
+        }
+      } else {
+        console.log('[Auth] No push token available, skipping device registration');
+      }
+    }
+
+    if (authData.isBiometricEnrolled) {
+      await setBiometricsRequested(true);
+      setWantBiometrics(true);
+    }
+
+    const wantBiometricsPref = await getBiometricsRequested();
+    console.log('[Auth] Biometric check:', {
+      wantBiometricsPref,
+      isEnrolled: authData.isBiometricEnrolled,
+      currentDeviceId,
+    });
+
+    if (wantBiometricsPref && !authData.isBiometricEnrolled && currentDeviceId && email) {
+      const enroll = await enrollBiometrics(authData.accessToken, email, currentDeviceId);
+      if (enroll.ok) {
+        showToast('success', 'Biometrics enrolled successfully!');
+      } else {
+        showToast('fail', loginScreenStrings.emailLoginForm.biometricsEnrollCancelledToast);
+      }
+    }
+
+    if (!authData.hasUsername) {
+      setNeedsUsername(true);
+      navigation.navigate('CreateUsername');
+      return;
+    }
+    setNeedsUsername(false);
   };
 
   const onBeforeBack = () => {
@@ -101,21 +151,16 @@ export function useLogin() {
         return;
       }
 
-      const result = await googleSocialMutation.mutateAsync({ idToken: tokenResult.idToken });
+      const result = await googleSocialMutation.mutateAsync({
+        idToken: tokenResult.idToken,
+        deviceId: deviceId ?? undefined,
+      });
       if (!result.success) {
         showToast('fail', result.error.message);
         return;
       }
 
-      setAuthTokens(result.data.accessToken, result.data.refreshToken);
-      setUser({ id: result.data.userId });
-
-      if (!result.data.hasUsername) {
-        setNeedsUsername(true);
-        navigation.navigate('CreateUsername');
-        return;
-      }
-      setNeedsUsername(false);
+      await handlePostLogin(result.data);
     } finally {
       setGoogleFlowLoading(false);
     }

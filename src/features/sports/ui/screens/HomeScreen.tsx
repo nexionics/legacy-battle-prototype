@@ -7,6 +7,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen, AppText, LoadingState, ErrorState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useProfile } from '@/features/profile/ui/hooks/useProfile';
 import { useHomeData } from '../hooks/useHomeData';
 import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
 import { HomeHeader } from '../components/HomeHeader';
@@ -25,8 +26,16 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const { user } = useAuth();
   const { upcomingGames, recentResults, quickPicks, myBattles, homeLoading, homeError, refetch } =
     useHomeData(user?.id);
+  const {
+    profile,
+    profileLoading,
+    profileError,
+    refetch: refetchProfile,
+  } = useProfile(user?.id);
 
-  if (homeLoading) {
+  const waitingForProfile = Boolean(user?.id) && profileLoading;
+
+  if (homeLoading || waitingForProfile) {
     return (
       <Screen>
         <LoadingState message="Loading home feed..." />
@@ -34,10 +43,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     );
   }
 
-  if (homeError) {
+  const feedError = homeError || (user?.id ? profileError : null);
+  if (feedError) {
     return (
       <Screen>
-        <ErrorState message={homeError} onRetry={() => refetch()} />
+        <ErrorState
+          message={feedError}
+          onRetry={() => {
+            refetch();
+            void refetchProfile();
+          }}
+        />
       </Screen>
     );
   }
@@ -45,8 +61,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <HomeHeader />
-        <StatsCard />
+        <HomeHeader
+          displayName={profile?.displayName}
+          username={profile?.username}
+          email={user?.email}
+          avatarUrl={profile?.avatarUrl}
+          level={profile?.level}
+        />
+        <StatsCard
+          xp={profile?.xp ?? 0}
+          walletBalance={Number(profile?.walletBalance ?? 0)}
+        />
         <QuickPicksSection
           quickPicks={quickPicks}
           onViewAll={() => navigation.navigate('Battles')}
