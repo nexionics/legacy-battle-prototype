@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
@@ -7,6 +7,7 @@ import { AppText, Screen, ScreenHeader } from '@/shared/ui';
 import { useToast } from '@/app/providers/useToast';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useProfile } from '@/features/profile/ui/hooks/useProfile';
+import { useProfileStore } from '@/features/profile/data/store/profile.store';
 import { useUpdateAvatar } from '../../data/mutations/useUpdateAvatar';
 import type { AccountDetailsScreenProps } from '@/shared/types';
 import * as ImagePicker from 'expo-image-picker';
@@ -16,12 +17,13 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
   const colors = useThemeColors();
   const { user } = useAuth();
   const { profile } = useProfile(user?.id);
+  const { avatarVersion, setAvatarVersion } = useProfileStore();
   const updateAvatar = useUpdateAvatar(user?.id);
   const { showToast } = useToast();
 
   const displayName = profile?.displayName || 'Legacy Battles';
   const email = user?.email || 'legend@legacybattles.com';
-  const avatarUrl = profile?.avatarUrl;
+  const avatarUrl = profile?.avatarUrl ? `${profile.avatarUrl}?v=${avatarVersion}` : null;
 
   const handleEditAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -34,6 +36,7 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
     if (!result.canceled && result.assets[0].uri) {
       try {
         await updateAvatar.mutateAsync(result.assets[0].uri);
+        setAvatarVersion(Date.now());
         showToast('success', 'Avatar updated successfully.');
       } catch (error) {
         showToast('fail', 'Failed to update avatar. Please try again.');

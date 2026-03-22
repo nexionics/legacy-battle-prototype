@@ -81,6 +81,7 @@ export type {
   SettingsScreenProps,
   AccountDetailsScreenProps,
   PrivacyPolicyScreenProps,
+  ChangePasswordScreenProps,
   ContactUsScreenProps,
 } from './navigation';
 export type {

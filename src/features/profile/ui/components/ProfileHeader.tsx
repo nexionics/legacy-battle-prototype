@@ -4,6 +4,7 @@ import { AppText } from '@/shared/ui';
 import { colors as staticColors, spacing, fontSizes } from '@/shared/theme';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
+import { useProfileStore } from '@/features/profile/data/store/profile.store';
 import { getLevelInfo, getLevelNumber } from '@/features/profile/helpers/level';
 import type { ProfileHeaderProps, RootStackParamList } from '@/shared/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,11 +14,13 @@ export function ProfileHeader({
   username,
   email,
   xp,
-  avatarUrl,
+  avatarUrl: initialAvatarUrl,
   level,
 }: ProfileHeaderProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
+  const avatarVersion = useProfileStore((s) => s.avatarVersion);
+  const avatarUrl = initialAvatarUrl ? `${initialAvatarUrl}?v=${avatarVersion}` : null;
   const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
 
   const levelInfo = getLevelInfo(xp, level);

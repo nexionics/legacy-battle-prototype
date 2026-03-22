@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
-import { spacing } from '@/shared/theme';
+import { spacing, radii } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader, SettingSection, SettingRow } from '@/shared/ui';
 import type { RootStackScreenProps } from '@/shared/types/navigation';
 type SecurityPrivacyScreenProps = RootStackScreenProps<'SecurityPrivacy'>;
@@ -56,7 +56,6 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
     setIsToggling(true);
     try {
       if (enabled) {
-        // User wants to enable biometrics
         if (!deviceId || !user?.email || !accessToken) {
           showToast('fail', 'Unable to enable biometrics. Please try logging in again.');
           return;
@@ -64,7 +63,6 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
 
         const enrolled = await getBiometricsEnrolled();
         if (!enrolled) {
-          // Need to enroll
           const result = await enrollBiometrics(accessToken, user.email, deviceId);
           if (result.ok) {
             await setBiometricsRequested(true);
@@ -75,13 +73,11 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
             setBiometricsEnabled(false);
           }
         } else {
-          // Already enrolled, just update preference
           await setBiometricsRequested(true);
           setBiometricsEnabled(true);
           showToast('success', 'Biometric authentication enabled');
         }
       } else {
-        // User wants to disable biometrics
         await setBiometricsRequested(false);
         setBiometricsEnabled(false);
         showToast('success', 'Biometric authentication disabled');
@@ -103,11 +99,15 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
         style={styles.header}
       />
 
-      <SettingSection
-        icon="lock-closed-outline"
-        title="Authentication"
-        subtitle="Manage your authentication preferences"
-      >
+      <SettingSection style={styles.menuSection}>
+        <SettingRow
+          icon="key-outline"
+          title="Change Password"
+          subtitle="Update your account password"
+          onPress={() => navigation.navigate('ChangePassword')}
+          iconColor="#F59E0B"
+          iconBgColor="#F59E0B33"
+        />
         <SettingRow
           icon="finger-print"
           title="Biometric Authentication"
@@ -171,6 +171,11 @@ export default function SecurityPrivacyScreen({ navigation }: SecurityPrivacyScr
 const styles = StyleSheet.create({
   header: {
     marginBottom: spacing[4],
+  },
+  menuSection: {
+    borderRadius: radii.lg,
+    marginBottom: spacing[4],
+    overflow: 'hidden',
   },
   switchTrack: {
     width: 44,

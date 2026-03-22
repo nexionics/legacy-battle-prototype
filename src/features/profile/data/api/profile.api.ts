@@ -25,3 +25,8 @@ export async function getBattleStats(userId: string): Promise<ApiResponse<Battle
 export async function getCrewCounts(userId: string): Promise<ApiResponse<CrewCounts>> {
   return (await authenticatedHttp.get(`/profile/${userId}/crew-counts`)).data;
 }
+
+export async function changePassword(oldPassword: string, newPassword: string) {
+  return (await authenticatedHttp.patch('/profile/change-password', { oldPassword, newPassword }))
+    .data;
+}
