@@ -129,6 +129,8 @@ export interface AuthOrGoogleFooterProps {
   footerLinkLabel: string;
   onGooglePress: () => void;
   onFooterLinkPress: () => void;
+  googleLoading?: boolean;
+  googleDisabled?: boolean;
   style?: ViewStyle;
 }
 

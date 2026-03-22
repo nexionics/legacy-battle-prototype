@@ -18,6 +18,8 @@ export function AuthOrGoogleFooter({
   footerLinkLabel,
   onGooglePress,
   onFooterLinkPress,
+  googleLoading = false,
+  googleDisabled = false,
   style,
 }: AuthOrGoogleFooterProps) {
   return (
@@ -32,6 +34,8 @@ export function AuthOrGoogleFooter({
 
       <Button
         variant="outline"
+        loading={googleLoading}
+        disabled={googleDisabled}
         onPress={onGooglePress}
         leftIcon={
           <Image

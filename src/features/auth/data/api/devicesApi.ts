@@ -2,13 +2,13 @@ import { useAuthStore } from '../store/auth.store';
 import { authenticatedHttp } from '@/shared/lib/httpClient';
 import { networkFailure, parseApiResponse } from '@/shared/utils/helpers';
 
-const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL ?? 'http://127.0.0.1:3000';
 import type {
   ApiResponse,
   ListDevicesResponseData,
   RegisterDeviceRequest,
   RegisterDeviceResponseData,
 } from './types';
+import { baseURL } from '@/shared/constants';
 
 export async function postRegisterDevice(
   body: RegisterDeviceRequest,
@@ -32,7 +32,7 @@ export async function deleteRegisteredDevice(pushToken: string): Promise<ApiResp
   const path = `/devices/${encoded}`;
   const accessToken = useAuthStore.getState().accessToken?.trim();
   try {
-    const res = await fetch(`${apiBaseUrl}${path}`, {
+    const res = await fetch(`${baseURL}${path}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

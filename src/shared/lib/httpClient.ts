@@ -1,7 +1,6 @@
 import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
-
-const baseURL = process.env.EXPO_PUBLIC_API_URL ?? 'http://127.0.0.1:3000';
+import { baseURL } from '../constants';
 
 /** Fresh config per client so `headers` objects are never shared between instances. */
 function createClientConfig() {

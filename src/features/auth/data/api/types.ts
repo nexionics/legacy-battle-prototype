@@ -145,3 +145,14 @@ export interface BiometricVerifyResponseData {
   refreshToken: string;
   hasUsername?: boolean;
 }
+
+/** POST /auth/social/google */
+export interface GoogleSocialAuthRequest {
+  idToken: string;
+}
+
+export interface GoogleSocialAuthResponseData {
+  accessToken: string;
+  refreshToken: string;
+  hasUsername: boolean;
+}

@@ -3,17 +3,17 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Alert } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
 import {
   getBiometricsRequested,
   setBiometricsRequested,
 } from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
-import { useLoginMutation } from '../../data/api/authMutations';
+import { useGoogleSocialAuthMutation, useLoginMutation } from '../../data/api/authMutations';
 import { enrollBiometrics, getDefaultBiometricDeviceName } from '../../lib/biometrics';
+import { requestGoogleIdToken } from '../../lib/googleSignIn';
 import type { AuthStackParamList } from '@/shared/types';
-import { authStrings, loginScreenStrings, signUpScreenStrings } from '../../string';
+import { loginScreenStrings, signUpScreenStrings } from '../../string';
 import { loginSchema, type LoginFormValues } from './validations';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
@@ -25,7 +25,9 @@ export function useLogin() {
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const expoPushToken = useAuthStore((s) => s.expoPushToken);
   const loginMutation = useLoginMutation();
+  const googleSocialMutation = useGoogleSocialAuthMutation();
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);
+  const [googleFlowLoading, setGoogleFlowLoading] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -85,8 +87,32 @@ export function useLogin() {
     form.reset();
   };
 
-  const onGooglePress = () => {
-    Alert.alert(authStrings.comingSoon.alertTitle, authStrings.comingSoon.loginMessage('Google'));
+  const onGooglePress = async () => {
+    setGoogleFlowLoading(true);
+    try {
+      const tokenResult = await requestGoogleIdToken();
+      if (!tokenResult.ok) {
+        if (tokenResult.cancelled) return;
+        showToast('fail', tokenResult.message);
+        return;
+      }
+
+      const result = await googleSocialMutation.mutateAsync({ idToken: tokenResult.idToken });
+      if (!result.success) {
+        showToast('fail', result.error.message);
+        return;
+      }
+
+      setAuthTokens(result.data.accessToken, result.data.refreshToken);
+      if (!result.data.hasUsername) {
+        setNeedsUsername(true);
+        navigation.navigate('CreateUsername');
+        return;
+      }
+      setNeedsUsername(false);
+    } finally {
+      setGoogleFlowLoading(false);
+    }
   };
 
   const onFooterLinkPress = () => {
@@ -102,13 +128,17 @@ export function useLogin() {
     setBiometricsEnabled(enabled);
   };
 
+  const isSubmitting = form.formState.isSubmitting || loginMutation.isPending;
+  const isGoogleLoading = googleFlowLoading || googleSocialMutation.isPending;
+
   return {
     control: form.control,
     handleSubmit: form.handleSubmit,
     onSubmit: form.handleSubmit(onValidSubmit),
     errors: form.formState.errors,
     isValid: form.formState.isValid,
-    isSubmitting: form.formState.isSubmitting || loginMutation.isPending,
+    isSubmitting,
+    isGoogleLoading,
     onBeforeBack,
     onGooglePress,
     onFooterLinkPress,

@@ -13,6 +13,8 @@ export const TIMEOUT_DEFAULT_DELAY = 2000;
 
 export const VERIFY_OTP_COOLDOWN_SEC = 120;
 
+export const baseURL = process.env.EXPO_PUBLIC_API_URL ?? 'http://127.0.0.1:3000';
+
 /** Digit count for email / reset OTP inputs (must match API and validation). */
 export const OTP_LENGTH = 5;
 

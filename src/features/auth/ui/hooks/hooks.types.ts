@@ -24,9 +24,12 @@ export type UseLoginReturn = {
   onSubmit: ReturnType<UseFormHandleSubmit<LoginFormValues>>;
   errors: FieldErrors<LoginFormValues>;
   isValid: boolean;
+  /** Email/password login in flight. */
   isSubmitting: boolean;
+  /** Google Sign-In SDK + backend call in flight. */
+  isGoogleLoading: boolean;
   onBeforeBack: () => void;
-  onGooglePress: () => void;
+  onGooglePress: () => Promise<void>;
   onFooterLinkPress: () => void;
   onForgotPasswordPress: () => void;
   biometricsEnabled: boolean;

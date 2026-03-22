@@ -25,6 +25,7 @@ export function EmailLoginScreen({
   errors,
   isValid,
   isSubmitting,
+  isGoogleLoading,
   onBeforeBack,
   onGooglePress,
   onFooterLinkPress,
@@ -34,6 +35,8 @@ export function EmailLoginScreen({
   loginScreenStrings,
   signUpScreenStrings,
 }: EmailLoginViewProps) {
+  const formDisabled = isSubmitting || isGoogleLoading;
+
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
@@ -59,7 +62,7 @@ export function EmailLoginScreen({
                 placeholder={loginScreenStrings.emailLoginForm.emailPlaceholder}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                editable={!isSubmitting}
+                editable={!formDisabled}
                 error={errors.email?.message}
                 leftComponent={
                   <Ionicons name="mail-outline" size={sizes.icon20} color={colors.textSecondary} />
@@ -80,7 +83,7 @@ export function EmailLoginScreen({
                   onBlur={onBlur}
                   placeholder={loginScreenStrings.emailLoginForm.passwordPlaceholder}
                   isPassword
-                  editable={!isSubmitting}
+                  editable={!formDisabled}
                   error={errors.password?.message}
                   containerStyle={styles.inputContainer}
                 />
@@ -89,7 +92,7 @@ export function EmailLoginScreen({
             <View style={styles.forgotPasswordRow}>
               <TouchableOpacity
                 onPress={onForgotPasswordPress}
-                disabled={isSubmitting}
+                disabled={formDisabled}
                 accessibilityRole="button"
                 accessibilityLabel={loginScreenStrings.emailLoginForm.forgotPassword}
               >
@@ -104,13 +107,13 @@ export function EmailLoginScreen({
             label={loginScreenStrings.emailLoginForm.enableBiometrics}
             value={biometricsEnabled}
             onValueChange={onBiometricsToggle}
-            disabled={isSubmitting}
+            disabled={formDisabled}
           />
 
           <Button
             variant="primary"
             loading={isSubmitting}
-            disabled={!isValid || isSubmitting}
+            disabled={!isValid || formDisabled}
             onPress={onSubmit}
             style={styles.submitButton}
           >
@@ -122,8 +125,10 @@ export function EmailLoginScreen({
             googleButtonLabel={signUpScreenStrings.social.continueWithGoogle}
             footerLeadText={loginScreenStrings.emailLoginForm.footerLeadNoAccount}
             footerLinkLabel={loginScreenStrings.emailLoginForm.navigateToSignUp}
-            onGooglePress={onGooglePress}
+            onGooglePress={() => void onGooglePress()}
             onFooterLinkPress={onFooterLinkPress}
+            googleLoading={isGoogleLoading}
+            googleDisabled={formDisabled}
           />
         </View>
       </ScrollView>

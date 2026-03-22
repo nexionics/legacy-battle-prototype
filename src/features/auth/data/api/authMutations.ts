@@ -10,10 +10,13 @@ import {
   postVerifyOtp,
   postVerifyResetOtp,
 } from './authApi';
+import { postGoogleSocialAuth } from './googleSocialAuthApi';
 import type {
   ApiResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponseData,
+  GoogleSocialAuthRequest,
+  GoogleSocialAuthResponseData,
   LoginRequest,
   LoginResponseData,
   RefreshTokenRequest,
@@ -35,6 +38,16 @@ import type {
 export function useLoginMutation() {
   return useMutation<ApiResponse<LoginResponseData>, Error, LoginRequest>({
     mutationFn: (payload: LoginRequest) => postLogin(payload),
+  });
+}
+
+export function useGoogleSocialAuthMutation() {
+  return useMutation<
+    ApiResponse<GoogleSocialAuthResponseData>,
+    Error,
+    GoogleSocialAuthRequest
+  >({
+    mutationFn: (payload: GoogleSocialAuthRequest) => postGoogleSocialAuth(payload),
   });
 }
 
