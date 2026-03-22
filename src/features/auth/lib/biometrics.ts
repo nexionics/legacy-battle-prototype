@@ -78,7 +78,7 @@ export async function enrollBiometrics(
  * Challenge → Face ID / Touch ID signature → verify with backend → tokens.
  */
 export async function signInWithBiometrics(): Promise<
-  | { ok: true; accessToken: string; refreshToken: string; hasUsername: boolean }
+  | { ok: true; accessToken: string; refreshToken: string; userId: string; hasUsername: boolean }
   | { ok: false; reason: 'cancelled' | 'error' }
 > {
   try {
@@ -116,11 +116,12 @@ export async function signInWithBiometrics(): Promise<
       return { ok: false, reason: 'error' };
     }
 
-    const { accessToken, refreshToken, hasUsername } = verifyRes.data;
+    const { accessToken, refreshToken, userId, hasUsername } = verifyRes.data;
     return {
       ok: true,
       accessToken,
       refreshToken,
+      userId,
       hasUsername: hasUsername ?? true,
     };
   } catch {

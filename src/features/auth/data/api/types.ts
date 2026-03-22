@@ -19,6 +19,7 @@ export interface VerifyOtpRequest {
 export interface VerifyOtpResponseData {
   accessToken: string;
   refreshToken: string;
+  userId: string;
 }
 
 export interface ResendOtpRequest {
@@ -138,6 +139,7 @@ export interface BiometricVerifyRequest {
 export interface BiometricVerifyResponseData {
   accessToken: string;
   refreshToken: string;
+  userId: string;
   hasUsername?: boolean;
 }
 
@@ -150,4 +152,6 @@ export interface GoogleSocialAuthResponseData {
   accessToken: string;
   refreshToken: string;
   hasUsername: boolean;
+  userId: string;
+  outcome?: 'AUTHENTICATED';
 }

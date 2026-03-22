@@ -35,10 +35,10 @@ export default function PrivacyPolicyScreen({ navigation }: PrivacyPolicyScreenP
         </View>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          Legacy Battle Operates A Competitive Skill Platform Where Users Issue, Accept, And Spectate
-          Battles; Manage Battle Coins (BC) As Virtual, Non-Monetary Credits; And Share Outcomes And
-          Highlights (The "Services"). By Using The Services You Agree To This Privacy Policy And Our
-          Terms.
+          Legacy Battle Operates A Competitive Skill Platform Where Users Issue, Accept, And
+          Spectate Battles; Manage Battle Coins (BC) As Virtual, Non-Monetary Credits; And Share
+          Outcomes And Highlights (The "Services"). By Using The Services You Agree To This Privacy
+          Policy And Our Terms.
         </AppText>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
@@ -54,8 +54,8 @@ export default function PrivacyPolicyScreen({ navigation }: PrivacyPolicyScreenP
         </View>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          We Collect The Categories Below For The Listed Purposes. We Maintain Role-Based Access, Log
-          Access, And Apply Least-Privilege.
+          We Collect The Categories Below For The Listed Purposes. We Maintain Role-Based Access,
+          Log Access, And Apply Least-Privilege.
         </AppText>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>

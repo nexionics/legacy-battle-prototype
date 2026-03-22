@@ -6,16 +6,37 @@ import { spacing, radii } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader } from '@/shared/ui';
 import { useAuth } from '@/features/auth/ui/hooks/useAuth';
 import { useProfile } from '@/features/profile/ui/hooks/useProfile';
+import { useUpdateAvatar } from '../../data/mutations/useUpdateAvatar';
 import type { AccountDetailsScreenProps } from '@/shared/types';
+import * as ImagePicker from 'expo-image-picker';
+import { ActivityIndicator } from 'react-native';
 
 export default function AccountDetailsScreen({ navigation }: AccountDetailsScreenProps) {
   const colors = useThemeColors();
   const { user } = useAuth();
   const { profile, profileLoading } = useProfile(user?.id);
+  const updateAvatar = useUpdateAvatar(user?.id);
 
   const displayName = profile?.display_name || 'Chinaza Darlington';
   const email = user?.email || 'Chinazadarlington27@Gmail.com';
   const avatarUrl = profile?.avatar_url;
+
+  const handleEditAvatar = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0].uri) {
+      try {
+        await updateAvatar.mutateAsync(result.assets[0].uri);
+      } catch (error) {
+        Alert.alert('Error', 'Failed to update avatar. Please try again.');
+      }
+    }
+  };
 
   return (
     <Screen padding={spacing[4]}>
@@ -37,9 +58,14 @@ export default function AccountDetailsScreen({ navigation }: AccountDetailsScree
                 styles.editBadge,
                 { backgroundColor: colors.primary, borderColor: colors.background },
               ]}
-              onPress={() => Alert.alert('Edit Avatar', 'Launch image picker')}
+              onPress={handleEditAvatar}
+              disabled={updateAvatar.isPending}
             >
-              <Ionicons name="camera" size={12} color="#FFF" />
+              {updateAvatar.isPending ? (
+                <ActivityIndicator size="small" color="#FFF" />
+              ) : (
+                <Ionicons name="camera" size={12} color="#FFF" />
+              )}
             </TouchableOpacity>
           </View>
         </View>

@@ -12,5 +12,11 @@ export interface LoginRequest {
  * Matches the union the app uses for routing (OTP vs main app vs username flow).
  */
 export type LoginResponseData =
-  | { outcome: 'AUTHENTICATED'; accessToken: string; refreshToken: string; hasUsername: boolean }
+  | {
+      outcome: 'AUTHENTICATED';
+      accessToken: string;
+      refreshToken: string;
+      hasUsername: boolean;
+      userId: string;
+    }
   | { outcome: 'PENDING_VERIFICATION'; reference: string; email: string };

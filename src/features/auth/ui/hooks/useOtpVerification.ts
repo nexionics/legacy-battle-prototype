@@ -21,6 +21,7 @@ export function useOtpVerification() {
   const route = useRoute<OtpRoute>();
   const { showToast } = useToast();
   const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
+  const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const verifyMutation = useVerifyOtpMutation();
   const resendMutation = useResendOtpMutation();
@@ -72,6 +73,7 @@ export function useOtpVerification() {
     }
 
     setAuthTokens(result.data.accessToken, result.data.refreshToken);
+    setUser({ id: result.data.userId, email: email });
     setNeedsUsername(true);
     navigation.navigate('CreateUsername');
   };

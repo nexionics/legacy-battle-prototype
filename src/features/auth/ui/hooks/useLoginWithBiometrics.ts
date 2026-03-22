@@ -29,6 +29,7 @@ export function useLoginWithBiometrics() {
   const navigation = useNavigation<AuthNav>();
   const { showToast } = useToast();
   const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
+  const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const loginMutation = useLoginMutation();
 
@@ -57,8 +58,9 @@ export function useLoginWithBiometrics() {
   }, [navigation]);
 
   const applyAuthSuccess = useCallback(
-    (accessToken: string, refreshToken: string, hasUsername: boolean) => {
+    (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
       setAuthTokens(accessToken, refreshToken);
+      setUser({ id: userId });
       if (!hasUsername) {
         setNeedsUsername(true);
         navigation.navigate('CreateUsername');
@@ -66,7 +68,7 @@ export function useLoginWithBiometrics() {
       }
       setNeedsUsername(false);
     },
-    [navigation, setAuthTokens, setNeedsUsername],
+    [navigation, setAuthTokens, setUser, setNeedsUsername],
   );
 
   const runBiometricSignIn = useCallback(async () => {
@@ -81,7 +83,12 @@ export function useLoginWithBiometrics() {
         }
         return;
       }
-      applyAuthSuccess(outcome.accessToken, outcome.refreshToken, outcome.hasUsername);
+      applyAuthSuccess(
+        outcome.accessToken,
+        outcome.refreshToken,
+        outcome.userId,
+        outcome.hasUsername,
+      );
     } finally {
       biometricInFlight.current = false;
       setBiometricBusy(false);
@@ -112,7 +119,12 @@ export function useLoginWithBiometrics() {
       return;
     }
     if (result.data.outcome === 'AUTHENTICATED') {
-      applyAuthSuccess(result.data.accessToken, result.data.refreshToken, result.data.hasUsername);
+      applyAuthSuccess(
+        result.data.accessToken,
+        result.data.refreshToken,
+        result.data.userId,
+        result.data.hasUsername,
+      );
     }
   };
 

@@ -19,6 +19,7 @@ export function useLogin() {
   const navigation = useNavigation<AuthNav>();
   const { showToast } = useToast();
   const setAuthTokens = useAuthStore((s) => s.setAuthTokens);
+  const setUser = useAuthStore((s) => s.setUser);
   const setNeedsUsername = useAuthStore((s) => s.setNeedsUsername);
   const expoPushToken = useAuthStore((s) => s.expoPushToken);
   const loginMutation = useLoginMutation();
@@ -60,6 +61,7 @@ export function useLogin() {
 
     if (result.data.outcome === 'AUTHENTICATED') {
       setAuthTokens(result.data.accessToken, result.data.refreshToken);
+      setUser({ id: result.data.userId, email: data.email });
 
       const wantBiometrics = await getBiometricsRequested();
       if (wantBiometrics) {
@@ -104,6 +106,8 @@ export function useLogin() {
       }
 
       setAuthTokens(result.data.accessToken, result.data.refreshToken);
+      setUser({ id: result.data.userId });
+
       if (!result.data.hasUsername) {
         setNeedsUsername(true);
         navigation.navigate('CreateUsername');

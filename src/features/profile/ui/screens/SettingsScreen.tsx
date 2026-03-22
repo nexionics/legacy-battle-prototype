@@ -88,7 +88,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                     styles.switchTrack,
                     {
                       backgroundColor:
-                        preferences && 'challengeDetailsEnabled' in preferences && preferences.challengeDetailsEnabled
+                        preferences &&
+                        'challengeDetailsEnabled' in preferences &&
+                        preferences.challengeDetailsEnabled
                           ? colors.primary
                           : colors.black,
                     },
@@ -101,7 +103,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                         transform: [
                           {
                             translateX:
-                              preferences && 'challengeDetailsEnabled' in preferences && preferences.challengeDetailsEnabled
+                              preferences &&
+                              'challengeDetailsEnabled' in preferences &&
+                              preferences.challengeDetailsEnabled
                                 ? 20
                                 : 0,
                           },
@@ -131,7 +135,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                     styles.switchTrack,
                     {
                       backgroundColor:
-                        preferences && 'bcUpdatesEnabled' in preferences && preferences.bcUpdatesEnabled
+                        preferences &&
+                        'bcUpdatesEnabled' in preferences &&
+                        preferences.bcUpdatesEnabled
                           ? colors.primary
                           : colors.black,
                     },
@@ -144,7 +150,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                         transform: [
                           {
                             translateX:
-                              preferences && 'bcUpdatesEnabled' in preferences && preferences.bcUpdatesEnabled
+                              preferences &&
+                              'bcUpdatesEnabled' in preferences &&
+                              preferences.bcUpdatesEnabled
                                 ? 20
                                 : 0,
                           },
@@ -174,7 +182,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                     styles.switchTrack,
                     {
                       backgroundColor:
-                        preferences && 'systemUpdatesEnabled' in preferences && preferences.systemUpdatesEnabled
+                        preferences &&
+                        'systemUpdatesEnabled' in preferences &&
+                        preferences.systemUpdatesEnabled
                           ? colors.primary
                           : colors.black,
                     },
@@ -187,7 +197,9 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
                         transform: [
                           {
                             translateX:
-                              preferences && 'systemUpdatesEnabled' in preferences && preferences.systemUpdatesEnabled
+                              preferences &&
+                              'systemUpdatesEnabled' in preferences &&
+                              preferences.systemUpdatesEnabled
                                 ? 20
                                 : 0,
                           },

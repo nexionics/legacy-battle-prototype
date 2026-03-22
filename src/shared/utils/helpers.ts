@@ -169,6 +169,7 @@ export function normalizeLoginResponse(
       return parsed;
     }
     const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
+    const userId = typeof d.userId === 'string' ? d.userId : '';
     return {
       success: true,
       data: {
@@ -176,12 +177,14 @@ export function normalizeLoginResponse(
         accessToken: d.accessToken,
         refreshToken: d.refreshToken,
         hasUsername,
+        userId,
       },
     };
   }
 
   if (typeof d.accessToken === 'string' && typeof d.refreshToken === 'string') {
     const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
+    const userId = typeof d.userId === 'string' ? d.userId : '';
     return {
       success: true,
       data: {
@@ -189,6 +192,7 @@ export function normalizeLoginResponse(
         accessToken: d.accessToken,
         refreshToken: d.refreshToken,
         hasUsername,
+        userId,
       },
     };
   }
