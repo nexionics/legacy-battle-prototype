@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Platform, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { HomeScreen } from '@/features/sports';
 import { BattlesScreen, ExploreScreen } from '@/features/battles';
@@ -49,67 +50,73 @@ export function MainTabs() {
   }, [rootNavigation]);
 
   return (
-    <Tab.Navigator
-      detachInactiveScreens={false}
-      screenOptions={{
-        headerShown: false,
-        freezeOnBlur: false,
-        tabBarStyle: tabStyles.tabBar,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textSecondary,
-        tabBarLabelStyle: tabStyles.tabBarLabel,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen as React.ComponentType<TabScreenProps<'Home'>>}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
-          ),
+    <SafeAreaView edges={['bottom']} style={tabStyles.safeArea}>
+      <Tab.Navigator
+        detachInactiveScreens={false}
+        screenOptions={{
+          headerShown: false,
+          freezeOnBlur: false,
+          tabBarStyle: tabStyles.tabBar,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.textSecondary,
+          tabBarLabelStyle: tabStyles.tabBarLabel,
         }}
-      />
-      <Tab.Screen
-        name="Battles"
-        component={BattlesScreen as React.ComponentType<TabScreenProps<'Battles'>>}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trophy-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="BattleNow"
-        component={BattleNowPlaceholder}
-        options={{
-          tabBarLabel: () => null,
-          tabBarIcon: () => null,
-          tabBarButton: () => <CustomTabBarButton onPress={onBattleNowPress} />,
-        }}
-      />
-      <Tab.Screen
-        name="Explore"
-        component={ExploreScreen as React.ComponentType<TabScreenProps<'Explore'>>}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen as React.ComponentType<TabScreenProps<'Profile'>>}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen as React.ComponentType<TabScreenProps<'Home'>>}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Battles"
+          component={BattlesScreen as React.ComponentType<TabScreenProps<'Battles'>>}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="trophy-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="BattleNow"
+          component={BattleNowPlaceholder}
+          options={{
+            tabBarLabel: () => null,
+            tabBarIcon: () => null,
+            tabBarButton: () => <CustomTabBarButton onPress={onBattleNowPress} />,
+          }}
+        />
+        <Tab.Screen
+          name="Explore"
+          component={ExploreScreen as React.ComponentType<TabScreenProps<'Explore'>>}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="search-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen as React.ComponentType<TabScreenProps<'Profile'>>}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person-outline" size={size} color={color} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </SafeAreaView>
   );
 }
 
 const tabStyles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   tabBar: {
     backgroundColor: colors.background,
     borderTopColor: colors.inputBorder,

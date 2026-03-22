@@ -17,23 +17,48 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/app/*": ["src/app/*"],
-      "@/features/*": ["src/features/*"],
-      "@/shared/*": ["src/shared/*"],
-      "@/assets/*": ["src/assets/*"],
-      "@theme": ["src/shared/theme"],
-      "@atoms": ["src/shared/ui/atoms"],
-      "@molecules": ["src/shared/ui"],
-      "@organisms": ["src/shared/ui"],
-      "@hooks": ["src/shared/hooks"],
-      "@utils/*": ["src/shared/utils/*"]
+      "@/app/*": [
+        "src/app/*"
+      ],
+      "@/features/*": [
+        "src/features/*"
+      ],
+      "@/shared/*": [
+        "src/shared/*"
+      ],
+      "@/assets/*": [
+        "src/assets/*"
+      ],
+      "@theme": [
+        "src/shared/theme"
+      ],
+      "@atoms": [
+        "src/shared/ui/atoms"
+      ],
+      "@molecules": [
+        "src/shared/ui"
+      ],
+      "@organisms": [
+        "src/shared/ui"
+      ],
+      "@hooks": [
+        "src/shared/hooks"
+      ],
+      "@utils/*": [
+        "src/shared/utils/*"
+      ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ],
-  "exclude": ["supabase", "node_modules"],
-  "extends": "expo/tsconfig.base",
+  "exclude": [
+    "supabase",
+    "node_modules"
+  ],
+  "extends": "expo/tsconfig.base"
 }

@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -28,20 +27,31 @@
           },
           {
             "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
           }
         ]
-      }
+      },
+      "bundleIdentifier": "com.legacybattle.android"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./google-services.json",
       "permissions": [
-        "android.permission.INTERNET",
         "android.permission.INTERNET"
       ],
       "package": "com.legacybattle.android"
@@ -65,6 +75,10 @@
         }
       ]
     ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
     "extra": {
       "eas": {
         "projectId": "c3cd6fa7-90d4-49d2-8a6d-39aa1638bbed"
