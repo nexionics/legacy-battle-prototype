@@ -22,6 +22,7 @@ import {
   AccountDetailsScreen,
   PrivacyPolicyScreen,
   ContactUsScreen,
+  SecurityPrivacyScreen,
 } from '@/features/profile';
 import { AllResultsScreen, AllUpcomingGamesScreen } from '@/features/sports';
 import { RootStackParamList } from './types';
@@ -48,6 +49,7 @@ export default function AppStack() {
       <Stack.Screen name="AccountDetails" component={AccountDetailsScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
       <Stack.Screen name="ContactUs" component={ContactUsScreen} />
+      <Stack.Screen name="SecurityPrivacy" component={SecurityPrivacyScreen} />
       <Stack.Screen name="StatDuelMode" component={StatDuelModeScreen} />
       <Stack.Screen name="StatDuelDetails" component={StatDuelDetailsScreen} />
       <Stack.Screen name="StatDuelChampion" component={StatDuelChampionScreen} />

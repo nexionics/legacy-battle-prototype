@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import { useForm } from 'react-hook-form';
@@ -6,10 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useToast } from '@/app/providers/useToast';
-import { getBiometricsRequested, setBiometricsRequested } from '../../data/biometricSecureStorage';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useGoogleSocialAuthMutation, useLoginMutation } from '../../data/api/authMutations';
-import { enrollBiometrics } from '../../lib/biometrics';
 import { requestGoogleIdToken } from '../../lib/googleSignIn';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings, signUpScreenStrings } from '../../string';
@@ -30,17 +28,7 @@ export function useLogin() {
   const setExpoPushToken = useAuthStore((s) => s.setExpoPushToken);
   const loginMutation = useLoginMutation();
   const googleSocialMutation = useGoogleSocialAuthMutation();
-  const [wantBiometrics, setWantBiometrics] = useState(false);
   const [googleFlowLoading, setGoogleFlowLoading] = useState(false);
-  const biometricsTouchedByUser = useRef(false);
-
-  useEffect(() => {
-    void (async () => {
-      const requested = await getBiometricsRequested();
-      if (biometricsTouchedByUser.current) return;
-      setWantBiometrics(requested);
-    })();
-  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: yupResolver(loginSchema),
@@ -107,22 +95,6 @@ export function useLogin() {
       }
     }
 
-    if (authData.isBiometricEnrolled) {
-      await setBiometricsRequested(true);
-      setWantBiometrics(true);
-    }
-
-    const wantBiometricsPref = await getBiometricsRequested();
-
-    if (wantBiometricsPref && !authData.isBiometricEnrolled && currentDeviceId && email) {
-      const enroll = await enrollBiometrics(authData.accessToken, email, currentDeviceId);
-      if (enroll.ok) {
-        showToast('success', 'Biometrics enrolled successfully!');
-      } else {
-        showToast('fail', loginScreenStrings.emailLoginForm.biometricsEnrollCancelledToast);
-      }
-    }
-
     if (!authData.hasUsername) {
       setNeedsUsername(true);
       navigation.navigate('CreateUsername');
@@ -168,12 +140,6 @@ export function useLogin() {
     navigation.navigate('ForgotPassword');
   };
 
-  const onWantBiometricsToggle = (enabled: boolean) => {
-    biometricsTouchedByUser.current = true;
-    setWantBiometrics(enabled);
-    void setBiometricsRequested(enabled);
-  };
-
   const isSubmitting = form.formState.isSubmitting || loginMutation.isPending;
   const isGoogleLoading = googleFlowLoading || googleSocialMutation.isPending;
 
@@ -189,8 +155,6 @@ export function useLogin() {
     onGooglePress,
     onFooterLinkPress,
     onForgotPasswordPress,
-    wantBiometrics,
-    onWantBiometricsToggle,
     loginScreenStrings,
     signUpScreenStrings,
   };

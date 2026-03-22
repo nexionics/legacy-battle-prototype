@@ -61,7 +61,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           icon="lock-closed-outline"
           title="Security & Privacy"
           subtitle="Private Details"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('SecurityPrivacy')}
           iconColor="#FF6B3D"
           iconBgColor="#FF6B3D33"
         />

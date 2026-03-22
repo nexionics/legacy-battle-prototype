@@ -9,7 +9,6 @@ import {
   AuthOrGoogleFooter,
   Button,
   AppText,
-  LabeledSwitch,
 } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { EmailLoginScreenProps } from '@/shared/types';
@@ -30,8 +29,6 @@ export function EmailLoginScreen({
   onGooglePress,
   onFooterLinkPress,
   onForgotPasswordPress,
-  wantBiometrics,
-  onWantBiometricsToggle,
   loginScreenStrings,
   signUpScreenStrings,
 }: EmailLoginViewProps) {
@@ -102,13 +99,6 @@ export function EmailLoginScreen({
               </TouchableOpacity>
             </View>
           </View>
-
-          <LabeledSwitch
-            label={loginScreenStrings.emailLoginForm.enableBiometrics}
-            value={wantBiometrics}
-            onValueChange={onWantBiometricsToggle}
-            disabled={formDisabled}
-          />
 
           <Button
             variant="primary"

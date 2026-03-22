@@ -43,7 +43,6 @@ export async function migrateBattleEventIds(): Promise<{
   }
 
   const total = battles?.length || 0;
-  console.log(`Found ${total} battles with event_id`);
 
   for (const battle of battles || []) {
     const eventId = battle.event_id;
@@ -104,8 +103,6 @@ export async function migrateBattleEventIds(): Promise<{
       });
     }
   }
-
-  console.log(`Migration complete: ${migrated} migrated, ${skipped} skipped, ${failed} failed`);
 
   return { total, migrated, skipped, failed, details };
 }

@@ -15,7 +15,6 @@ import { useAuthStore } from '../data/store/auth.store';
 
 const rnBiometrics = new ReactNativeBiometrics();
 
-/** Hardware keys + all biometric SecureStore keys — call before clearing auth session on logout. */
 export async function logout(): Promise<void> {
   try {
     await rnBiometrics.deleteKeys();
@@ -50,19 +49,15 @@ export async function enrollBiometrics(
       return { ok: false };
     }
 
-    console.log('[Biometrics] Sensor available, starting simplePrompt...');
     const { success } = await rnBiometrics.simplePrompt({
       promptMessage: 'Authorize Biometric Enrollment',
     });
 
     if (!success) {
-      console.log('[Biometrics] User cancelled simplePrompt');
       return { ok: false };
     }
 
-    console.log('[Biometrics] Creating hardware keys...');
     const { publicKey } = await rnBiometrics.createKeys();
-    console.log('[Biometrics] Keys created, enrolling on server...');
 
     const result = await postBiometricEnroll({
       publicKey,
@@ -70,7 +65,6 @@ export async function enrollBiometrics(
     });
 
     if (!result.success) {
-      console.log('[Biometrics] Server enrollment failed:', result.error);
       await deleteBiometricSecureItem('biometrics_requested');
       return { ok: false };
     }

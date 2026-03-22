@@ -106,6 +106,7 @@ export type RootStackParamList = {
   AccountDetails: undefined;
   PrivacyPolicy: undefined;
   ContactUs: undefined;
+  SecurityPrivacy: undefined;
 };
 
 export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> = NativeStackScreenProps<

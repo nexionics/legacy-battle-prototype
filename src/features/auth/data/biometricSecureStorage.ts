@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-const PREFIX = '@legacy-battle/biometric/';
+const PREFIX = 'legacy-battle.biometric.';
 
 /** Single place for biometric-related SecureStore keys. */
 export const BIOMETRIC_SECURE_KEYS = {
