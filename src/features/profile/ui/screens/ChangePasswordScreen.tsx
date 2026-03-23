@@ -2,12 +2,11 @@ import { useState, useRef } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { spacing } from '@/shared/theme';
-import { Screen, Input, AuthHeader, Button } from '@/shared/ui';
+import { Screen, Input, AuthHeader, Button, SuccessBottomSheet } from '@/shared/ui';
 import { useToast } from '@/app/providers/useToast';
 import type { ChangePasswordScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
 import { useChangePassword } from '../../data/mutations/useChangePassword';
-import { SuccessBottomSheet } from '../components/SuccessBottomSheet';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 export default function ChangePasswordScreen({ navigation }: ChangePasswordScreenProps) {

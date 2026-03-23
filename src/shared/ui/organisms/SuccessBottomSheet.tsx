@@ -7,10 +7,12 @@ import Confetti from 'assets/confetti.svg';
 
 export type SuccessBottomSheetProps = {
   onClose: () => void;
+  title?: string;
+  subtitle?: string;
 };
 
 export const SuccessBottomSheet = forwardRef<BottomSheetModal, SuccessBottomSheetProps>(
-  ({ onClose }, ref) => {
+  ({ onClose, title = 'Success!', subtitle = 'Your request has been processed successfully.' }, ref) => {
     const snapPoints = useMemo(() => ['45%'], []);
 
     const renderBackdrop = useCallback(
@@ -35,8 +37,8 @@ export const SuccessBottomSheet = forwardRef<BottomSheetModal, SuccessBottomShee
               <Confetti width={120} height={120} />
             </View>
 
-            <Text style={styles.title}>Password Changed!</Text>
-            <Text style={styles.subtitle}>Your password has been updated successfully.</Text>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.subtitle}>{subtitle}</Text>
           </View>
 
           <View style={{ flex: 1 }} />

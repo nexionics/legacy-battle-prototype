@@ -9,3 +9,4 @@ export { default as ContactUsScreen } from './ui/screens/ContactUsScreen';
 export { default as SecurityPrivacyScreen } from './ui/screens/SecurityPrivacyScreen';
 export { default as EditUsernameScreen } from './ui/screens/EditUsernameScreen';
 export { default as EditEmailScreen } from './ui/screens/EditEmailScreen';
+export { default as VerifyEmailOTPScreen } from './ui/screens/VerifyEmailOTPScreen';

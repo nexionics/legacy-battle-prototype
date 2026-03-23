@@ -22,8 +22,7 @@ export default function EditEmailScreen({ navigation }: EditEmailScreenProps) {
       showToast('fail', 'Please enter an email address');
       return;
     }
-    // UI-only for now as per user request
-    showToast('success', 'Email verification feature coming soon!');
+    navigation.navigate('VerifyEmailOTP', { email });
   };
 
   return (
