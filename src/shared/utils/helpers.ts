@@ -40,6 +40,26 @@ export function formatUsernameForApi(raw: string): string {
   return raw.trim().toLowerCase().replace(/\s+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
 }
 
+/**
+ * Converts the local-part of an email into a readable display name.
+ *
+ * Normalization rules:
+ * - Uses the text before `@`.
+ * - Treats `.`, `_`, and `-` as word separators.
+ * - Title-cases each word.
+ *
+ * @example
+ * formatDisplayNameFromEmail('john_doe-99@example.com') // "John Doe 99"
+ */
+export function formatDisplayNameFromEmail(email: string): string {
+  const local = email.split('@')[0]?.trim() ?? email;
+  if (!local) return email;
+  const words = local.replace(/[._-]+/g, ' ').split(' ');
+  return words
+    .map((w) => (w.length ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : ''))
+    .join(' ');
+}
+
 /** Formats seconds as `M:SS` (e.g. countdown timers). */
 export function formatMmSs(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);

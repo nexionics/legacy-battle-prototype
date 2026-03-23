@@ -14,7 +14,8 @@ import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { VerifyEmailOTPScreenProps } from '@/shared/types';
 import type { UseVerifyEmailOtpScreenReturn } from '../../hooks/useVerifyEmailOtpScreen';
 
-export type VerifyEmailOTPScreenViewProps = VerifyEmailOTPScreenProps & UseVerifyEmailOtpScreenReturn;
+export type VerifyEmailOTPScreenViewProps = VerifyEmailOTPScreenProps &
+  UseVerifyEmailOtpScreenReturn;
 
 export function VerifyEmailOTPScreen({
   email,
@@ -24,9 +25,13 @@ export function VerifyEmailOTPScreen({
   successSheetRef,
   handleVerify,
   handleDone,
+  handleResend,
+  canResend,
+  resendTimer,
   verifyEmailOtpScreenStrings,
   onBack,
   otpLength,
+  navigation,
 }: VerifyEmailOTPScreenViewProps) {
   return (
     <Screen padding={0}>
@@ -63,9 +68,15 @@ export function VerifyEmailOTPScreen({
           <AppText variant="body2" color={colors.textSecondary} style={styles.resendPrompt}>
             {verifyEmailOtpScreenStrings.resendPrompt}
           </AppText>
-          <TouchableOpacity onPress={() => {}} style={styles.resendCta}>
-            <AppText variant="label" color={colors.primary}>
-              {verifyEmailOtpScreenStrings.resendCta}
+          <TouchableOpacity
+            onPress={handleResend}
+            disabled={!canResend || isSubmitting}
+            style={styles.resendCta}
+          >
+            <AppText variant="label" color={canResend ? colors.primary : colors.textSecondary}>
+              {canResend
+                ? verifyEmailOtpScreenStrings.resendCta
+                : `${verifyEmailOtpScreenStrings.resendInPrefix} ${resendTimer}s`}
             </AppText>
           </TouchableOpacity>
         </View>

@@ -25,11 +25,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const { user } = useAuth();
   const { upcomingGames, recentResults, quickPicks, myBattles, homeLoading, homeError, refetch } =
     useHomeData(user?.id);
-  const { profile, profileLoading, profileError, refetch: refetchProfile } = useProfile(user?.id);
+  const { profile, profileError, refetch: refetchProfile } = useProfile(user?.id);
 
-  const waitingForProfile = Boolean(user?.id) && profileLoading;
-
-  if (homeLoading || waitingForProfile) {
+  if (homeLoading) {
     return (
       <Screen>
         <LoadingState message="Loading home feed..." />
@@ -56,8 +54,8 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     <Screen padding={0} edges={['top', 'left', 'right']}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <HomeHeader
-          displayName={profile?.displayName}
-          username={profile?.username}
+          displayName={profile?.displayName || user?.displayName}
+          username={profile?.username || user?.username}
           email={user?.email}
           avatarUrl={profile?.avatarUrl}
         />

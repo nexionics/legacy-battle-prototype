@@ -113,10 +113,14 @@ export const verifyEmailOtpScreenStrings = {
   subtitleLead: 'We Sent A Verification Code To Your Email',
   resendPrompt: "Didn't receive the email?",
   resendCta: 'Click To Resend',
+  resendInPrefix: 'Resend in',
   verifyButton: 'Verify Email',
   successSheet: {
     title: 'Email Verified',
     subtitle: 'Your Email Address Have Been Verified Successfully',
+  },
+  toast: {
+    resendSuccess: 'Verification code resent',
   },
 } as const;
 

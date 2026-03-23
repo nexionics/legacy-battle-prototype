@@ -29,3 +29,33 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   return (await authenticatedHttp.patch('/profile/change-password', { oldPassword, newPassword }))
     .data;
 }
+
+export async function requestEmailChange(
+  newEmail: string,
+): Promise<ApiResponse<{ reference: string }>> {
+  return (await authenticatedHttp.post('/profile/request-email-change', { newEmail })).data;
+}
+
+export async function verifyEmailChange(
+  code: string,
+  reference: string,
+  newEmail: string,
+): Promise<ApiResponse<{ message: string }>> {
+  return (
+    await authenticatedHttp.post('/profile/verify-email-change', {
+      code,
+      reference,
+      newEmail,
+    })
+  ).data;
+}
+
+export async function resendEmailChangeOtp(
+  newEmail: string,
+): Promise<ApiResponse<{ reference: string }>> {
+  return (
+    await authenticatedHttp.post('/profile/resend-email-change-otp', {
+      newEmail,
+    })
+  ).data;
+}

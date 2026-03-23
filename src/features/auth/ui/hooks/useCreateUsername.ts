@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useState, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,9 +10,11 @@ import { useAuthStore } from '../../data/store/auth.store';
 import type { AuthStackParamList } from '@/shared/types';
 import { getCheckUsername, postSetUsername } from '../../data/api/authApi';
 import { createUsernameScreenStrings, loginScreenStrings } from '../../string';
-import { useDebounce } from '@/shared/hooks/useDebounce';
+import { useDebouncedCallback } from 'use-debounce';
 import { formatUsernameForApi } from '@/shared/utils/helpers';
 import { createUsernameSchema, type CreateUsernameFormValues } from './validations';
+import { queryClient } from '@/shared/lib/queryClient';
+import { profileKeys } from '@/features/profile/data/keys';
 
 export function useCreateUsername() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -28,43 +30,39 @@ export function useCreateUsername() {
     mode: 'onChange',
     defaultValues: { username: '' },
   });
-  const username = useWatch({ control: form.control, name: 'username' }) ?? '';
-  const trimmedUsername = username.trim();
-  const debouncedTrimmed = useDebounce(trimmedUsername, 500);
-  const formattedForCheck = formatUsernameForApi(debouncedTrimmed);
+  const checkAvailability = useDebouncedCallback(async (val: string) => {
+    const trimmed = val.trim();
+    const formatted = formatUsernameForApi(trimmed);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    if (formattedForCheck.length < 3) {
+    if (formatted.length < 3) {
       setIsCheckingUsername(false);
       setIsUsernameAvailable(false);
       setUsernameStatusMessage('');
       return;
     }
 
-    const run = async () => {
-      setIsCheckingUsername(true);
-      const result = await getCheckUsername(formattedForCheck);
-      if (cancelled) return;
+    setIsCheckingUsername(true);
+    const result = await getCheckUsername(formatted);
 
-      if (!result.success) {
-        setIsUsernameAvailable(false);
-        setUsernameStatusMessage(result.error.message);
-        setIsCheckingUsername(false);
-        return;
-      }
-
-      setIsUsernameAvailable(result.data.available);
-      setUsernameStatusMessage(result.data.message);
+    if (!result.success) {
+      setIsUsernameAvailable(false);
+      setUsernameStatusMessage(result.error.message);
       setIsCheckingUsername(false);
-    };
+      return;
+    }
 
-    void run();
-    return () => {
-      cancelled = true;
-    };
-  }, [formattedForCheck]);
+    setIsUsernameAvailable(result.data.available);
+    setUsernameStatusMessage(result.data.message);
+    setIsCheckingUsername(false);
+  }, 500);
+
+  const handleUsernameChange = useCallback(
+    (val: string, onChange: (v: string) => void) => {
+      onChange(val);
+      checkAvailability(val);
+    },
+    [checkAvailability],
+  );
 
   const onValidSubmit = async (data: CreateUsernameFormValues) => {
     if (!isUsernameAvailable) {
@@ -92,7 +90,13 @@ export function useCreateUsername() {
     }
 
     showToast('success', createUsernameScreenStrings.successToast);
-    setUser({ id: canonicalUsername, email: undefined });
+
+    const user = useAuthStore.getState().user;
+    if (user) {
+      setUser({ ...user, username: canonicalUsername, displayName });
+      queryClient.invalidateQueries({ queryKey: profileKeys.detail(user.id) });
+    }
+
     setNeedsUsername(false);
   };
 
@@ -124,6 +128,7 @@ export function useCreateUsername() {
     isUsernameAvailable,
     usernameStatusMessage,
     onBackPress,
+    handleUsernameChange,
     createUsernameScreenStrings,
     loginScreenStrings,
   };

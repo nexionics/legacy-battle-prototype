@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
@@ -12,17 +12,8 @@ import { rnBiometrics, signInWithBiometrics } from '../../lib/biometrics';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings } from '../../string';
 import { useProfileStore } from '@/features/profile/data/store/profile.store';
-import { getProfileById } from '@/features/profile/data/api/profile.api';
 import { biometricPasswordLoginSchema, type BiometricPasswordLoginFormValues } from './validations';
-
-function formatDisplayNameFromEmail(email: string): string {
-  const local = email.split('@')[0]?.trim() ?? email;
-  if (!local) return email;
-  const words = local.replace(/[._-]+/g, ' ').split(' ');
-  return words
-    .map((w) => (w.length ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : ''))
-    .join(' ');
-}
+import { formatDisplayNameFromEmail } from '@/shared/utils/helpers';
 
 type AuthNav = NativeStackNavigationProp<AuthStackParamList>;
 
@@ -38,7 +29,6 @@ export function useLoginWithBiometrics() {
   const [displayName, setDisplayName] = useState('');
   const [accountEmail, setAccountEmail] = useState<string | null>(null);
   const [biometricBusy, setBiometricBusy] = useState(false);
-  const autoAttempted = useRef(false);
   const biometricInFlight = useRef(false);
 
   const form = useForm<BiometricPasswordLoginFormValues>({
@@ -47,43 +37,8 @@ export function useLoginWithBiometrics() {
     defaultValues: { password: '' },
   });
 
-  useEffect(() => {
-    void (async () => {
-      if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
-        const currentUser = useAuthStore.getState().user;
-        const profileName = useProfileStore.getState().displayName;
-        const userId = currentUser?.id ?? '';
-        setAccountEmail(currentUser?.email || null);
-        setDisplayName(
-          profileName ||
-            (currentUser?.email ? formatDisplayNameFromEmail(currentUser.email) : 'User'),
-        );
-
-        if (!profileName && userId) {
-          try {
-            const res = await getProfileById(userId);
-            if (res.success && res.data.displayName) {
-              setDisplayName(res.data.displayName);
-              useProfileStore.getState().setDisplayName(res.data.displayName);
-            }
-          } catch {
-            // Fallback to display name derived from email.
-          }
-        }
-        return;
-      }
-      const email = await getBiometricSecureItem('biometric_email');
-      if (!email) {
-        navigation.replace('EmailLogin');
-        return;
-      }
-      setAccountEmail(email);
-      setDisplayName(formatDisplayNameFromEmail(email));
-    })();
-  }, [navigation]);
-
   const applyAuthSuccess = useCallback(
-    async (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
+    (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
       setAuthTokens(accessToken, refreshToken);
       setUser({ id: userId });
       useAuthStore.getState().setLocallyUnlocked(true);
@@ -93,15 +48,6 @@ export function useLoginWithBiometrics() {
         return;
       }
       setNeedsUsername(false);
-      try {
-        const res = await getProfileById(userId);
-        if (res.success && res.data.displayName) {
-          setDisplayName(res.data.displayName);
-          useProfileStore.getState().setDisplayName(res.data.displayName);
-        }
-      } catch {
-        // Keep current displayName.
-      }
     },
     [navigation, setAuthTokens, setUser, setNeedsUsername],
   );
@@ -128,7 +74,7 @@ export function useLoginWithBiometrics() {
         }
         return;
       }
-      await applyAuthSuccess(
+      applyAuthSuccess(
         outcome.accessToken,
         outcome.refreshToken,
         outcome.userId,
@@ -140,11 +86,30 @@ export function useLoginWithBiometrics() {
     }
   }, [applyAuthSuccess, loginMutation.isPending, showToast]);
 
-  useEffect(() => {
-    if (!accountEmail || autoAttempted.current) return;
-    autoAttempted.current = true;
-    void runBiometricSignIn();
-  }, [accountEmail, runBiometricSignIn]);
+  const initializedRef = useRef(false);
+
+  if (!initializedRef.current) {
+    initializedRef.current = true;
+    (async () => {
+      if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
+        const currentUser = useAuthStore.getState().user;
+        const profileName = useProfileStore.getState().displayName;
+        const email = currentUser?.email || null;
+        setAccountEmail(email);
+        setDisplayName(profileName || (email ? formatDisplayNameFromEmail(email) : 'User'));
+        if (email) runBiometricSignIn();
+        return;
+      }
+      const email = await getBiometricSecureItem('biometric_email');
+      if (!email) {
+        navigation.replace('EmailLogin');
+        return;
+      }
+      setAccountEmail(email);
+      setDisplayName(formatDisplayNameFromEmail(email));
+      runBiometricSignIn();
+    })();
+  }
 
   const onPasswordSubmit = async (values: BiometricPasswordLoginFormValues) => {
     if (!accountEmail) return;
@@ -164,7 +129,7 @@ export function useLoginWithBiometrics() {
       return;
     }
     if (result.data.outcome === 'AUTHENTICATED') {
-      await applyAuthSuccess(
+      applyAuthSuccess(
         result.data.accessToken,
         result.data.refreshToken,
         result.data.userId,
@@ -175,14 +140,6 @@ export function useLoginWithBiometrics() {
 
   const onUsePasswordInstead = () => {
     passwordRef.current?.focus();
-  };
-
-  const onForgotPasswordPress = () => {
-    navigation.navigate('ForgotPassword');
-  };
-
-  const onNotYouPress = () => {
-    navigation.navigate('EmailLogin');
   };
 
   return {
@@ -198,8 +155,6 @@ export function useLoginWithBiometrics() {
     biometricBusy,
     onBiometricLoginPress: runBiometricSignIn,
     onUsePasswordInstead,
-    onForgotPasswordPress,
-    onNotYouPress,
     loginScreenStrings,
   };
 }

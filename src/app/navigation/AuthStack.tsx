@@ -64,7 +64,11 @@ const AuthStack = ({ initialRoute }: AuthStackProps) => {
   }
 
   return (
-    <Stack.Navigator initialRouteName={initialRouteName} screenOptions={headerOptions}>
+    <Stack.Navigator
+      key={initialRouteName}
+      initialRouteName={initialRouteName}
+      screenOptions={headerOptions}
+    >
       <Stack.Screen name="Login" component={LoginWelcomeScreen} />
       <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
       <Stack.Screen name="LoginWithBiometrics" component={LoginWithBiometricsScreen} />

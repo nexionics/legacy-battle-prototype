@@ -51,8 +51,6 @@ export type UseLoginWithBiometricsReturn = {
   biometricBusy: boolean;
   onBiometricLoginPress: () => void;
   onUsePasswordInstead: () => void;
-  onForgotPasswordPress: () => void;
-  onNotYouPress: () => void;
   loginScreenStrings: typeof loginScreenStrings;
 };
 
@@ -96,6 +94,7 @@ export type UseCreateUsernameReturn = {
   isUsernameAvailable: boolean;
   usernameStatusMessage: string;
   onBackPress: () => void;
+  handleUsernameChange: (val: string, onChange: (v: string) => void) => void;
   createUsernameScreenStrings: typeof createUsernameScreenStrings;
   loginScreenStrings: typeof loginScreenStrings;
 };

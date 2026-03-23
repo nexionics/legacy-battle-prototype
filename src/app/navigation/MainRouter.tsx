@@ -23,15 +23,18 @@ export default function MainRouter() {
 
   const inMainApp = Boolean(accessToken && isAuthenticated && !needsUsername);
   const showBiometricLock = inMainApp && isBiometricEnabled && !isLocallyUnlocked;
+  const shouldShowCreateUsername = Boolean(accessToken && isAuthenticated && needsUsername);
 
   return (
     <NavigationContainer>
       {showBiometricLock ? (
-        <AuthStack initialRoute="LoginWithBiometrics" />
+        <AuthStack key="biometric-lock" initialRoute="LoginWithBiometrics" />
+      ) : shouldShowCreateUsername ? (
+        <AuthStack key="create-username" initialRoute="CreateUsername" />
       ) : inMainApp ? (
         <AppStack />
       ) : (
-        <AuthStack />
+        <AuthStack key="auth-entry" />
       )}
     </NavigationContainer>
   );

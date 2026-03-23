@@ -111,7 +111,7 @@ export type RootStackParamList = {
   ChangePassword: undefined;
   EditUsername: undefined;
   EditEmail: undefined;
-  VerifyEmailOTP: { email: string };
+  VerifyEmailOTP: { email: string; reference: string };
   TermsOfService: undefined;
 };
 

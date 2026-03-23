@@ -22,6 +22,27 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
 
+  const getUpdateErrorMessage = (error: unknown): string => {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      typeof (error as { response?: unknown }).response === 'object' &&
+      (error as { response?: unknown }).response !== null
+    ) {
+      const response = (error as { response: { data?: unknown } }).response;
+      if (
+        typeof response.data === 'object' &&
+        response.data !== null &&
+        'message' in response.data &&
+        typeof (response.data as { message?: unknown }).message === 'string'
+      ) {
+        return (response.data as { message: string }).message;
+      }
+    }
+    return editUsernameScreenStrings.toast.updateFailed;
+  };
+
   const updateProfileMutation = useUpdateProfile(user?.id);
 
   const currentUsername = profile?.username ?? '';
@@ -90,9 +111,8 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
 
 
       navigation.goBack();
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || editUsernameScreenStrings.toast.updateFailed;
-      showToast('fail', msg);
+    } catch (error: unknown) {
+      showToast('fail', getUpdateErrorMessage(error));
     }
   };
 

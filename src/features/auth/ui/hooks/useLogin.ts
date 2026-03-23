@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import { useForm } from 'react-hook-form';

@@ -15,6 +15,8 @@ export function EditEmailScreen({
   handleVerify,
   editEmailScreenStrings,
   onBeforeBack,
+  isSubmitting,
+  user,
 }: EditEmailScreenViewProps) {
   const themeColors = useThemeColors();
 
@@ -44,7 +46,13 @@ export function EditEmailScreen({
             }
           />
 
-          <Button variant="primary" onPress={handleVerify} style={styles.saveButton}>
+          <Button
+            variant="primary"
+            onPress={handleVerify}
+            style={styles.saveButton}
+            loading={isSubmitting}
+            disabled={!email || email === user?.email || isSubmitting}
+          >
             {editEmailScreenStrings.verifyButton}
           </Button>
         </View>

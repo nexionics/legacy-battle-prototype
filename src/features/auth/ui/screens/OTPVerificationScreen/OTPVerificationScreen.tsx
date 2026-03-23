@@ -59,9 +59,7 @@ export function OTPVerificationScreen({
           <OTPInput
             length={OTP_LENGTH}
             onChange={onCodeChange}
-            onComplete={() => {
-              void onSubmit();
-            }}
+            onComplete={onCodeChange}
             errors={errors.otp?.message}
             disabled={isSubmitting}
           />

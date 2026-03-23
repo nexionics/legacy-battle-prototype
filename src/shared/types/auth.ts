@@ -1,6 +1,8 @@
 export type AuthUser = {
   id: string;
   email?: string;
+  username?: string;
+  displayName?: string;
 };
 
 export type UserData = AuthUser;

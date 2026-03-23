@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import type { RouteProp } from '@react-navigation/native';
 import { useToast } from '@/app/providers/useToast';
 import { OTP_LENGTH } from '@/shared/constants';
 import { useResendResetOtpMutation, useVerifyResetOtpMutation } from '../../data/api/authMutations';
+import { useCountdown } from '@/shared/hooks/useCountdown';
 import type { AuthStackParamList } from '@/shared/types';
 import { forgotPasswordFlowStrings, loginScreenStrings } from '../../string';
 import { otpSchema, type OtpFormValues } from './validations';
@@ -22,32 +23,29 @@ export function useVerifyResetOtp() {
   const verifyMutation = useVerifyResetOtpMutation();
   const resendMutation = useResendResetOtpMutation();
 
-  const [cooldownSec, setCooldownSec] = useState(VERIFY_OTP_COOLDOWN_SEC);
+  const {
+    seconds: cooldownSec,
+    canResend: isCooldownDone,
+    reset: resetCooldown,
+  } = useCountdown(VERIFY_OTP_COOLDOWN_SEC);
   const missingSessionHandled = useRef(false);
 
   const email = route.params?.email ?? '';
   const reference = route.params?.reference ?? '';
+
+  if (!missingSessionHandled.current) {
+    missingSessionHandled.current = true;
+    if (!reference || !email) {
+      showToast('fail', 'Missing reset session');
+      navigation.goBack();
+    }
+  }
 
   const form = useForm<OtpFormValues>({
     resolver: yupResolver(otpSchema),
     mode: 'onChange',
     defaultValues: { otp: '' },
   });
-
-  useEffect(() => {
-    if (missingSessionHandled.current) return;
-    if (!reference || !email) {
-      missingSessionHandled.current = true;
-      showToast('fail', 'Missing reset session');
-      navigation.goBack();
-    }
-  }, [email, navigation, reference, showToast]);
-
-  useEffect(() => {
-    if (cooldownSec <= 0) return;
-    const t = setTimeout(() => setCooldownSec((s) => Math.max(0, s - 1)), 1000);
-    return () => clearTimeout(t);
-  }, [cooldownSec]);
 
   const onCodeChange = useCallback(
     (next: string) => {
@@ -84,7 +82,7 @@ export function useVerifyResetOtp() {
     }
 
     showToast('success', forgotPasswordFlowStrings.verifyResetOtp.resendSuccessToast);
-    setCooldownSec(VERIFY_OTP_COOLDOWN_SEC);
+    resetCooldown(VERIFY_OTP_COOLDOWN_SEC);
   };
 
   return {
@@ -95,7 +93,7 @@ export function useVerifyResetOtp() {
     isValid: form.formState.isValid,
     isSubmitting: form.formState.isSubmitting || verifyMutation.isPending,
     onResend,
-    resendDisabled: cooldownSec > 0 || resendMutation.isPending,
+    resendDisabled: !isCooldownDone || resendMutation.isPending,
     cooldownSec,
     displayEmail: email,
     onCodeChange,

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
@@ -22,20 +22,19 @@ export function useResetPassword() {
 
   const reference = route.params?.reference ?? '';
 
+  if (!missingRef.current) {
+    missingRef.current = true;
+    if (!reference) {
+      showToast('fail', 'Missing reset session');
+      navigation.goBack();
+    }
+  }
+
   const form = useForm<ResetPasswordFormValues>({
     resolver: yupResolver(resetPasswordSchema),
     mode: 'onChange',
     defaultValues: { password: '', confirmPassword: '' },
   });
-
-  useEffect(() => {
-    if (missingRef.current) return;
-    if (!reference) {
-      missingRef.current = true;
-      showToast('fail', 'Missing reset session');
-      navigation.goBack();
-    }
-  }, [navigation, reference, showToast]);
 
   const onValidSubmit = async (data: ResetPasswordFormValues) => {
     const result = await resetMutation.mutateAsync({
