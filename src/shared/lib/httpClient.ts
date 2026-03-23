@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, type InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosHeaders, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import { baseURL } from '../constants';
 
@@ -33,3 +33,26 @@ authenticatedHttp.interceptors.request.use((config: InternalAxiosRequestConfig) 
   }
   return config;
 });
+
+// Response interceptor to handle backend error structure
+const handleResponseError = (response: AxiosResponse): AxiosResponse => {
+  const data: unknown = response.data;
+  if (!data || typeof data !== 'object') return response;
+
+  const record = data as Record<string, unknown>;
+  if (record.success === false) {
+    const errorData: unknown = 'error' in record && record.error !== undefined ? record.error : record;
+    const errorRecord =
+      errorData && typeof errorData === 'object' ? (errorData as Record<string, unknown>) : {};
+
+    const message = typeof errorRecord.message === 'string' ? errorRecord.message : 'Unknown error';
+    const error = new Error(message);
+    Object.assign(error, errorRecord);
+    throw error;
+  }
+
+  return response;
+};
+
+authHttp.interceptors.response.use(handleResponseError);
+authenticatedHttp.interceptors.response.use(handleResponseError);

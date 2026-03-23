@@ -5,10 +5,12 @@ import { logoutSession } from '@/features/auth/data/logoutSession';
 import { logoutAlertStrings, settingsScreenStrings } from '../../string';
 import { usePreferencesQuery } from '../../data/queries/usePreferencesQuery';
 import { useUpdatePreferences } from '../../data/mutations/useUpdatePreferences';
+import { useAuthStore } from '@/features/auth/data/store/auth.store';
 
 export function useSettingsScreen({ navigation }: Pick<SettingsScreenProps, 'navigation'>) {
   const { data: preferencesData, isLoading } = usePreferencesQuery();
-  const updatePreferences = useUpdatePreferences();
+  const user = useAuthStore((state) => state.user);
+  const updatePreferences = useUpdatePreferences(user?.id);
   const { showToast } = useToast();
 
   const preferences =

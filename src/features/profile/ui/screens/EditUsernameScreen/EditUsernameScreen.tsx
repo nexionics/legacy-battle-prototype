@@ -1,8 +1,8 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Screen, AuthHeader, Input, Button, AppText } from '@/shared/ui';
+import { Screen, AuthHeader, Input, Button, AppText, SVGWrapper } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/theme';
-import { AuthHeaderVariant } from '@/shared/utils/enum';
+import { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { EditUsernameScreenProps } from '@/shared/types';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import type { UseEditUsernameScreenReturn } from '../../hooks/useEditUsernameScreen';
@@ -11,11 +11,12 @@ export type EditUsernameScreenViewProps = EditUsernameScreenProps & UseEditUsern
 
 export function EditUsernameScreen({
   username,
-  setUsername,
+  handleUsernameChange,
   isChecking,
   isAvailable,
   statusMessage,
   profileUsername,
+  displayNamePlaceholder,
   updateProfilePending,
   handleSave,
   editUsernameScreenStrings,
@@ -40,8 +41,8 @@ export function EditUsernameScreen({
             <Input
               label={editUsernameScreenStrings.fieldLabel}
               value={username}
-              onChangeText={setUsername}
-              placeholder={editUsernameScreenStrings.placeholder}
+              onChangeText={handleUsernameChange}
+              placeholder={displayNamePlaceholder}
               autoCapitalize="none"
               autoCorrect={false}
               leftComponent={
@@ -53,15 +54,21 @@ export function EditUsernameScreen({
               }
               rightComponent={
                 isAvailable ? (
-                  <Ionicons name="checkmark-circle" size={sizes.icon20} color={colors.success} />
-                ) : null
+                  <SVGWrapper
+                    name={IconNameEnum.CheckValid}
+                    width={sizes.icon20}
+                    height={sizes.icon20}
+                  />
+                ) : undefined
               }
               editable={!updateProfilePending}
+              showSuccessBorder={Boolean(isAvailable)}
             />
             {statusMessage ? (
               <AppText
                 variant="body2"
-                style={[styles.statusText, { color: isAvailable ? colors.success : colors.error }]}
+                color={isAvailable ? colors.success : colors.error}
+                style={styles.statusText}
               >
                 {statusMessage}
               </AppText>

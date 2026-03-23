@@ -3,13 +3,16 @@ import { profileKeys } from '../keys';
 import { updateUserPreferences } from '../api/preferences.api';
 import type { UpdateUserPreferences } from '@/shared/types';
 
-export function useUpdatePreferences() {
+export function useUpdatePreferences(userId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: UpdateUserPreferences) => updateUserPreferences(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.preferences() });
+      if (userId) {
+        queryClient.invalidateQueries({ queryKey: profileKeys.detail(userId) });
+      }
     },
   });
 }

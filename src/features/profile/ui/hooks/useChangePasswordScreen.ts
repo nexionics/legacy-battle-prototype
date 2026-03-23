@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useToast } from '@/app/providers/useToast';
 import type { ChangePasswordScreenProps } from '@/shared/types';
 import { useChangePassword } from '../../data/mutations/useChangePassword';
+import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import { changePasswordScreenStrings } from '../../string';
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -11,7 +12,8 @@ export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScree
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const changePasswordMutation = useChangePassword();
+  const user = useAuthStore((state) => state.user);
+  const changePasswordMutation = useChangePassword(user?.id);
 
   const handleSave = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {

@@ -1,41 +1,48 @@
 import { useState, useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/app/providers/useToast';
 import { getCheckUsername } from '@/features/auth/data/api/authApi';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import { useUpdateProfile } from '../../data/mutations/useUpdateProfile';
 import { useProfile } from './useProfile';
-import { profileKeys } from '../../data/keys';
 import type { EditUsernameScreenProps } from '@/shared/types';
 import { editUsernameScreenStrings } from '../../string';
+import { formatUsernameForApi } from '@/shared/utils/helpers';
 
 export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenProps, 'navigation'>) {
   const { showToast } = useToast();
-  const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const { profile } = useProfile(user?.id);
 
   const [username, setUsername] = useState('');
+
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+  };
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
 
   const updateProfileMutation = useUpdateProfile(user?.id);
 
-  useEffect(() => {
-    if (profile?.username) {
-      setUsername(profile.username);
-    }
-  }, [profile?.username]);
+  const currentUsername = profile?.username ?? '';
+  const currentDisplayName = profile?.displayName ?? '';
+  const displayNamePlaceholder = currentDisplayName || editUsernameScreenStrings.placeholder;
 
   useEffect(() => {
-    if (!username || username === profile?.username) {
+    setUsername(currentDisplayName);
+  }, [currentDisplayName]);
+
+  const trimmedUsername = username.trim();
+  const normalizedUsername = formatUsernameForApi(trimmedUsername);
+
+  useEffect(() => {
+    if (!trimmedUsername || normalizedUsername === currentUsername) {
       setIsAvailable(null);
       setStatusMessage('');
       return;
     }
 
-    if (username.length < 3) {
+    if (normalizedUsername.length < 3) {
       setIsAvailable(false);
       setStatusMessage(editUsernameScreenStrings.validation.minLength);
       return;
@@ -44,7 +51,7 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
     const timer = setTimeout(async () => {
       setIsChecking(true);
       try {
-        const result = await getCheckUsername(username);
+        const result = await getCheckUsername(normalizedUsername);
         if (result.success) {
           setIsAvailable(result.data.available);
           setStatusMessage(result.data.message);
@@ -61,10 +68,10 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [username, profile?.username]);
+  }, [trimmedUsername, normalizedUsername, currentUsername]);
 
   const handleSave = async () => {
-    if (!username || username === profile?.username) {
+    if (!trimmedUsername || normalizedUsername === currentUsername) {
       showToast('fail', editUsernameScreenStrings.toast.enterNew);
       return;
     }
@@ -75,12 +82,12 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
     }
 
     try {
-      await updateProfileMutation.mutateAsync({ username });
+      await updateProfileMutation.mutateAsync({
+        username: normalizedUsername,
+        displayName: trimmedUsername,
+      });
       showToast('success', editUsernameScreenStrings.toast.success);
 
-      if (user?.id) {
-        queryClient.invalidateQueries({ queryKey: profileKeys.detail(user.id) });
-      }
 
       navigation.goBack();
     } catch (error: any) {
@@ -91,11 +98,12 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
 
   return {
     username,
-    setUsername,
+    handleUsernameChange,
     isChecking,
     isAvailable,
     statusMessage,
-    profileUsername: profile?.username,
+    profileUsername: currentUsername,
+    displayNamePlaceholder,
     updateProfilePending: updateProfileMutation.isPending,
     handleSave,
     editUsernameScreenStrings,
