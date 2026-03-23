@@ -65,6 +65,10 @@ export function useLoginWithBiometrics() {
           useAuthStore.getState().setLocallyUnlocked(true);
           return;
         }
+        // Session is already valid; only a local unlock was needed. Do not fall through to
+        // signInWithBiometrics() — that hits the API and can surface biometricSignInFailed on
+        // cancel/transient prompt failure or unrelated verify errors.
+        return;
       }
 
       const outcome = await signInWithBiometrics();

@@ -26,7 +26,7 @@ export function EditEmailScreen({
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
-          logoSize={sizes.logoScreenLg}
+          logoSize={0}
           title={editEmailScreenStrings.authHeader.title}
           subtitle={editEmailScreenStrings.authHeader.subtitle}
           onBeforeBack={onBeforeBack}

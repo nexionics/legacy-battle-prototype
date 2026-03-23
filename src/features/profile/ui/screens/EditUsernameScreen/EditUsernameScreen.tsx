@@ -1,6 +1,14 @@
 import { View, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Screen, AuthHeader, Input, Button, AppText, SVGWrapper, KeyboardAwareScroll } from '@/shared/ui';
+import {
+  Screen,
+  AuthHeader,
+  Input,
+  Button,
+  AppText,
+  SVGWrapper,
+  KeyboardAwareScroll,
+} from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/theme';
 import { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { EditUsernameScreenProps } from '@/shared/types';
@@ -30,7 +38,7 @@ export function EditUsernameScreen({
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
-          logoSize={sizes.logoScreenLg}
+          logoSize={0}
           title={editUsernameScreenStrings.authHeader.title}
           subtitle={editUsernameScreenStrings.authHeader.subtitle}
           onBeforeBack={onBeforeBack}
