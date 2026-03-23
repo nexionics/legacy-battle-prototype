@@ -67,7 +67,7 @@ export function AccountDetailsScreen({
                   },
                 ]}
               >
-                <Ionicons name="person" size={sizes.icon24} color={colors.textSecondary} />
+                <Ionicons name="person" size={sizes.icon20} color={colors.textSecondary} />
               </View>
             )}
             <TouchableOpacity
@@ -89,7 +89,7 @@ export function AccountDetailsScreen({
               {updateAvatarPending ? (
                 <ActivityIndicator size="small" color={colors.white} />
               ) : (
-                <Ionicons name="camera" size={sizes.icon16} color={colors.white} />
+                <Ionicons name="camera" size={sizes.icon20} color={colors.white} />
               )}
             </TouchableOpacity>
           </View>

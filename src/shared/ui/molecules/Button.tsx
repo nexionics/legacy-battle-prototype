@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   disabled: {
-    opacity: 0.7,
+    opacity: 0.5,
   },
   outlineLabel: {
     fontWeight: fontWeights.medium,

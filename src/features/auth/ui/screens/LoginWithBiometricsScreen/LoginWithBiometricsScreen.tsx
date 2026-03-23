@@ -1,9 +1,9 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Controller } from 'react-hook-form';
-import { Screen, Input, AuthHeader, PatternBackground, Button, AppText } from '@/shared/ui';
-import { colors, spacing } from '@/shared/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { Screen, Input, Button, AppText } from '@/shared/ui';
+import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { LoginWithBiometricsScreenProps } from '@/shared/types';
-import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { UseLoginWithBiometricsReturn } from '../../hooks/hooks.types';
 
 export type LoginWithBiometricsViewProps = LoginWithBiometricsScreenProps &
@@ -20,29 +20,34 @@ export function LoginWithBiometricsScreen({
   isSubmitting,
   biometricBusy,
   onBiometricLoginPress,
-  onUsePasswordInstead,
+  onForgotPasswordPress,
+  onNotYouPress,
   loginScreenStrings,
 }: LoginWithBiometricsViewProps) {
   const s = loginScreenStrings.loginWithBiometricsScreen;
 
   return (
-    <Screen padding={0}>
-      <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <AuthHeader
-          variant={AuthHeaderVariant.Center}
-          showTitleHand
-          title={
-            <AppText variant="h1" style={styles.title}>
-              {s.title}
+    <Screen padding={spacing[5]}>
+      <View style={styles.container}>
+        <View style={styles.topRow}>
+          <TouchableOpacity
+            onPress={onNotYouPress}
+            disabled={isSubmitting || biometricBusy}
+            accessibilityRole="button"
+            accessibilityLabel={s.notYou}
+          >
+            <AppText variant="body2" color={colors.primary} style={styles.notYouTop}>
+              {`Not ${displayName} ?`}
             </AppText>
-          }
-          subtitle={s.subtitle}
-        />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.hero}>
-          <AppText variant="h2" style={styles.displayName}>
-            {displayName}
+          <AppText variant="h4" style={styles.title}>
+            {`${s.title}, ${displayName}`}
+          </AppText>
+          <AppText variant="body2" color={colors.textSecondary} style={styles.subtitle}>
+            {s.subtitle}
           </AppText>
           {accountEmail ? (
             <AppText variant="body2" color={colors.textSecondary} style={styles.email}>
@@ -58,6 +63,7 @@ export function LoginWithBiometricsScreen({
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 ref={passwordRef}
+                label={s.passwordPlaceholder}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -70,63 +76,74 @@ export function LoginWithBiometricsScreen({
             )}
           />
 
-          <Button
-            variant="primary"
-            loading={biometricBusy}
-            disabled={isSubmitting || biometricBusy}
-            onPress={onBiometricLoginPress}
-            style={styles.button}
-          >
-            {s.loginWithBiometrics}
-          </Button>
-
           <TouchableOpacity
-            onPress={onUsePasswordInstead}
+            onPress={onForgotPasswordPress}
             disabled={isSubmitting || biometricBusy}
             accessibilityRole="button"
-            accessibilityLabel={s.usePasswordInstead}
+            accessibilityLabel={s.forgotPassword}
           >
-            <AppText variant="body2" color={colors.primary} style={styles.link}>
-              {s.usePasswordInstead}
+            <AppText variant="body2" color={colors.primary} style={styles.forgotLink}>
+              {s.forgotPassword}
             </AppText>
           </TouchableOpacity>
+        </View>
 
+        <View style={styles.bottomActions}>
           <Button
-            variant="outline"
+            variant="primary"
             loading={isSubmitting}
             disabled={!isValid || isSubmitting || biometricBusy}
             onPress={onSubmit}
-            style={styles.button}
+            style={styles.primaryButton}
           >
             {s.submitLogIn}
           </Button>
+
+          <TouchableOpacity
+            onPress={onBiometricLoginPress}
+            disabled={isSubmitting || biometricBusy}
+            accessibilityRole="button"
+            accessibilityLabel={s.loginWithBiometrics}
+          >
+            <View style={styles.biometricLinkRow}>
+              <Ionicons name="finger-print-outline" size={sizes.icon20} color={colors.primary} />
+              <AppText variant="body1" color={colors.primary} style={styles.biometricText}>
+                {s.loginWithBiometrics}
+              </AppText>
+            </View>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: spacing[5],
-    paddingTop: spacing[4],
-    paddingBottom: spacing[6],
+  container: {
+    flex: 1,
   },
-  title: {
-    textAlign: 'center',
-    width: '100%',
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginVertical: spacing[5],
+  },
+  backButton: {
+    padding: spacing[1],
   },
   hero: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: spacing[5],
     gap: spacing[2],
   },
-  displayName: {
-    textAlign: 'center',
+  title: {
+    textAlign: 'left',
+  },
+  subtitle: {
+    textAlign: 'left',
   },
   email: {
-    textAlign: 'center',
+    textAlign: 'left',
   },
   form: {
     gap: spacing[3],
@@ -134,11 +151,28 @@ const styles = StyleSheet.create({
   inputContainer: {
     gap: spacing[2],
   },
-  button: {
+  forgotLink: {
+    textAlign: 'left',
+    paddingVertical: spacing[1],
+  },
+  bottomActions: {
+    marginTop: 'auto',
+    gap: spacing[5],
+    paddingBottom: spacing[5],
+  },
+  primaryButton: {
     marginTop: spacing[1],
   },
-  link: {
-    textAlign: 'center',
-    paddingVertical: spacing[2],
+  biometricLinkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing[2],
+  },
+  biometricText: {
+    textDecorationLine: 'underline',
+  },
+  notYouTop: {
+    textDecorationLine: 'underline',
   },
 });

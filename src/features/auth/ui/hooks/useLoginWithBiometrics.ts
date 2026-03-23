@@ -12,6 +12,7 @@ import { rnBiometrics, signInWithBiometrics } from '../../lib/biometrics';
 import type { AuthStackParamList } from '@/shared/types';
 import { loginScreenStrings } from '../../string';
 import { useProfileStore } from '@/features/profile/data/store/profile.store';
+import { getProfileById } from '@/features/profile/data/api/profile.api';
 import { biometricPasswordLoginSchema, type BiometricPasswordLoginFormValues } from './validations';
 
 function formatDisplayNameFromEmail(email: string): string {
@@ -51,11 +52,24 @@ export function useLoginWithBiometrics() {
       if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
         const currentUser = useAuthStore.getState().user;
         const profileName = useProfileStore.getState().displayName;
+        const userId = currentUser?.id ?? '';
         setAccountEmail(currentUser?.email || null);
         setDisplayName(
           profileName ||
             (currentUser?.email ? formatDisplayNameFromEmail(currentUser.email) : 'User'),
         );
+
+        if (!profileName && userId) {
+          try {
+            const res = await getProfileById(userId);
+            if (res.success && res.data.displayName) {
+              setDisplayName(res.data.displayName);
+              useProfileStore.getState().setDisplayName(res.data.displayName);
+            }
+          } catch {
+            // Fallback to display name derived from email.
+          }
+        }
         return;
       }
       const email = await getBiometricSecureItem('biometric_email');
@@ -69,7 +83,7 @@ export function useLoginWithBiometrics() {
   }, [navigation]);
 
   const applyAuthSuccess = useCallback(
-    (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
+    async (accessToken: string, refreshToken: string, userId: string, hasUsername: boolean) => {
       setAuthTokens(accessToken, refreshToken);
       setUser({ id: userId });
       useAuthStore.getState().setLocallyUnlocked(true);
@@ -79,6 +93,15 @@ export function useLoginWithBiometrics() {
         return;
       }
       setNeedsUsername(false);
+      try {
+        const res = await getProfileById(userId);
+        if (res.success && res.data.displayName) {
+          setDisplayName(res.data.displayName);
+          useProfileStore.getState().setDisplayName(res.data.displayName);
+        }
+      } catch {
+        // Keep current displayName.
+      }
     },
     [navigation, setAuthTokens, setUser, setNeedsUsername],
   );
@@ -105,7 +128,7 @@ export function useLoginWithBiometrics() {
         }
         return;
       }
-      applyAuthSuccess(
+      await applyAuthSuccess(
         outcome.accessToken,
         outcome.refreshToken,
         outcome.userId,
@@ -141,7 +164,7 @@ export function useLoginWithBiometrics() {
       return;
     }
     if (result.data.outcome === 'AUTHENTICATED') {
-      applyAuthSuccess(
+      await applyAuthSuccess(
         result.data.accessToken,
         result.data.refreshToken,
         result.data.userId,
@@ -152,6 +175,14 @@ export function useLoginWithBiometrics() {
 
   const onUsePasswordInstead = () => {
     passwordRef.current?.focus();
+  };
+
+  const onForgotPasswordPress = () => {
+    navigation.navigate('ForgotPassword');
+  };
+
+  const onNotYouPress = () => {
+    navigation.navigate('EmailLogin');
   };
 
   return {
@@ -167,6 +198,8 @@ export function useLoginWithBiometrics() {
     biometricBusy,
     onBiometricLoginPress: runBiometricSignIn,
     onUsePasswordInstead,
+    onForgotPasswordPress,
+    onNotYouPress,
     loginScreenStrings,
   };
 }

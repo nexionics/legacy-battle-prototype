@@ -3,8 +3,8 @@ import { horizontalScale, verticalScale } from '@/shared/theme';
 /** Design reference sizes → scaled for layout (width: horizontalScale, height: verticalScale). */
 const AVATAR_W = 56;
 const AVATAR_H = 56;
-const BADGE_W = 20;
-const BADGE_H = 20;
+const BADGE_W = 26;
+const BADGE_H = 25;
 const BADGE_INSET = 2;
 const CONTENT_MAX_W = 366;
 const SWITCH_TRACK_W = 44;

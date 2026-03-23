@@ -60,6 +60,8 @@ export const loginScreenStrings = {
     passwordPlaceholder: 'Password',
     loginWithBiometrics: 'Log in with biometrics',
     usePasswordInstead: 'Use password instead',
+    notYou: 'Not You ?',
+    forgotPassword: 'Forgot password?',
     submitLogIn: 'Log in with password',
     biometricSignInFailed: 'Could not sign in with biometrics. Try your password.',
   },
