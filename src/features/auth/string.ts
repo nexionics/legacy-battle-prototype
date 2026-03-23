@@ -63,7 +63,7 @@ export const loginScreenStrings = {
     notYou: 'Not You ?',
     forgotPassword: 'Forgot password?',
     submitLogIn: 'Log in with password',
-    biometricSignInFailed: 'Could not sign in with biometrics. Try your password.',
+    biometricSignInFailed: 'Too many attempts. Try your password.',
   },
 } as const;
 

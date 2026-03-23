@@ -1,9 +1,12 @@
+import type { ComponentProps } from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { spacing } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import type { SettingRowProps } from '@/shared/types';
+
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
 export function SettingRow({
   icon,
@@ -30,7 +33,7 @@ export function SettingRow({
           },
         ]}
       >
-        <Ionicons name={icon as any} size={16} color={iconColor || colors.primary} />
+        <Ionicons name={icon as IoniconName} size={16} color={iconColor || colors.primary} />
       </View>
 
       <View style={styles.textContainer}>

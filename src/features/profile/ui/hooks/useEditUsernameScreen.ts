@@ -127,7 +127,7 @@ export function useEditUsernameScreen({ navigation }: Pick<EditUsernameScreenPro
     updateProfilePending: updateProfileMutation.isPending,
     handleSave,
     editUsernameScreenStrings,
-    onBeforeBack: () => navigation.goBack(),
+    onBeforeBack: () => {},
   };
 }
 

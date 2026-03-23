@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -9,6 +9,7 @@ import {
   AuthOrGoogleFooter,
   Button,
   AppText,
+  KeyboardAwareScroll,
 } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { EmailLoginScreenProps } from '@/shared/types';
@@ -37,7 +38,7 @@ export function EmailLoginScreen({
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <KeyboardAwareScroll contentContainerStyle={styles.scrollContent}>
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
@@ -121,7 +122,7 @@ export function EmailLoginScreen({
             googleDisabled={formDisabled}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

@@ -10,6 +10,7 @@ import {
   PatternBackground,
   Button,
   SVGWrapper,
+  KeyboardAwareScroll,
 } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { CreateUsernameScreenProps } from '@/shared/types';
@@ -28,6 +29,7 @@ export function CreateUsernameScreen({
   isCheckingUsername,
   isUsernameAvailable,
   usernameStatusMessage,
+  handleUsernameChange,
   onBackPress,
   createUsernameScreenStrings,
   loginScreenStrings,
@@ -35,7 +37,7 @@ export function CreateUsernameScreen({
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
-      <View style={styles.content}>
+      <KeyboardAwareScroll contentContainerStyle={styles.content}>
         <ScreenHeader onBack={onBackPress} />
 
         <AuthHeader
@@ -53,7 +55,7 @@ export function CreateUsernameScreen({
               <Input
                 label={createUsernameScreenStrings.form.usernameLabel}
                 value={value}
-                onChangeText={onChange}
+                onChangeText={(text) => handleUsernameChange(text, onChange)}
                 onBlur={onBlur}
                 placeholder={createUsernameScreenStrings.form.usernamePlaceholder}
                 autoCapitalize="none"
@@ -99,7 +101,7 @@ export function CreateUsernameScreen({
         >
           {createUsernameScreenStrings.primaryCta.startBattle}
         </Button>
-      </View>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { type ComponentProps } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { spacing, radii } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import type { SettingSectionProps } from '@/shared/types';
+
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
 export function SettingSection({ title, subtitle, icon, children, style }: SettingSectionProps) {
   const colors = useThemeColors();
@@ -26,7 +28,7 @@ export function SettingSection({ title, subtitle, icon, children, style }: Setti
             <View style={styles.headerTop}>
               {icon && (
                 <View style={styles.iconWrapper}>
-                  <Ionicons name={icon as any} size={24} color={colors.text} />
+                  <Ionicons name={icon as IoniconName} size={24} color={colors.text} />
                 </View>
               )}
               <View style={styles.titleWrapper}>

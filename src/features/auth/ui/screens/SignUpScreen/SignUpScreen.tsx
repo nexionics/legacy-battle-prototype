@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -9,6 +9,7 @@ import {
   PatternBackground,
   AuthOrGoogleFooter,
   Button,
+  KeyboardAwareScroll,
 } from '@/shared/ui';
 import { colors, spacing, fontSizes, sizes } from '@/shared/constants/theme';
 import type { SignUpScreenProps } from '@/shared/types';
@@ -32,7 +33,7 @@ export function SignUpScreen({
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <KeyboardAwareScroll contentContainerStyle={styles.scrollContent}>
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
@@ -134,7 +135,7 @@ export function SignUpScreen({
             onFooterLinkPress={onFooterLinkPress}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

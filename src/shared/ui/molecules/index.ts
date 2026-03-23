@@ -18,4 +18,5 @@ export { SettingRow } from './SettingRow';
 export { SettingSection } from './SettingSection';
 export { DropdownField } from './DropdownField';
 export { OTPInput } from './OTPInput';
+export { KeyboardAwareScroll } from './KeyboardAwareScroll';
 export type { OTPInputProps } from '@/shared/types';

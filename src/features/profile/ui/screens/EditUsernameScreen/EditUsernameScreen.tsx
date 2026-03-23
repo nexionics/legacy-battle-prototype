@@ -1,6 +1,6 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Screen, AuthHeader, Input, Button, AppText, SVGWrapper } from '@/shared/ui';
+import { Screen, AuthHeader, Input, Button, AppText, SVGWrapper, KeyboardAwareScroll } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/theme';
 import { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { EditUsernameScreenProps } from '@/shared/types';
@@ -26,7 +26,7 @@ export function EditUsernameScreen({
 
   return (
     <Screen padding={0}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <KeyboardAwareScroll contentContainerStyle={styles.scrollContent}>
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
@@ -88,7 +88,7 @@ export function EditUsernameScreen({
             {editUsernameScreenStrings.changeButton}
           </Button>
         </View>
-      </ScrollView>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

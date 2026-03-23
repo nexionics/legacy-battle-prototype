@@ -1,6 +1,11 @@
 import React, { useCallback, useMemo, forwardRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { BottomSheetModal, BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+  BottomSheetModal,
+  BottomSheetBackdrop,
+  BottomSheetView,
+  type BottomSheetBackdropProps,
+} from '@gorhom/bottom-sheet';
 import { colors, spacing } from '@/shared/theme';
 import { Button } from '@/shared/ui/molecules/Button';
 import Confetti from 'assets/confetti.svg';
@@ -19,7 +24,7 @@ export const SuccessBottomSheet = forwardRef<BottomSheetModal, SuccessBottomShee
     const snapPoints = useMemo(() => ['45%'], []);
 
     const renderBackdrop = useCallback(
-      (props: any) => (
+      (props: BottomSheetBackdropProps) => (
         <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.5} />
       ),
       [],

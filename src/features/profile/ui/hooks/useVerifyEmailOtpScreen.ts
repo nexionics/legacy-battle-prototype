@@ -1,8 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import type { VerifyEmailOTPScreenProps } from '@/shared/types';
 import { OTP_LENGTH, VERIFY_OTP_COOLDOWN_SEC } from '@/shared/constants';
 import { verifyEmailOtpScreenStrings } from '../../string';
-import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useToast } from '@/app/providers';
 import { useAuthStore } from '@/features/auth';
 import { resendEmailChangeOtp, verifyEmailChange } from '../../data/api/profile.api';
@@ -19,7 +18,6 @@ export function useVerifyEmailOtpScreen({
 
   const { seconds: resendTimer, canResend, reset: resetTimer } = useCountdown(VERIFY_OTP_COOLDOWN_SEC);
 
-  const successSheetRef = useRef<BottomSheetModal>(null);
   const { showToast } = useToast();
   const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
@@ -37,7 +35,8 @@ export function useVerifyEmailOtpScreen({
         if (user) {
           setUser({ ...user, email });
         }
-        successSheetRef.current?.present();
+        showToast('success', verifyEmailOtpScreenStrings.toast.verifySuccess);
+        navigation.navigate('AccountDetails');
       } else {
         showToast('fail', response.error.message);
       }
@@ -68,19 +67,12 @@ export function useVerifyEmailOtpScreen({
     }
   };
 
-  const handleDone = () => {
-    successSheetRef.current?.dismiss();
-    navigation.pop(2);
-  };
-
   return {
     email,
     otp,
     setOtp,
     isSubmitting,
-    successSheetRef,
     handleVerify,
-    handleDone,
     handleResend,
     canResend,
     resendTimer,

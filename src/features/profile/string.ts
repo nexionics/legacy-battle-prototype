@@ -71,6 +71,8 @@ export const changePasswordScreenStrings = {
     fillAllFields: 'Please fill in all fields',
     passwordsMismatch: 'New passwords do not match',
     passwordTooShort: 'Password must be at least 8 characters long',
+    passwordComplexity: 'Password must contain at least one letter and one number',
+    success: 'Password updated successfully',
     changeFailed: 'Failed to change password. Please try again.',
   },
 } as const;
@@ -121,6 +123,7 @@ export const verifyEmailOtpScreenStrings = {
   },
   toast: {
     resendSuccess: 'Verification code resent',
+    verifySuccess: 'Email verified successfully',
   },
 } as const;
 

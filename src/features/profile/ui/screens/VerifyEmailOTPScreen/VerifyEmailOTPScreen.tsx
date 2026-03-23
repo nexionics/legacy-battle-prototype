@@ -8,7 +8,6 @@ import {
   SVGWrapper,
   Button,
   OTPInput,
-  SuccessBottomSheet,
 } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { VerifyEmailOTPScreenProps } from '@/shared/types';
@@ -22,16 +21,13 @@ export function VerifyEmailOTPScreen({
   otp,
   setOtp,
   isSubmitting,
-  successSheetRef,
   handleVerify,
-  handleDone,
   handleResend,
   canResend,
   resendTimer,
   verifyEmailOtpScreenStrings,
   onBack,
   otpLength,
-  navigation,
 }: VerifyEmailOTPScreenViewProps) {
   return (
     <Screen padding={0}>
@@ -93,12 +89,6 @@ export function VerifyEmailOTPScreen({
         </Button>
       </View>
 
-      <SuccessBottomSheet
-        ref={successSheetRef}
-        onClose={handleDone}
-        title={verifyEmailOtpScreenStrings.successSheet.title}
-        subtitle={verifyEmailOtpScreenStrings.successSheet.subtitle}
-      />
     </Screen>
   );
 }

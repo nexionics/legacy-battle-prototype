@@ -1,33 +1,57 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import * as yup from 'yup';
 import { useToast } from '@/app/providers/useToast';
 import type { ChangePasswordScreenProps } from '@/shared/types';
 import { useChangePassword } from '../../data/mutations/useChangePassword';
 import { useAuthStore } from '@/features/auth/data/store/auth.store';
 import { changePasswordScreenStrings } from '../../string';
-import type { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { changePasswordSchema } from './validations';
 
 export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScreenProps, 'navigation'>) {
   const { showToast } = useToast();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
   const user = useAuthStore((state) => state.user);
   const changePasswordMutation = useChangePassword(user?.id);
 
+  const getErrorMessage = (error: unknown): string => {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      typeof (error as { response?: unknown }).response === 'object' &&
+      (error as { response?: unknown }).response !== null
+    ) {
+      const response = (error as { response: { data?: unknown } }).response;
+      if (
+        typeof response.data === 'object' &&
+        response.data !== null &&
+        'message' in response.data &&
+        typeof (response.data as { message?: unknown }).message === 'string'
+      ) {
+        return (response.data as { message: string }).message;
+      }
+    }
+    return changePasswordScreenStrings.toast.changeFailed;
+  };
+
   const handleSave = async () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      showToast('fail', changePasswordScreenStrings.toast.fillAllFields);
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      showToast('fail', changePasswordScreenStrings.toast.passwordsMismatch);
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      showToast('fail', changePasswordScreenStrings.toast.passwordTooShort);
+    try {
+      await changePasswordSchema.validate(
+        {
+          oldPassword: currentPassword,
+          newPassword,
+          confirmPassword,
+        },
+        { abortEarly: true },
+      );
+    } catch (error: unknown) {
+      if (error instanceof yup.ValidationError) {
+        showToast('fail', error.message);
+      } else {
+        showToast('fail', changePasswordScreenStrings.toast.changeFailed);
+      }
       return;
     }
 
@@ -36,19 +60,11 @@ export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScree
         oldPassword: currentPassword,
         newPassword,
       });
-      requestAnimationFrame(() => {
-        bottomSheetRef.current?.present();
-      });
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || changePasswordScreenStrings.toast.changeFailed;
-      showToast('fail', errorMessage);
+      showToast('success', changePasswordScreenStrings.toast.success);
+      navigation.navigate('SecurityPrivacy');
+    } catch (error: unknown) {
+      showToast('fail', getErrorMessage(error));
     }
-  };
-
-  const onSuccessSheetClose = () => {
-    bottomSheetRef.current?.dismiss();
-    navigation.goBack();
   };
 
   return {
@@ -58,10 +74,8 @@ export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScree
     setNewPassword,
     confirmPassword,
     setConfirmPassword,
-    bottomSheetRef,
     changePasswordPending: changePasswordMutation.isPending,
     handleSave,
-    onSuccessSheetClose,
     changePasswordScreenStrings,
     onBeforeBack: () => navigation.goBack(),
   };

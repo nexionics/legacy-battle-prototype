@@ -41,8 +41,8 @@ export function ProfileScreen({
         <Screen padding={0} edges={['top', 'left', 'right']}>
           <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <ProfileHeader
-              displayName={profile?.displayName ?? undefined}
-              username={profile?.username ?? undefined}
+              displayName={profile?.displayName || user?.displayName || undefined}
+              username={profile?.username || user?.username || undefined}
               email={user?.email ?? undefined}
               xp={xpValue}
               avatarUrl={profile?.avatarUrl}

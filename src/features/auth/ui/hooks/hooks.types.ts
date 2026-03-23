@@ -51,6 +51,8 @@ export type UseLoginWithBiometricsReturn = {
   biometricBusy: boolean;
   onBiometricLoginPress: () => void;
   onUsePasswordInstead: () => void;
+  onForgotPasswordPress: () => void;
+  onNotYouPress: () => void;
   loginScreenStrings: typeof loginScreenStrings;
 };
 

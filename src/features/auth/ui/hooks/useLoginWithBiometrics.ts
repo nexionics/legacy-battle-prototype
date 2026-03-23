@@ -94,7 +94,7 @@ export function useLoginWithBiometrics() {
       if (useAuthStore.getState().isAuthenticated && useAuthStore.getState().user) {
         const currentUser = useAuthStore.getState().user;
         const profileName = useProfileStore.getState().displayName;
-        const email = currentUser?.email || null;
+        const email = currentUser?.email || (await getBiometricSecureItem('biometric_email')) || null;
         setAccountEmail(email);
         setDisplayName(profileName || (email ? formatDisplayNameFromEmail(email) : 'User'));
         if (email) runBiometricSignIn();
@@ -142,6 +142,14 @@ export function useLoginWithBiometrics() {
     passwordRef.current?.focus();
   };
 
+  const onForgotPasswordPress = () => {
+    navigation.navigate('ForgotPassword');
+  };
+
+  const onNotYouPress = () => {
+    navigation.navigate('EmailLogin');
+  };
+
   return {
     passwordRef,
     displayName,
@@ -155,6 +163,8 @@ export function useLoginWithBiometrics() {
     biometricBusy,
     onBiometricLoginPress: runBiometricSignIn,
     onUsePasswordInstead,
+    onForgotPasswordPress,
+    onNotYouPress,
     loginScreenStrings,
   };
 }

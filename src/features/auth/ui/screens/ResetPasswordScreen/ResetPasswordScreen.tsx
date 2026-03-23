@@ -1,7 +1,15 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, Input, AuthHeader, PatternBackground, Button, AppText } from '@/shared/ui';
+import {
+  Screen,
+  Input,
+  AuthHeader,
+  PatternBackground,
+  Button,
+  AppText,
+  KeyboardAwareScroll,
+} from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { ResetPasswordScreenProps } from '@/shared/types';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
@@ -23,7 +31,7 @@ export function ResetPasswordScreen({
   return (
     <Screen padding={0}>
       <PatternBackground text={loginScreenStrings.backgroundPattern.watermarkText} />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <KeyboardAwareScroll contentContainerStyle={styles.scrollContent}>
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
@@ -86,7 +94,7 @@ export function ResetPasswordScreen({
             {copy.submitCta}
           </Button>
         </View>
-      </ScrollView>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

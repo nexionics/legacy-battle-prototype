@@ -1,7 +1,7 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, Input, Button, AppText } from '@/shared/ui';
+import { Screen, Input, Button, AppText, KeyboardAwareScroll } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { LoginWithBiometricsScreenProps } from '@/shared/types';
 import type { UseLoginWithBiometricsReturn } from '../../hooks/hooks.types';
@@ -28,7 +28,7 @@ export function LoginWithBiometricsScreen({
 
   return (
     <Screen padding={spacing[5]}>
-      <View style={styles.container}>
+      <KeyboardAwareScroll contentContainerStyle={styles.container}>
         <View style={styles.topRow}>
           <TouchableOpacity
             onPress={onNotYouPress}
@@ -113,7 +113,7 @@ export function LoginWithBiometricsScreen({
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }

@@ -1,6 +1,6 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, AuthHeader, Input, Button } from '@/shared/ui';
+import { Screen, AuthHeader, Input, Button, KeyboardAwareScroll } from '@/shared/ui';
 import { spacing, sizes } from '@/shared/theme';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { EditEmailScreenProps } from '@/shared/types';
@@ -16,13 +16,13 @@ export function EditEmailScreen({
   editEmailScreenStrings,
   onBeforeBack,
   isSubmitting,
-  user,
+  initialEmail,
 }: EditEmailScreenViewProps) {
   const themeColors = useThemeColors();
 
   return (
     <Screen padding={0}>
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+      <KeyboardAwareScroll contentContainerStyle={styles.scrollContent}>
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
@@ -51,12 +51,12 @@ export function EditEmailScreen({
             onPress={handleVerify}
             style={styles.saveButton}
             loading={isSubmitting}
-            disabled={!email || email === user?.email || isSubmitting}
+            disabled={!email || email === initialEmail || isSubmitting}
           >
             {editEmailScreenStrings.verifyButton}
           </Button>
         </View>
-      </ScrollView>
+      </KeyboardAwareScroll>
     </Screen>
   );
 }
