@@ -11,10 +11,14 @@ export type ChangePasswordScreenViewProps = ChangePasswordScreenProps &
 export function ChangePasswordScreen({
   currentPassword,
   setCurrentPassword,
+  currentPasswordError,
   newPassword,
   setNewPassword,
+  newPasswordError,
   confirmPassword,
   setConfirmPassword,
+  confirmPasswordError,
+  isFormValid,
   changePasswordPending,
   handleSave,
   changePasswordScreenStrings,
@@ -40,6 +44,7 @@ export function ChangePasswordScreen({
               isPassword
               placeholder={changePasswordScreenStrings.fields.placeholder}
               editable={!changePasswordPending}
+            error={currentPasswordError}
               containerStyle={styles.inputContainer}
             />
 
@@ -50,6 +55,7 @@ export function ChangePasswordScreen({
               isPassword
               placeholder={changePasswordScreenStrings.fields.placeholder}
               editable={!changePasswordPending}
+            error={newPasswordError}
               containerStyle={styles.inputContainer}
             />
 
@@ -60,12 +66,14 @@ export function ChangePasswordScreen({
               isPassword
               placeholder={changePasswordScreenStrings.fields.placeholder}
               editable={!changePasswordPending}
+            error={confirmPasswordError}
               containerStyle={styles.inputContainer}
             />
 
             <Button
               variant="primary"
               loading={changePasswordPending}
+            disabled={!isFormValid || changePasswordPending}
               onPress={handleSave}
               style={styles.submitButton}
             >

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useToast } from '@/app/providers/useToast';
 import type { ChangePasswordScreenProps } from '@/shared/types';
@@ -36,22 +36,48 @@ export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScree
     return changePasswordScreenStrings.toast.changeFailed;
   };
 
-  const handleSave = async () => {
+  const validationErrors = useMemo(() => {
     try {
-      await changePasswordSchema.validate(
+      changePasswordSchema.validateSync(
         {
           oldPassword: currentPassword,
           newPassword,
           confirmPassword,
         },
-        { abortEarly: true },
+        { abortEarly: false },
       );
+      return {};
     } catch (error: unknown) {
-      if (error instanceof yup.ValidationError) {
-        showToast('fail', error.message);
-      } else {
-        showToast('fail', changePasswordScreenStrings.toast.changeFailed);
-      }
+      if (!(error instanceof yup.ValidationError)) return {};
+
+      const next: {
+        oldPassword?: string;
+        newPassword?: string;
+        confirmPassword?: string;
+      } = {};
+
+      error.inner.forEach((issue) => {
+        if (!issue.path || !issue.message) return;
+        if (issue.path === 'oldPassword' && !next.oldPassword) next.oldPassword = issue.message;
+        if (issue.path === 'newPassword' && !next.newPassword) next.newPassword = issue.message;
+        if (issue.path === 'confirmPassword' && !next.confirmPassword)
+          next.confirmPassword = issue.message;
+      });
+
+      return next;
+    }
+  }, [currentPassword, newPassword, confirmPassword]);
+
+  const isFormValid =
+    currentPassword.length > 0 &&
+    newPassword.length > 0 &&
+    confirmPassword.length > 0 &&
+    !validationErrors.oldPassword &&
+    !validationErrors.newPassword &&
+    !validationErrors.confirmPassword;
+
+  const handleSave = async () => {
+    if (!isFormValid) {
       return;
     }
 
@@ -74,6 +100,10 @@ export function useChangePasswordScreen({ navigation }: Pick<ChangePasswordScree
     setNewPassword,
     confirmPassword,
     setConfirmPassword,
+    currentPasswordError: validationErrors.oldPassword,
+    newPasswordError: validationErrors.newPassword,
+    confirmPasswordError: validationErrors.confirmPassword,
+    isFormValid,
     changePasswordPending: changePasswordMutation.isPending,
     handleSave,
     changePasswordScreenStrings,
