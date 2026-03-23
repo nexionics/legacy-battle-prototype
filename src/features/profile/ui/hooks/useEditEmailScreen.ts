@@ -30,23 +30,34 @@ export function useEditEmailScreen({ navigation }: Pick<EditEmailScreenProps, 'n
     };
   }, [user?.email]);
 
+  const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Something went wrong';
+
   const handleVerify = async () => {
-    if (!email || email === initialEmail) {
+    const nextEmail = email.trim();
+    if (!nextEmail || nextEmail === initialEmail.trim()) {
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const response = await requestEmailChange(email);
+      const response = await requestEmailChange(nextEmail);
       if (response.success) {
-        setIsSubmitting(false);
-        navigation.navigate('VerifyEmailOTP', {
-          email,
-          reference: response.data.reference,
-        });
+        const ref = response.data.reference;
+        if (typeof ref === 'string' && ref.length > 0) {
+          navigation.navigate('VerifyEmailOTP', {
+            email: nextEmail,
+            reference: ref,
+          });
+          return;
+        }
+        showToast('fail', 'Invalid response from server');
         return;
       }
       showToast('fail', response.error.message);
+    } catch (error: unknown) {
+      // authenticatedHttp throws on { success: false } before a value is returned
+      showToast('fail', getErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }

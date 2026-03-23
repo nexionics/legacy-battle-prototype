@@ -51,7 +51,9 @@ export function EditEmailScreen({
             onPress={handleVerify}
             style={styles.saveButton}
             loading={isSubmitting}
-            disabled={!email || email === initialEmail || isSubmitting}
+            disabled={
+              !email.trim() || email.trim() === initialEmail.trim() || isSubmitting
+            }
           >
             {editEmailScreenStrings.verifyButton}
           </Button>
