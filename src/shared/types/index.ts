@@ -86,6 +86,7 @@ export type {
   EditUsernameScreenProps,
   EditEmailScreenProps,
   VerifyEmailOTPScreenProps,
+  TermsOfServiceScreenProps,
 } from './navigation';
 export type {
   LevelInfo,

@@ -224,7 +224,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
           icon="document-text-outline"
           title="Terms Of Service"
           subtitle="Personal Information's"
-          onPress={() => {}}
+          onPress={() => navigation.navigate('TermsOfService')}
           iconColor="#FFD3A3"
           iconBgColor="#FEEEE633"
         />

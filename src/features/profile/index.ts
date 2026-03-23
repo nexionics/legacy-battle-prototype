@@ -10,3 +10,4 @@ export { default as SecurityPrivacyScreen } from './ui/screens/SecurityPrivacySc
 export { default as EditUsernameScreen } from './ui/screens/EditUsernameScreen';
 export { default as EditEmailScreen } from './ui/screens/EditEmailScreen';
 export { default as VerifyEmailOTPScreen } from './ui/screens/VerifyEmailOTPScreen';
+export { default as TermsOfServiceScreen } from './ui/screens/TermsOfServiceScreen';

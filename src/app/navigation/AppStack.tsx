@@ -27,6 +27,7 @@ import {
   EditUsernameScreen,
   EditEmailScreen,
   VerifyEmailOTPScreen,
+  TermsOfServiceScreen,
 } from '@/features/profile';
 import { AllResultsScreen, AllUpcomingGamesScreen } from '@/features/sports';
 import { RootStackParamList } from './types';
@@ -54,6 +55,7 @@ export default function AppStack() {
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
       <Stack.Screen name="ContactUs" component={ContactUsScreen} />
       <Stack.Screen name="SecurityPrivacy" component={SecurityPrivacyScreen} />
+      <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
       <Stack.Screen name="EditUsername" component={EditUsernameScreen} />
       <Stack.Screen name="EditEmail" component={EditEmailScreen} />

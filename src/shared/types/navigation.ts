@@ -111,9 +111,11 @@ export type RootStackParamList = {
   EditUsername: undefined;
   EditEmail: undefined;
   VerifyEmailOTP: { email: string };
+  TermsOfService: undefined;
 };
 
 export type VerifyEmailOTPScreenProps = RootStackScreenProps<'VerifyEmailOTP'>;
+export type TermsOfServiceScreenProps = RootStackScreenProps<'TermsOfService'>;
 
 export type AuthScreenProps<ScreenName extends keyof AuthStackParamList> = NativeStackScreenProps<
   AuthStackParamList,

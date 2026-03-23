@@ -12,7 +12,10 @@ export type SuccessBottomSheetProps = {
 };
 
 export const SuccessBottomSheet = forwardRef<BottomSheetModal, SuccessBottomSheetProps>(
-  ({ onClose, title = 'Success!', subtitle = 'Your request has been processed successfully.' }, ref) => {
+  (
+    { onClose, title = 'Success!', subtitle = 'Your request has been processed successfully.' },
+    ref,
+  ) => {
     const snapPoints = useMemo(() => ['45%'], []);
 
     const renderBackdrop = useCallback(
