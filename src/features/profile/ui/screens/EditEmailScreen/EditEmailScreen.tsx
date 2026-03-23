@@ -1,29 +1,22 @@
-import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import { Screen, AuthHeader, Input, Button } from '@/shared/ui';
 import { spacing, sizes } from '@/shared/theme';
 import { AuthHeaderVariant } from '@/shared/utils/enum';
 import type { EditEmailScreenProps } from '@/shared/types';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
-import { useToast } from '@/app/providers/useToast';
-import { useAuthStore } from '@/features/auth/data/store/auth.store';
+import type { UseEditEmailScreenReturn } from '../../hooks/useEditEmailScreen';
 
-export default function EditEmailScreen({ navigation }: EditEmailScreenProps) {
+export type EditEmailScreenViewProps = EditEmailScreenProps & UseEditEmailScreenReturn;
+
+export function EditEmailScreen({
+  email,
+  setEmail,
+  handleVerify,
+  editEmailScreenStrings,
+  onBeforeBack,
+}: EditEmailScreenViewProps) {
   const themeColors = useThemeColors();
-  const { showToast } = useToast();
-  const user = useAuthStore((state) => state.user);
-
-  const [email, setEmail] = useState(user?.email || '');
-
-  const handleVerify = () => {
-    if (!email) {
-      showToast('fail', 'Please enter an email address');
-      return;
-    }
-    navigation.navigate('VerifyEmailOTP', { email });
-  };
 
   return (
     <Screen padding={0}>
@@ -31,18 +24,18 @@ export default function EditEmailScreen({ navigation }: EditEmailScreenProps) {
         <AuthHeader
           variant={AuthHeaderVariant.Left}
           canGoBack
-          logoSize={64}
-          title="Edit Email Address"
-          subtitle="Edit Your Email Address"
-          onBeforeBack={() => navigation.goBack()}
+          logoSize={sizes.logoScreenLg}
+          title={editEmailScreenStrings.authHeader.title}
+          subtitle={editEmailScreenStrings.authHeader.subtitle}
+          onBeforeBack={onBeforeBack}
         />
 
         <View style={styles.form}>
           <Input
-            label="Email Address"
+            label={editEmailScreenStrings.fieldLabel}
             value={email}
             onChangeText={setEmail}
-            placeholder="example@email.com"
+            placeholder={editEmailScreenStrings.placeholder}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -52,7 +45,7 @@ export default function EditEmailScreen({ navigation }: EditEmailScreenProps) {
           />
 
           <Button variant="primary" onPress={handleVerify} style={styles.saveButton}>
-            Verify Email
+            {editEmailScreenStrings.verifyButton}
           </Button>
         </View>
       </ScrollView>

@@ -1,68 +1,69 @@
-import React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
-import { spacing } from '@/shared/theme';
+import { spacing, lineHeights } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader } from '@/shared/ui';
 import type { PrivacyPolicyScreenProps } from '@/shared/types';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
+import type { UsePrivacyPolicyScreenReturn } from '../../hooks/usePrivacyPolicyScreen';
 
-export default function PrivacyPolicyScreen({ navigation }: PrivacyPolicyScreenProps) {
+export type PrivacyPolicyScreenViewProps = PrivacyPolicyScreenProps & UsePrivacyPolicyScreenReturn;
+
+export function PrivacyPolicyScreen({
+  navigation,
+  privacyPolicyScreenStrings,
+}: PrivacyPolicyScreenViewProps) {
   const colors = useThemeColors();
 
   return (
     <Screen padding={spacing[4]}>
-      <ScreenHeader title="Privacy And Policy" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={privacyPolicyScreenStrings.title} onBack={() => navigation.goBack()} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <AppText variant="body2" style={[styles.date, { color: colors.textSecondary }]}>
-          Effective Date: October 29, 2025
+          {privacyPolicyScreenStrings.effectiveDate}
         </AppText>
 
         <View style={styles.section}>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Entity: Legacy Battle LLC ("Legacy Battle," "We," "Us," "Our")
+            {privacyPolicyScreenStrings.entityLine}
           </AppText>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Contact:{' '}
-            <AppText style={{ textDecorationLine: 'underline' }}>Legal@Legacybattle.Com</AppText> •{' '}
-            <AppText style={{ textDecorationLine: 'underline' }}>702-835-9300</AppText>
+            {privacyPolicyScreenStrings.contactLabel}{' '}
+            <AppText style={{ textDecorationLine: 'underline' }}>
+              {privacyPolicyScreenStrings.contactEmail}
+            </AppText>{' '}
+            •{' '}
+            <AppText style={{ textDecorationLine: 'underline' }}>
+              {privacyPolicyScreenStrings.contactPhone}
+            </AppText>
           </AppText>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Address: 5940 S. Rainbow Boulevard, Las Vegas, NV 89118
+            {privacyPolicyScreenStrings.addressLine}
           </AppText>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Business Hours: Mon–Fri, 9:00am–5:00pm PT
+            {privacyPolicyScreenStrings.businessHours}
           </AppText>
         </View>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          Legacy Battle Operates A Competitive Skill Platform Where Users Issue, Accept, And
-          Spectate Battles; Manage Battle Coins (BC) As Virtual, Non-Monetary Credits; And Share
-          Outcomes And Highlights (The "Services"). By Using The Services You Agree To This Privacy
-          Policy And Our Terms.
+          {privacyPolicyScreenStrings.introParagraph1}
         </AppText>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          We Currently Target Adults 18+ (And 21+ Where Required For Gated Features). We Do Not Sell
-          Or Share Personal Information For Cross-Context Behavioral Advertising And We Honor Global
-          Privacy Control (GPC) Signals.
+          {privacyPolicyScreenStrings.introParagraph2}
         </AppText>
 
         <View style={styles.sectionTitleContainer}>
           <AppText variant="h6" style={{ color: colors.text }}>
-            1) Notice At Collection (What We Collect & Why)
+            {privacyPolicyScreenStrings.section1Title}
           </AppText>
         </View>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          We Collect The Categories Below For The Listed Purposes. We Maintain Role-Based Access,
-          Log Access, And Apply Least-Privilege.
+          {privacyPolicyScreenStrings.section1P1}
         </AppText>
 
         <AppText variant="body2" style={[styles.paragraph, { color: colors.text }]}>
-          Sensitive Data & Permissions. With Your Permission, The App May Access Camera, Microphone,
-          And Photo Library To Capture Verification Evidence. You Can Revoke Permissions In Device
-          Settings. We Do Not Collect Precise GPS Or Biometric Identifiers For Identity; If That
-          Changes, We Will Update This Policy And Obtain Any Required Consent.
+          {privacyPolicyScreenStrings.section1P2}
         </AppText>
       </ScrollView>
     </Screen>
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     marginBottom: spacing[4],
-    lineHeight: 22,
+    lineHeight: lineHeights.md,
   },
   sectionTitleContainer: {
     marginTop: spacing[4],

@@ -1,4 +1,5 @@
 import type { GestureResponderEvent } from 'react-native';
+import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { BattleMode, StatDuelPlayer, StatDuelStatCategory, StatDuelOpponent } from './battle';
@@ -127,6 +128,12 @@ export type TabScreenProps<ScreenName extends keyof TabStackParamList> = BottomT
   ScreenName
 >;
 
+/** Profile tab: can navigate to root-stack screens (e.g. Friends, ContactUs). */
+export type ProfileScreenProps = CompositeScreenProps<
+  BottomTabScreenProps<TabStackParamList, 'Profile'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
+
 export type RootStackScreenProps<ScreenName extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, ScreenName>;
 
@@ -157,7 +164,9 @@ export type AllResultsScreenProps = RootStackScreenProps<'AllResults'>;
 export type AllUpcomingGamesScreenProps = RootStackScreenProps<'AllUpcomingGames'>;
 export type FriendsScreenProps = RootStackScreenProps<'Friends'>;
 export type AddFriendScreenProps = RootStackScreenProps<'AddFriend'>;
+export type DevDebugScreenProps = RootStackScreenProps<'DevDebug'>;
 export type SettingsScreenProps = RootStackScreenProps<'Settings'>;
+export type SecurityPrivacyScreenProps = RootStackScreenProps<'SecurityPrivacy'>;
 export type AccountDetailsScreenProps = RootStackScreenProps<'AccountDetails'>;
 export type PrivacyPolicyScreenProps = RootStackScreenProps<'PrivacyPolicy'>;
 export type ChangePasswordScreenProps = RootStackScreenProps<'ChangePassword'>;

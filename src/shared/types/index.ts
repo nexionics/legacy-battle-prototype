@@ -50,6 +50,7 @@ export type {
   RootStackParamList,
   AuthScreenProps,
   TabScreenProps,
+  ProfileScreenProps,
   RootStackScreenProps,
   AppStackParamList,
   TabParamList,
@@ -79,6 +80,8 @@ export type {
   VerifyResetOTPScreenProps,
   ResetPasswordScreenProps,
   SettingsScreenProps,
+  SecurityPrivacyScreenProps,
+  DevDebugScreenProps,
   AccountDetailsScreenProps,
   PrivacyPolicyScreenProps,
   ChangePasswordScreenProps,
@@ -89,6 +92,7 @@ export type {
   TermsOfServiceScreenProps,
 } from './navigation';
 export type {
+  AccountDetailsInfoRowProps,
   LevelInfo,
   ConnectionStatus,
   UserPreferences,

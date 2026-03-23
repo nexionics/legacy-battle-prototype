@@ -1,67 +1,25 @@
-import React, { useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { supabase } from '@/shared/lib/supabaseClient';
-import { colors, spacing, radii } from '@/shared/theme';
+import { colors, spacing, radii, borderWidths } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useProfileStore } from '@/features/profile/data/store/profile.store';
-import type { ConnectionStatus } from '@/shared/types';
+import type { DevDebugScreenProps } from '@/shared/types';
+import type { UseDevDebugScreenReturn } from '../../hooks/useDevDebugScreen';
 
-export default function DevDebugScreen({ navigation }: { navigation: any }) {
-  const connectionStatus = useProfileStore((s) => s.connectionStatus);
-  const debugError = useProfileStore((s) => s.debugError);
-  const debugDetails = useProfileStore((s) => s.debugDetails);
-  const setConnectionStatus = useProfileStore((s) => s.setConnectionStatus);
-  const setDebugError = useProfileStore((s) => s.setDebugError);
-  const setDebugDetails = useProfileStore((s) => s.setDebugDetails);
+export type DevDebugScreenViewProps = DevDebugScreenProps & UseDevDebugScreenReturn;
 
-  const testConnection = async () => {
-    setConnectionStatus('testing');
-    setDebugError(null);
-    setDebugDetails('');
-
-    try {
-      const { data, error, count } = await supabase
-        .from('profiles')
-        .select('id', { count: 'exact', head: true });
-
-      if (error) {
-        console.error('Supabase error:', error);
-        setDebugError(error.message);
-        setConnectionStatus('error');
-        setDebugDetails(`Code: ${error.code}\nHint: ${error.hint || 'None'}`);
-      } else {
-        setConnectionStatus('ok');
-        setDebugDetails(`Profiles count: ${count ?? 0}`);
-      }
-    } catch (e: any) {
-      console.error('Connection error:', e);
-      setDebugError(e.message);
-      setConnectionStatus('error');
-    }
-  };
-
-  useEffect(() => {
-    testConnection();
-  }, []);
-
-  const getStatusColor = (s: ConnectionStatus): string => {
-    switch (s) {
-      case 'ok':
-        return colors.success;
-      case 'error':
-        return colors.primary;
-      case 'testing':
-        return colors.warning;
-      default:
-        return colors.textSecondary;
-    }
-  };
-
+export function DevDebugScreen({
+  connectionStatus,
+  debugError,
+  debugDetails,
+  testConnection,
+  getStatusColor,
+  devDebugScreenStrings,
+  onBack,
+}: DevDebugScreenViewProps) {
   return (
     <Screen padding={0}>
       <View style={styles.content}>
-        <AppText variant="h2" style={{ textAlign: 'center', marginBottom: spacing[4] * 2 }}>
-          Supabase Connection Test
+        <AppText variant="h2" style={{ textAlign: 'center', marginBottom: spacing[6] }}>
+          {devDebugScreenStrings.title}
         </AppText>
 
         <View style={[styles.statusCard, { borderColor: getStatusColor(connectionStatus) }]}>
@@ -70,40 +28,40 @@ export default function DevDebugScreen({ navigation }: { navigation: any }) {
             color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
-            Status
+            {devDebugScreenStrings.statusLabel}
           </AppText>
           <AppText variant="h2" color={getStatusColor(connectionStatus)}>
             {connectionStatus.toUpperCase()}
           </AppText>
         </View>
 
-        {debugError && (
+        {debugError ? (
           <View style={styles.errorCard}>
             <AppText
               variant="captionSm"
               color={colors.primary}
               style={{ marginBottom: spacing[2] }}
             >
-              Error
+              {devDebugScreenStrings.errorLabel}
             </AppText>
             <AppText variant="body2" color={colors.primary}>
               {debugError}
             </AppText>
           </View>
-        )}
+        ) : null}
 
-        {debugDetails && (
+        {debugDetails ? (
           <View style={styles.detailsCard}>
             <AppText
               variant="captionSm"
               color={colors.textSecondary}
               style={{ marginBottom: spacing[2] }}
             >
-              Details
+              {devDebugScreenStrings.detailsLabel}
             </AppText>
             <AppText variant="body2">{debugDetails}</AppText>
           </View>
-        )}
+        ) : null}
 
         <TouchableOpacity
           style={styles.retryButton}
@@ -111,12 +69,14 @@ export default function DevDebugScreen({ navigation }: { navigation: any }) {
           disabled={connectionStatus === 'testing'}
         >
           <AppText variant="buttonMd" color={colors.white}>
-            {connectionStatus === 'testing' ? 'Testing...' : 'Retry Connection'}
+            {connectionStatus === 'testing'
+              ? devDebugScreenStrings.retryTesting
+              : devDebugScreenStrings.retryConnection}
           </AppText>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <AppText variant="body2">Back to App</AppText>
+        <TouchableOpacity style={styles.backButton} onPress={onBack}>
+          <AppText variant="body2">{devDebugScreenStrings.backToApp}</AppText>
         </TouchableOpacity>
 
         <View style={styles.infoCard}>
@@ -125,13 +85,17 @@ export default function DevDebugScreen({ navigation }: { navigation: any }) {
             color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
-            Environment
+            {devDebugScreenStrings.environmentLabel}
           </AppText>
-          <AppText variant="captionSm" style={{ marginBottom: 4 }}>
-            URL: {process.env.EXPO_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing'}
+          <AppText variant="captionSm" style={{ marginBottom: spacing[1] }}>
+            {devDebugScreenStrings.urlCaption}{' '}
+            {process.env.EXPO_PUBLIC_SUPABASE_URL ? devDebugScreenStrings.urlSet : devDebugScreenStrings.urlMissing}
           </AppText>
-          <AppText variant="captionSm" style={{ marginBottom: 4 }}>
-            Key: {process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing'}
+          <AppText variant="captionSm" style={{ marginBottom: spacing[1] }}>
+            {devDebugScreenStrings.keyCaption}{' '}
+            {process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+              ? devDebugScreenStrings.keySet
+              : devDebugScreenStrings.keyMissing}
           </AppText>
         </View>
       </View>
@@ -148,7 +112,7 @@ const styles = StyleSheet.create({
   statusCard: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
-    borderWidth: 2,
+    borderWidth: borderWidths.thick,
     padding: spacing[4],
     alignItems: 'center',
     marginBottom: spacing[4],

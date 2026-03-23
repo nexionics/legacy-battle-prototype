@@ -1,4 +1,3 @@
-import React, { useState, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -11,37 +10,28 @@ import {
   OTPInput,
   SuccessBottomSheet,
 } from '@/shared/ui';
-import { OTP_LENGTH } from '@/shared/constants';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { VerifyEmailOTPScreenProps } from '@/shared/types';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import type { UseVerifyEmailOtpScreenReturn } from '../../hooks/useVerifyEmailOtpScreen';
 
-export default function VerifyEmailOTPScreen({ navigation, route }: VerifyEmailOTPScreenProps) {
-  const { email } = route.params;
-  const [otp, setOtp] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const successSheetRef = useRef<BottomSheetModal>(null);
+export type VerifyEmailOTPScreenViewProps = VerifyEmailOTPScreenProps & UseVerifyEmailOtpScreenReturn;
 
-  const handleVerify = async () => {
-    if (otp.length !== OTP_LENGTH) return;
-
-    setIsSubmitting(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-
-    successSheetRef.current?.present();
-  };
-
-  const handleDone = () => {
-    successSheetRef.current?.dismiss();
-    navigation.navigate('AccountDetails');
-  };
-
+export function VerifyEmailOTPScreen({
+  email,
+  otp,
+  setOtp,
+  isSubmitting,
+  successSheetRef,
+  handleVerify,
+  handleDone,
+  verifyEmailOtpScreenStrings,
+  onBack,
+  otpLength,
+}: VerifyEmailOTPScreenViewProps) {
   return (
     <Screen padding={0}>
       <View style={styles.content}>
-        <ScreenHeader onBack={() => navigation.goBack()} />
+        <ScreenHeader onBack={onBack} />
 
         <View style={styles.iconContainer}>
           <IconCircle size={sizes.iconHero} backgroundColor={colors.card}>
@@ -50,9 +40,10 @@ export default function VerifyEmailOTPScreen({ navigation, route }: VerifyEmailO
         </View>
 
         <View style={styles.titleContainer}>
-          <AppText variant="h2">Verify Email</AppText>
+          <AppText variant="h2">{verifyEmailOtpScreenStrings.title}</AppText>
           <AppText variant="body1" color={colors.textSecondary} style={styles.subtitle}>
-            We Sent A Verification Code To Your Email{'\n'}
+            {verifyEmailOtpScreenStrings.subtitleLead}
+            {'\n'}
             <AppText variant="body1" color={colors.text}>
               {email}
             </AppText>
@@ -61,7 +52,7 @@ export default function VerifyEmailOTPScreen({ navigation, route }: VerifyEmailO
 
         <View style={styles.otpSection}>
           <OTPInput
-            length={OTP_LENGTH}
+            length={otpLength}
             onChange={setOtp}
             onComplete={() => {}}
             disabled={isSubmitting}
@@ -70,11 +61,11 @@ export default function VerifyEmailOTPScreen({ navigation, route }: VerifyEmailO
 
         <View style={styles.resendBlock}>
           <AppText variant="body2" color={colors.textSecondary} style={styles.resendPrompt}>
-            Didn't receive the email?
+            {verifyEmailOtpScreenStrings.resendPrompt}
           </AppText>
           <TouchableOpacity onPress={() => {}} style={styles.resendCta}>
             <AppText variant="label" color={colors.primary}>
-              Click To Resend
+              {verifyEmailOtpScreenStrings.resendCta}
             </AppText>
           </TouchableOpacity>
         </View>
@@ -82,20 +73,20 @@ export default function VerifyEmailOTPScreen({ navigation, route }: VerifyEmailO
         <Button
           variant="primary"
           loading={isSubmitting}
-          disabled={otp.length !== OTP_LENGTH || isSubmitting}
+          disabled={otp.length !== otpLength || isSubmitting}
           onPress={handleVerify}
           style={styles.verifyButton}
           rightIcon={<Ionicons name="mail-outline" size={sizes.icon20} color={colors.white} />}
         >
-          Verify Email
+          {verifyEmailOtpScreenStrings.verifyButton}
         </Button>
       </View>
 
       <SuccessBottomSheet
         ref={successSheetRef}
         onClose={handleDone}
-        title="Email Verified"
-        subtitle="Your Email Address Have Been Verified Successfully"
+        title={verifyEmailOtpScreenStrings.successSheet.title}
+        subtitle={verifyEmailOtpScreenStrings.successSheet.subtitle}
       />
     </Screen>
   );

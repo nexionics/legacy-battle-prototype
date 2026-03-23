@@ -1,29 +1,36 @@
-import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { spacing } from '@/shared/theme';
 import { AppText, Screen, ScreenHeader } from '@/shared/ui';
 import type { ContactUsScreenProps } from '@/shared/types';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
+import type { UseContactUsScreenReturn } from '../../hooks/useContactUsScreen';
 
-export default function ContactUsScreen({ navigation }: ContactUsScreenProps) {
+export type ContactUsScreenViewProps = ContactUsScreenProps & UseContactUsScreenReturn;
+
+export function ContactUsScreen({ navigation, contactUsScreenStrings }: ContactUsScreenViewProps) {
   const colors = useThemeColors();
 
   return (
     <Screen padding={spacing[4]}>
-      <ScreenHeader title="Contact Us" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={contactUsScreenStrings.title} onBack={() => navigation.goBack()} />
 
       <View style={styles.content}>
         <View style={styles.section}>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Contact:{' '}
-            <AppText style={{ textDecorationLine: 'underline' }}>Legal@Legacybattle.Com</AppText> •{' '}
-            <AppText style={{ textDecorationLine: 'underline' }}>702-835-9300</AppText>
+            {contactUsScreenStrings.contactLabel}{' '}
+            <AppText style={{ textDecorationLine: 'underline' }}>
+              {contactUsScreenStrings.contactEmail}
+            </AppText>{' '}
+            •{' '}
+            <AppText style={{ textDecorationLine: 'underline' }}>
+              {contactUsScreenStrings.contactPhone}
+            </AppText>
           </AppText>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Address: 5940 S. Rainbow Boulevard, Las Vegas, NV 89118
+            {contactUsScreenStrings.addressLine}
           </AppText>
           <AppText variant="body2" style={{ color: colors.text }}>
-            Business Hours: Mon–Fri, 9:00am–5:00pm PT
+            {contactUsScreenStrings.businessHours}
           </AppText>
         </View>
       </View>

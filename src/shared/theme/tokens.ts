@@ -168,6 +168,8 @@ export const sizes = {
   otpInputHeight: scale(60),
   checkIcon: scale(24),
   iconHero: scale(80),
+  /** Large logo in profile edit flows (AuthHeader). */
+  logoScreenLg: scale(64),
 } as const;
 
 export const fontSizes = {

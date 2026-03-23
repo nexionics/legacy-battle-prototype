@@ -1,3 +1,15 @@
+import type { ComponentProps } from 'react';
+
+type IoniconsComponent = typeof import('@expo/vector-icons').Ionicons;
+
+/** Row in Account Details (username / email) with leading icon and edit affordance. */
+export type AccountDetailsInfoRowProps = {
+  icon: ComponentProps<IoniconsComponent>['name'];
+  label: string;
+  value: string;
+  onEdit: () => void;
+};
+
 /** Level info for XP progression display */
 export interface LevelInfo {
   level: string;

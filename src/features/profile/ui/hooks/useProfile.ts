@@ -42,12 +42,12 @@ export function useProfile(userId: string | undefined) {
     if (profile?.displayName !== undefined) {
       setDisplayName(profile.displayName || '');
     }
-  }, [profile?.displayName]);
+  }, [profile?.displayName, setDisplayName]);
 
   const saveProfile = async (): Promise<{ error?: { message: string } }> => {
     if (!userId) return {};
     try {
-      const result = await updateMutation.mutateAsync(displayName);
+      const result = await updateMutation.mutateAsync({ displayName });
       const error = (result as { error?: { message: string } })?.error;
       if (!error) {
         setIsEditing(false);

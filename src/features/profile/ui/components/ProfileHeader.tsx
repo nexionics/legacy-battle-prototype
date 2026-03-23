@@ -4,8 +4,8 @@ import { AppText } from '@/shared/ui';
 import { colors as staticColors, spacing, fontSizes } from '@/shared/theme';
 import { useNavigation } from '@react-navigation/native';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
-import { useProfileStore } from '@/features/profile/data/store/profile.store';
-import { getLevelInfo, getLevelNumber } from '@/features/profile/helpers/level';
+import { useProfileStore } from '../../data/store/profile.store';
+import { getLevelInfo, getLevelNumber } from '../../helpers/level';
 import type { ProfileHeaderProps, RootStackParamList } from '@/shared/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
