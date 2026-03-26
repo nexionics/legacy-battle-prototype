@@ -7,6 +7,15 @@ export const logoutAlertStrings = {
 
 export const profileScreenStrings = {
   loadingMessage: 'Loading profile...',
+  errorTitle: 'Could not load profile',
+} as const;
+
+export const profileMenuComingSoonStrings = {
+  title: 'Coming Soon',
+  achievements: 'Achievements will be available in a future update.',
+  statistics: 'Detailed statistics will be available in a future update.',
+  wallet: 'Wallet management will be available in a future update.',
+  notifications: 'Notification settings will be available in a future update.',
 } as const;
 
 export const profileMenuStrings = {

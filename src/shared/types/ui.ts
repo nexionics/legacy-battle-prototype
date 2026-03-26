@@ -300,6 +300,7 @@ export interface ProfileHeaderProps {
   xp: number;
   avatarUrl?: string | null;
   level?: string;
+  onSettingsPress: () => void;
 }
 
 export interface ProfileMenuProps {
@@ -307,7 +308,11 @@ export interface ProfileMenuProps {
   followingCount: number;
   themeMode: 'dark' | 'light';
   onToggleTheme: () => void;
+  onAchievementsPress: () => void;
+  onStatisticsPress: () => void;
   onCrewPress: () => void;
+  onWalletPress: () => void;
+  onNotificationsPress: () => void;
   onLogout: () => void;
   onHelpPress?: () => void;
 }

@@ -69,8 +69,6 @@ export async function enrollBiometrics(
       return { ok: false };
     }
 
-    console.log('[Biometrics] Enrollment successful');
-
     await setBiometricSecureItem('biometrics_enrolled', 'true');
     await setBiometricSecureItem('biometric_public_key', publicKey);
     await setBiometricSecureItem('biometric_email', userEmail);

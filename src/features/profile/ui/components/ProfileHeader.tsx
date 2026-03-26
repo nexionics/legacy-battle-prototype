@@ -2,12 +2,10 @@ import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
 import { colors as staticColors, spacing, fontSizes } from '@/shared/theme';
-import { useNavigation } from '@react-navigation/native';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { useProfileStore } from '../../data/store/profile.store';
 import { getLevelInfo, getLevelNumber } from '../../helpers/level';
-import type { ProfileHeaderProps, RootStackParamList } from '@/shared/types';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { ProfileHeaderProps } from '@/shared/types';
 
 export function ProfileHeader({
   displayName,
@@ -16,8 +14,8 @@ export function ProfileHeader({
   xp,
   avatarUrl: initialAvatarUrl,
   level,
+  onSettingsPress,
 }: ProfileHeaderProps) {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const colors = useThemeColors();
   const avatarVersion = useProfileStore((s) => s.avatarVersion);
   const avatarUrl = initialAvatarUrl ? `${initialAvatarUrl}?v=${avatarVersion}` : null;
@@ -38,7 +36,7 @@ export function ProfileHeader({
         </View>
         <TouchableOpacity
           style={[styles.notificationButton, { backgroundColor: colors.primary }]}
-          onPress={() => navigation.navigate('Settings')}
+          onPress={onSettingsPress}
         >
           <Ionicons name="settings-outline" size={20} color={colors.white} />
         </TouchableOpacity>

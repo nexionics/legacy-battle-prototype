@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Switch, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, MenuRow } from '@/shared/ui';
-import { colors as staticColors, spacing, fontSizes, radii } from '@/shared/theme';
+import { spacing, fontSizes, radii } from '@/shared/theme';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import type { ProfileMenuProps } from '@/shared/types';
 import { profileMenuStrings } from '../../string';
@@ -28,7 +28,11 @@ export function ProfileMenu({
   followingCount,
   themeMode,
   onToggleTheme,
+  onAchievementsPress,
+  onStatisticsPress,
   onCrewPress,
+  onWalletPress,
+  onNotificationsPress,
   onLogout,
   onHelpPress,
 }: ProfileMenuProps) {
@@ -39,10 +43,15 @@ export function ProfileMenu({
         <MenuRow
           icon="trophy-outline"
           label={profileMenuStrings.achievements}
+          onPress={onAchievementsPress}
           rightSlot={<Badge count={12} />}
         />
 
-        <MenuRow icon="stats-chart-outline" label={profileMenuStrings.statistics} />
+        <MenuRow
+          icon="stats-chart-outline"
+          label={profileMenuStrings.statistics}
+          onPress={onStatisticsPress}
+        />
 
         <MenuRow
           icon="people-outline"
@@ -56,9 +65,13 @@ export function ProfileMenu({
           }
         />
 
-        <MenuRow icon="wallet-outline" label={profileMenuStrings.wallet} />
+        <MenuRow icon="wallet-outline" label={profileMenuStrings.wallet} onPress={onWalletPress} />
 
-        <MenuRow icon="notifications-outline" label={profileMenuStrings.notifications} />
+        <MenuRow
+          icon="notifications-outline"
+          label={profileMenuStrings.notifications}
+          onPress={onNotificationsPress}
+        />
 
         <MenuRow
           icon="help-circle-outline"
@@ -103,9 +116,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[1],
     minWidth: 28,
     alignItems: 'center',
-  },
-  menuBadgePending: {
-    backgroundColor: staticColors.warning,
   },
   menuBadgeText: {
     fontSize: fontSizes.xs,
