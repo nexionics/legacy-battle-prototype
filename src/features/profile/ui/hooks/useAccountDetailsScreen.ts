@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/app/providers/useToast';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useProfile } from './useProfile';
 import { useProfileStore } from '../../data/store/profile.store';
 import { useUpdateAvatar } from '../../data/mutations/useUpdateAvatar';

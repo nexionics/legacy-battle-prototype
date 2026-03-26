@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen, Input } from '@/shared/ui';
 import { deriveTeamsFromTitle } from '@/shared/utils';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
 import type { OutcomeType } from '@/shared/types';
 import { useCreateBattle } from '@/features/battles/data/mutations/useCreateBattle';

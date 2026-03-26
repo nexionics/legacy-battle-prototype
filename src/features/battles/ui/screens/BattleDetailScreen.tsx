@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import { deriveTeamsFromTitle } from '@/shared/utils';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useBattleDetail } from '@/features/battles/ui/hooks';
 import { BattleInfoCard } from '@/features/battles/ui/components/BattleInfoCard';
 import { ScoreDisplay } from '@/features/battles/ui/components/ScoreDisplay';

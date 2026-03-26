@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen, Avatar } from '@/shared/ui';
 import { getInitials } from '@/shared/utils';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useCrew } from '../hooks/useCrew';
 import {
   useAcceptRequest,

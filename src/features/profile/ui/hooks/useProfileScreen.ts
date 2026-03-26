@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useAppTheme } from '@/app/providers';
 import type { ProfileScreenProps } from '@/shared/types';
 import { getLevelInfo } from '../../helpers/level';

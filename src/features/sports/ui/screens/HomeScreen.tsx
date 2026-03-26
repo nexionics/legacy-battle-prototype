@@ -5,7 +5,7 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen, AppText, LoadingState, ErrorState } from '@/shared/ui';
 import { colors, spacing, fontSizes, radii } from '@/shared/theme';
-import { useAuth } from '@/features/auth/ui/hooks/useAuth';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useProfile } from '@/features/profile/ui/hooks/useProfile';
 import { useHomeData } from '../hooks/useHomeData';
 import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
