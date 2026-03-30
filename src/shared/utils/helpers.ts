@@ -148,6 +148,93 @@ export function networkFailure(path: string, message: string): ApiError {
   };
 }
 
+const LOGIN_ROOT_KEYS = [
+  'accessToken',
+  'refreshToken',
+  'userId',
+  'hasUsername',
+  'isBiometricEnrolled',
+  'outcome',
+  'status',
+  'reference',
+  'email',
+  'access_token',
+  'refresh_token',
+  'user_id',
+] as const;
+
+/**
+ * Merges `data` and root-level fields from a sign-in envelope. Some backends put tokens next to
+ * `success` instead of inside `data`, or nest `data.data`.
+ */
+function coalesceLoginSuccessPayload(
+  parsed: ApiResponse<LoginResponseData>,
+): Record<string, unknown> {
+  const root = parsed as unknown as Record<string, unknown>;
+  const rawData = root.data;
+  const fromData =
+    rawData != null && typeof rawData === 'object' && !Array.isArray(rawData)
+      ? { ...(rawData as Record<string, unknown>) }
+      : {};
+
+  const d: Record<string, unknown> = { ...fromData };
+
+  for (const key of LOGIN_ROOT_KEYS) {
+    const v = root[key];
+    if (v !== undefined) {
+      d[key] = v;
+    }
+  }
+
+  const nested = fromData.data;
+  if (nested != null && typeof nested === 'object' && !Array.isArray(nested)) {
+    const innerObj = nested as Record<string, unknown>;
+    for (const key of LOGIN_ROOT_KEYS) {
+      if (d[key] === undefined && innerObj[key] !== undefined) {
+        d[key] = innerObj[key];
+      }
+    }
+  }
+
+  if (typeof d.accessToken !== 'string' && typeof d.access_token === 'string') {
+    d.accessToken = d.access_token;
+  }
+  if (typeof d.refreshToken !== 'string' && typeof d.refresh_token === 'string') {
+    d.refreshToken = d.refresh_token;
+  }
+  if (typeof d.userId !== 'string' && typeof d.user_id === 'string') {
+    d.userId = d.user_id;
+  }
+
+  return d;
+}
+
+function buildAuthenticatedPayload(
+  d: Record<string, unknown>,
+): Extract<LoginResponseData, { outcome: 'AUTHENTICATED' }> {
+  const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
+  const userId = typeof d.userId === 'string' ? d.userId : '';
+  const accessToken = d.accessToken as string;
+  const refreshToken = d.refreshToken as string;
+  if (typeof d.isBiometricEnrolled === 'boolean') {
+    return {
+      outcome: 'AUTHENTICATED',
+      accessToken,
+      refreshToken,
+      hasUsername,
+      userId,
+      isBiometricEnrolled: d.isBiometricEnrolled,
+    };
+  }
+  return {
+    outcome: 'AUTHENTICATED',
+    accessToken,
+    refreshToken,
+    hasUsername,
+    userId,
+  };
+}
+
 /**
  * Normalizes a successful sign-in API `data` payload into the `LoginResponseData` union used by the app.
  *
@@ -155,6 +242,7 @@ export function networkFailure(path: string, message: string): ApiError {
  * - Pending verification: `outcome` or `status` === `PENDING_VERIFICATION`, plus `reference` / `email`.
  * - Authenticated: tokens + optional `hasUsername` (defaults to `true` if omitted).
  * - Bare `accessToken` + `refreshToken` without `outcome` (treated as authenticated).
+ * - Tokens on the response root (sibling to `data`) or under `data.data`, plus snake_case aliases.
  *
  * @param body - Original login request (used for email when the API omits it on pending flows).
  * @param parsed - Result of {@link parseApiResponse} for the same response; error envelopes are returned unchanged.
@@ -167,7 +255,7 @@ export function normalizeLoginResponse(
     return parsed;
   }
 
-  const d = parsed.data as Record<string, unknown>;
+  const d = coalesceLoginSuccessPayload(parsed);
 
   const pendingByOutcome = d.outcome === 'PENDING_VERIFICATION';
   const pendingByStatus = d.status === 'PENDING_VERIFICATION';
@@ -188,32 +276,16 @@ export function normalizeLoginResponse(
     if (typeof d.accessToken !== 'string' || typeof d.refreshToken !== 'string') {
       return parsed;
     }
-    const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
-    const userId = typeof d.userId === 'string' ? d.userId : '';
     return {
       success: true,
-      data: {
-        outcome: 'AUTHENTICATED',
-        accessToken: d.accessToken,
-        refreshToken: d.refreshToken,
-        hasUsername,
-        userId,
-      },
+      data: buildAuthenticatedPayload(d),
     };
   }
 
   if (typeof d.accessToken === 'string' && typeof d.refreshToken === 'string') {
-    const hasUsername = typeof d.hasUsername === 'boolean' ? d.hasUsername : true;
-    const userId = typeof d.userId === 'string' ? d.userId : '';
     return {
       success: true,
-      data: {
-        outcome: 'AUTHENTICATED',
-        accessToken: d.accessToken,
-        refreshToken: d.refreshToken,
-        hasUsername,
-        userId,
-      },
+      data: buildAuthenticatedPayload(d),
     };
   }
 

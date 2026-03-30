@@ -37,26 +37,54 @@ export function useLogin() {
   });
 
   const onValidSubmit = async (data: LoginFormValues) => {
-    const result = await loginMutation.mutateAsync({
-      ...data,
-      deviceId: deviceId ?? undefined,
-    });
-
-    if (!result.success) {
-      showToast('fail', result.error.message);
-      return;
-    }
-
-    if (result.data.outcome === 'PENDING_VERIFICATION') {
-      navigation.navigate('OTPVerification', {
-        email: result.data.email,
-        reference: result.data.reference,
+    try {
+      const result = await loginMutation.mutateAsync({
+        ...data,
+        deviceId: deviceId ?? undefined,
       });
-      return;
-    }
 
-    if (result.data.outcome === 'AUTHENTICATED') {
-      await handlePostLogin(result.data, data.email);
+      if (!result.success) {
+        showToast('fail', result.error.message);
+        return;
+      }
+
+      if (result.data.outcome === 'PENDING_VERIFICATION') {
+        navigation.navigate('OTPVerification', {
+          email: result.data.email,
+          reference: result.data.reference,
+        });
+        return;
+      }
+
+      if (result.data.outcome === 'AUTHENTICATED') {
+        await handlePostLogin(result.data, data.email);
+        return;
+      }
+
+      const raw = result.data as unknown as Record<string, unknown>;
+      if (
+        typeof raw.accessToken === 'string' &&
+        typeof raw.refreshToken === 'string' &&
+        typeof raw.userId === 'string'
+      ) {
+        await handlePostLogin(
+          {
+            accessToken: raw.accessToken,
+            refreshToken: raw.refreshToken,
+            userId: raw.userId,
+            hasUsername: typeof raw.hasUsername === 'boolean' ? raw.hasUsername : true,
+            isBiometricEnrolled:
+              typeof raw.isBiometricEnrolled === 'boolean' ? raw.isBiometricEnrolled : undefined,
+          },
+          data.email,
+        );
+        return;
+      }
+
+      showToast('fail', 'Unexpected sign-in response. Please try again.');
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Sign-in failed';
+      showToast('fail', message);
     }
   };
 
