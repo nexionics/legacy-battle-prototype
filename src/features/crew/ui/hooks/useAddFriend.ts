@@ -1,12 +1,12 @@
 import { useCrewStore } from '../../data/store/crew.store';
 import { useSearchUsersQuery } from '../../data/queries/useSearchUsersQuery';
-import { useSendRequestById } from '../../data/mutations/useCrewMutations';
+import { useSendCrewRequest } from '../../data/mutations/useCrewMutations';
 
 export function useAddFriend(userId: string | undefined) {
   const { searchQuery, searchedQuery, hasSearched, setSearchQuery, setSearchedQuery } =
     useCrewStore();
   const searchQueryResult = useSearchUsersQuery(searchedQuery, userId);
-  const sendRequestMutation = useSendRequestById(userId);
+  const sendRequestMutation = useSendCrewRequest();
 
   const searchResults = searchQueryResult.data ?? [];
   const searching = searchQueryResult.isLoading;
@@ -24,6 +24,7 @@ export function useAddFriend(userId: string | undefined) {
     setSearchQuery,
     searchResults,
     searching,
+    searchError: searchQueryResult.error instanceof Error ? searchQueryResult.error.message : null,
     hasSearched,
     handleSearch,
     handleAddFriend,

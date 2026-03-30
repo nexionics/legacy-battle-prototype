@@ -5,6 +5,12 @@ import type { SportsEvent } from './domain';
 import type { BattleStats } from './interface';
 import type { Battle, BattleParticipant } from './domain';
 import type { LevelInfo } from './profile';
+import type {
+  CrewMemberFilter,
+  CrewRequestItem,
+  CrewUserSummary,
+  CrewUserWithStatus,
+} from './crew';
 
 // ─── Shared UI Atoms ───────────────────────────────────────────────────────
 
@@ -415,6 +421,59 @@ export interface WinnerCardProps {
 export interface ScoreDisplayProps {
   gameScore: SportsEvent;
   isCompleted: boolean;
+}
+
+export interface CrewScreenHeaderProps {
+  title: string;
+  iconName: string;
+  onBackPress: () => void;
+  rightActionIconName?: string;
+  onRightActionPress?: () => void;
+}
+
+export interface CrewRequestCardProps {
+  request: CrewRequestItem;
+  onAcceptPress: (requestId: string) => void;
+  onDeclinePress: (requestId: string) => void;
+}
+
+export interface CrewMemberTileProps {
+  member: CrewUserSummary;
+}
+
+export interface CrewMemberCardProps {
+  member: CrewUserSummary;
+  presenceLabel: string;
+  levelLabel: string;
+  rivalryLabel?: string;
+  challengeLabel: string;
+  onChallengePress: (memberId: string, memberName: string) => void;
+}
+
+export interface CrewSuggestionCardProps {
+  member: CrewUserSummary;
+  onAddPress: (memberId: string) => void;
+}
+
+export interface CrewFilterTabsProps {
+  activeFilter: CrewMemberFilter;
+  onFilterChange: (filter: CrewMemberFilter) => void;
+  allLabel: string;
+  activeLabel: string;
+  rivalsLabel: string;
+}
+
+export interface CrewSearchResultCardProps {
+  result: CrewUserWithStatus;
+  onAddFriendPress: (friendId: string, friendName: string) => void;
+  isSubmitting?: boolean;
+}
+
+export interface CrewInviteOptionProps {
+  iconName: string;
+  title: string;
+  subtitle: string;
+  onPress: () => void;
 }
 
 export interface IconProps {

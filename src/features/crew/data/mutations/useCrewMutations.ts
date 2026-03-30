@@ -1,42 +1,51 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CrewService } from '../api/crew.api';
+import { respondToCrewRequest, sendCrewRequest } from '../api/crew.api';
 import { crewKeys } from '../keys';
 
-export function useAcceptRequest(userId: string | undefined) {
+function invalidateCrewQueries(queryClient: ReturnType<typeof useQueryClient>): Promise<void> {
+  return queryClient.invalidateQueries({ queryKey: crewKeys.all }).then(() => undefined);
+}
+
+export function useAcceptRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (requestId: string) => CrewService.acceptRequest(requestId),
-    onSuccess: () => {
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: crewKeys.friends(userId) });
-      }
+    mutationFn: (requestId: string) => respondToCrewRequest(requestId, 'accepted'),
+    onSuccess: async () => {
+      await invalidateCrewQueries(queryClient);
     },
   });
 }
 
-export function useDeclineRequest(userId: string | undefined) {
+export function useDeclineRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (requestId: string) => CrewService.declineRequest(requestId),
-    onSuccess: () => {
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: crewKeys.friends(userId) });
-      }
+    mutationFn: (requestId: string) => respondToCrewRequest(requestId, 'declined'),
+    onSuccess: async () => {
+      await invalidateCrewQueries(queryClient);
     },
   });
 }
 
-export function useSendRequestById(userId: string | undefined) {
+export function useCancelRequest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (receiverId: string) => CrewService.sendRequestById(receiverId),
-    onSuccess: () => {
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: crewKeys.friends(userId) });
-      }
+    mutationFn: (requestId: string) => respondToCrewRequest(requestId, 'cancelled'),
+    onSuccess: async () => {
+      await invalidateCrewQueries(queryClient);
+    },
+  });
+}
+
+export function useSendCrewRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (receiverId: string) => sendCrewRequest(receiverId),
+    onSuccess: async () => {
+      await invalidateCrewQueries(queryClient);
     },
   });
 }

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import type { CrewMember } from '@/shared/types';
 
 interface CrewStore {
   searchQuery: string;

@@ -1,6 +1,16 @@
 export type { ApiSuccess, ApiErrorBody, ApiError, ApiResponse } from './apiEnvelope';
 export type { LoginRequest, LoginResponseData } from './authLoginApi';
 export type {
+  CrewApiRequestStatus,
+  CrewRequestResponseStatus,
+  CrewMemberFilter,
+  CrewUserSummary,
+  CrewRequestUserSummary,
+  CrewRequestItem,
+  CrewRequestStatusData,
+  CrewUserWithStatus,
+} from './crew';
+export type {
   UserProfile,
   Battle,
   BattleParticipant,
@@ -155,4 +165,12 @@ export type {
   ParticipantsListProps,
   WinnerCardProps,
   ScoreDisplayProps,
+  CrewScreenHeaderProps,
+  CrewRequestCardProps,
+  CrewMemberTileProps,
+  CrewMemberCardProps,
+  CrewSuggestionCardProps,
+  CrewFilterTabsProps,
+  CrewSearchResultCardProps,
+  CrewInviteOptionProps,
 } from './ui';

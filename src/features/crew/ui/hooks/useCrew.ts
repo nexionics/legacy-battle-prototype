@@ -14,6 +14,7 @@ export function useCrew(userId: string | undefined) {
     suggestions,
     friendsLoading: friendsQuery.isLoading,
     friendsRefreshing: friendsQuery.isFetching,
+    friendsError: friendsQuery.error instanceof Error ? friendsQuery.error.message : null,
     refetch: friendsQuery.refetch,
   };
 }
