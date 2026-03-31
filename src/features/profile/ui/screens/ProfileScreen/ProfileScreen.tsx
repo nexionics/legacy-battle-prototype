@@ -1,12 +1,17 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Screen, LoadingState, ErrorState } from '@/shared/ui';
-import { spacing } from '@/shared/theme';
+import If from '@/shared/ui/atoms/If';
+import { useThemeColors } from '@/app/providers/ThemeProvider';
+import { buildProfileActivityItems, buildProfileStatsItems } from '@/shared/constants';
+import { horizontalScale, verticalScale } from '@/shared/theme';
 import type { ProfileScreenProps } from '@/shared/types';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { StatsGrid } from '../../components/StatsGrid';
 import { LevelCard } from '../../components/LevelCard';
 import { WalletCard } from '../../components/WalletCard';
-import { ProfileMenu } from '../../components/ProfileMenu';
+import { ProfileCrewCard } from '../../components/ProfileCrewCard';
+import { ProfileActivityCard } from '../../components/ProfileActivityCard';
 import type { UseProfileScreenReturn } from '../../hooks/useProfileScreen';
 
 export type ProfileScreenViewProps = ProfileScreenProps & UseProfileScreenReturn;
@@ -18,85 +23,128 @@ export function ProfileScreen({
   refetchProfile,
   battleStats,
   crewCount,
-  followingCount,
   user,
-  mode,
-  toggleTheme,
-  handleLogout,
+  onBackPress,
   onSettingsPress,
-  onAchievementsPress,
-  onStatisticsPress,
   onCrewPress,
   onWalletPress,
   onNotificationsPress,
-  onHelpPress,
   walletBalance,
   xpValue,
   levelInfo,
   profileScreenStrings,
 }: ProfileScreenViewProps) {
-  if (profileLoading) {
-    return (
-      <Screen>
-        <LoadingState message={profileScreenStrings.loadingMessage} />
-      </Screen>
-    );
-  }
+  const colors = useThemeColors();
+  const statsItems = buildProfileStatsItems({
+    battleStats,
+    levelInfo,
+    xpValue,
+    strings: profileScreenStrings,
+    colors: {
+      warning: colors.warning,
+      success: colors.success,
+      info: colors.info,
+    },
+  });
+  const activityItems = buildProfileActivityItems({
+    battleStats,
+    strings: profileScreenStrings,
+  });
 
-  if (profileError) {
-    return (
-      <Screen>
-        <ErrorState
-          title={profileScreenStrings.errorTitle}
-          message={profileError}
-          onRetry={() => {
-            void refetchProfile();
-          }}
-        />
-      </Screen>
-    );
-  }
+  const avatarLabel = (profile?.displayName || profile?.username || user?.displayName || 'LB')
+    .substring(0, 2)
+    .toUpperCase();
 
   return (
-    <Screen padding={0} edges={['top', 'left', 'right']}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ProfileHeader
-          displayName={profile?.displayName || user?.displayName || undefined}
-          username={profile?.username || user?.username || undefined}
-          email={user?.email ?? undefined}
-          xp={xpValue}
-          avatarUrl={profile?.avatarUrl}
-          level={profile?.level}
-          onSettingsPress={onSettingsPress}
-        />
+    <>
+      <If condition={profileLoading}>
+        <Screen>
+          <LoadingState message={profileScreenStrings.loadingMessage} />
+        </Screen>
+      </If>
 
-        <StatsGrid battleStats={battleStats} walletBalance={walletBalance} />
+      <If condition={!profileLoading && profileError}>
+        <Screen>
+          <ErrorState
+            title={profileScreenStrings.errorTitle}
+            message={profileError ?? ''}
+            onRetry={() => {
+              void refetchProfile();
+            }}
+          />
+        </Screen>
+      </If>
 
-        <LevelCard levelInfo={levelInfo} xp={xpValue} />
+      <If condition={!profileLoading && !profileError}>
+        <Screen padding={0} edges={['top', 'left', 'right']}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.contentContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <LinearGradient colors={['#3A1215', '#18080A']} style={styles.heroSection}>
+              <ProfileHeader
+                displayName={profile?.displayName || user?.displayName || undefined}
+                username={profile?.username || user?.username || undefined}
+                email={user?.email ?? undefined}
+                xp={xpValue}
+                avatarUrl={profile?.avatarUrl}
+                level={profile?.level}
+                onBackPress={onBackPress}
+                onSettingsPress={onSettingsPress}
+              />
 
-        <WalletCard walletBalance={walletBalance} />
+              <StatsGrid items={statsItems} />
+            </LinearGradient>
 
-        <ProfileMenu
-          crewCount={crewCount}
-          followingCount={followingCount}
-          themeMode={mode}
-          onToggleTheme={toggleTheme}
-          onAchievementsPress={onAchievementsPress}
-          onStatisticsPress={onStatisticsPress}
-          onCrewPress={onCrewPress}
-          onWalletPress={onWalletPress}
-          onNotificationsPress={onNotificationsPress}
-          onLogout={handleLogout}
-          onHelpPress={onHelpPress}
-        />
-      </ScrollView>
-    </Screen>
+            <View style={styles.body}>
+              <LevelCard
+                levelInfo={levelInfo}
+                xp={xpValue}
+                ctaLabel={profileScreenStrings.inviteBannerLabel}
+                onCtaPress={onNotificationsPress}
+              />
+
+              <WalletCard
+                walletBalance={walletBalance}
+                actionLabel={profileScreenStrings.walletAction}
+                onPress={onWalletPress}
+              />
+
+              <ProfileCrewCard
+                title={profileScreenStrings.crewTitle}
+                crewCount={crewCount}
+                avatarUrl={profile?.avatarUrl}
+                avatarLabel={avatarLabel}
+                buttonLabel={profileScreenStrings.crewAction}
+                onPress={onCrewPress}
+              />
+
+              <ProfileActivityCard
+                title={profileScreenStrings.recentActivityTitle}
+                items={activityItems}
+              />
+            </View>
+          </ScrollView>
+        </Screen>
+      </If>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    paddingHorizontal: spacing[4],
+  },
+  contentContainer: {
+    paddingBottom: verticalScale(20),
+  },
+  heroSection: {
+    paddingHorizontal: horizontalScale(20),
+    paddingBottom: verticalScale(24),
+  },
+  body: {
+    paddingHorizontal: horizontalScale(20),
+    marginTop: verticalScale(18),
   },
 });

@@ -7,7 +7,13 @@ import type {
   StatDuelPlayer,
   StatDuelOpponent,
 } from '@/shared/types';
-import type { SelectionOption } from '@/shared/types';
+import type {
+  SelectionOption,
+  BattleStats,
+  LevelInfo,
+  ProfileStatItem,
+  ProfileActivityItem,
+} from '@/shared/types';
 
 export const TIMEOUT_DEFAULT_DELAY = 2000;
 
@@ -671,3 +677,115 @@ export const TOAST_DURATION_MS = 5000;
 
 /** AsyncStorage key for theme mode preference */
 export const THEME_STORAGE_KEY = '@lb_theme_mode';
+
+type ProfileDashboardStrings = {
+  streakWinsSuffix: string;
+  streakFallback: string;
+  stats: {
+    rank: string;
+    xp: string;
+    streak: string;
+  };
+  activity: {
+    winsTitle: string;
+    winsSubtitle: string;
+    challengesTitle: string;
+    challengesSubtitle: string;
+    lossesTitle: string;
+    lossesSubtitle: string;
+    emptyTitle: string;
+    emptySubtitle: string;
+    recentLabel: string;
+    nowLabel: string;
+  };
+};
+
+type ProfileDashboardAccentColors = {
+  warning: string;
+  success: string;
+  info: string;
+};
+
+type BuildProfileStatsItemsParams = {
+  battleStats: BattleStats;
+  levelInfo: LevelInfo;
+  xpValue: number;
+  strings: ProfileDashboardStrings;
+  colors: ProfileDashboardAccentColors;
+};
+
+type BuildProfileActivityItemsParams = {
+  battleStats: BattleStats;
+  strings: ProfileDashboardStrings;
+};
+
+export function buildProfileStatsItems({
+  battleStats,
+  levelInfo,
+  xpValue,
+  strings,
+  colors,
+}: BuildProfileStatsItemsParams): ProfileStatItem[] {
+  const streakWins = Math.max(battleStats.wins, 0);
+  const streakValue =
+    streakWins > 0 ? `${streakWins} ${strings.streakWinsSuffix}` : strings.streakFallback;
+
+  return [
+    {
+      label: strings.stats.rank,
+      value: levelInfo.level,
+      accentColor: colors.warning,
+    },
+    {
+      label: strings.stats.xp,
+      value: xpValue.toLocaleString(),
+      accentColor: colors.success,
+    },
+    {
+      label: strings.stats.streak,
+      value: streakValue,
+      accentColor: colors.info,
+    },
+  ];
+}
+
+export function buildProfileActivityItems({
+  battleStats,
+  strings,
+}: BuildProfileActivityItemsParams): ProfileActivityItem[] {
+  if (battleStats.wins || battleStats.losses || battleStats.challenges) {
+    return [
+      {
+        id: 'wins',
+        title: strings.activity.winsTitle,
+        subtitle: strings.activity.winsSubtitle,
+        value: `+${battleStats.wins * 100} XP`,
+        timestamp: strings.activity.recentLabel,
+      },
+      {
+        id: 'challenges',
+        title: strings.activity.challengesTitle,
+        subtitle: strings.activity.challengesSubtitle,
+        value: `${battleStats.challenges}`,
+        timestamp: strings.activity.nowLabel,
+      },
+      {
+        id: 'losses',
+        title: strings.activity.lossesTitle,
+        subtitle: strings.activity.lossesSubtitle,
+        value: `${battleStats.losses}`,
+        timestamp: strings.activity.recentLabel,
+      },
+    ];
+  }
+
+  return [
+    {
+      id: 'empty',
+      title: strings.activity.emptyTitle,
+      subtitle: strings.activity.emptySubtitle,
+      value: '0 XP',
+      timestamp: strings.activity.nowLabel,
+    },
+  ];
+}

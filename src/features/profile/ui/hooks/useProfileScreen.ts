@@ -56,6 +56,11 @@ export function useProfileScreen({ navigation }: Pick<ProfileScreenProps, 'navig
     mode,
     toggleTheme,
     handleLogout,
+    onBackPress: () => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      }
+    },
     onSettingsPress: () => navigation.navigate('Settings'),
     onAchievementsPress: () => showComingSoon(profileMenuComingSoonStrings.achievements),
     onStatisticsPress: () => showComingSoon(profileMenuComingSoonStrings.statistics),

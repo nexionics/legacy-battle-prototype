@@ -2,7 +2,6 @@ import type { StyleProp, TextInputProps, TextProps, ViewStyle } from 'react-nati
 import type { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { TypographyVariant } from '@/shared/theme';
 import type { SportsEvent } from './domain';
-import type { BattleStats } from './interface';
 import type { Battle, BattleParticipant } from './domain';
 import type { LevelInfo } from './profile';
 import type {
@@ -288,15 +287,24 @@ export type ScreenProps = {
 export interface LevelCardProps {
   levelInfo: LevelInfo;
   xp: number;
+  ctaLabel: string;
+  onCtaPress: () => void;
 }
 
 export interface WalletCardProps {
   walletBalance: string;
+  actionLabel: string;
+  onPress: () => void;
+}
+
+export interface ProfileStatItem {
+  label: string;
+  value: string;
+  accentColor?: string;
 }
 
 export interface StatsGridProps {
-  battleStats: BattleStats;
-  walletBalance: string;
+  items: ProfileStatItem[];
 }
 
 export interface ProfileHeaderProps {
@@ -306,7 +314,30 @@ export interface ProfileHeaderProps {
   xp: number;
   avatarUrl?: string | null;
   level?: string;
+  onBackPress: () => void;
   onSettingsPress: () => void;
+}
+
+export interface ProfileCrewCardProps {
+  title: string;
+  crewCount: number;
+  avatarUrl?: string | null;
+  avatarLabel: string;
+  buttonLabel: string;
+  onPress: () => void;
+}
+
+export interface ProfileActivityItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  value: string;
+  timestamp: string;
+}
+
+export interface ProfileActivityCardProps {
+  title: string;
+  items: ProfileActivityItem[];
 }
 
 export interface ProfileMenuProps {

@@ -1,30 +1,37 @@
-import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
-import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import { useThemeColors } from '@/app/providers/ThemeProvider';
+import { horizontalScale, moderate, verticalScale } from '@/shared/theme';
 import type { WalletCardProps } from '@/shared/types';
 
-export function WalletCard({ walletBalance }: WalletCardProps) {
+export function WalletCard({ walletBalance, actionLabel, onPress }: WalletCardProps) {
+  const colors = useThemeColors();
+
   return (
-    <View style={styles.bcCard}>
+    <View
+      style={[
+        styles.bcCard,
+        { backgroundColor: colors.white, borderBottomColor: colors.cardBorder },
+      ]}
+    >
       <View style={styles.bcLeft}>
-        <AppText variant="label" style={styles.bcLabel}>
+        <AppText variant="label" style={[styles.bcLabel, { color: colors.textSecondary }]}>
           Total Bc
         </AppText>
-        <AppText variant="h4" style={styles.bcValue}>
+        <AppText variant="h3" style={{ color: colors.black }}>
           {Number(walletBalance).toLocaleString()} BC
         </AppText>
       </View>
       <View style={styles.bcRight}>
-        <TouchableOpacity>
-          <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
+        <TouchableOpacity onPress={onPress}>
+          <Ionicons name="eye-outline" size={moderate(18)} color={colors.textSecondary} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.viewMoreButton}>
-          <AppText variant="captionLg" style={styles.viewMoreText}>
-            View More
+        <TouchableOpacity style={styles.viewMoreButton} onPress={onPress}>
+          <AppText variant="captionLg" style={{ color: colors.textSecondary }}>
+            {actionLabel}
           </AppText>
-          <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
+          <Ionicons name="arrow-forward" size={moderate(13)} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -36,34 +43,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.card,
-    borderRadius: radii.lg,
-    padding: spacing[4],
-    marginBottom: spacing[4],
+    borderRadius: moderate(12),
+    paddingHorizontal: horizontalScale(14),
+    paddingVertical: verticalScale(14),
+    marginBottom: verticalScale(16),
+    borderBottomWidth: verticalScale(4),
   },
   bcLeft: {},
   bcLabel: {
-    color: colors.textSecondary,
-    fontSize: fontSizes.xs,
-    marginBottom: spacing[1],
-  },
-  bcValue: {
-    color: colors.text,
-    fontSize: fontSizes.xl,
-    fontWeight: 'bold',
+    marginBottom: verticalScale(4),
   },
   bcRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing[4],
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    minHeight: verticalScale(48),
   },
   viewMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing[1],
-  },
-  viewMoreText: {
-    color: colors.textSecondary,
-    fontSize: fontSizes.xs,
+    gap: horizontalScale(6),
   },
 });

@@ -1,8 +1,7 @@
-import React from 'react';
 import { View, TouchableOpacity, Switch, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, MenuRow } from '@/shared/ui';
-import { spacing, fontSizes, radii } from '@/shared/theme';
+import { spacing, radii, horizontalScale, moderate } from '@/shared/theme';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import type { ProfileMenuProps } from '@/shared/types';
 import { profileMenuStrings } from '../../string';
@@ -16,7 +15,7 @@ function Badge({ count, variant = 'default' }: { count: number; variant?: 'defau
         { backgroundColor: variant === 'pending' ? colors.warning : colors.primary },
       ]}
     >
-      <AppText variant="captionSm" style={[styles.menuBadgeText, { color: colors.white }]}>
+      <AppText variant="captionSm" style={{ color: colors.white }}>
         {count}
       </AppText>
     </View>
@@ -95,8 +94,8 @@ export function ProfileMenu({
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-        <Ionicons name="log-out-outline" size={20} color={colors.primary} />
-        <AppText variant="buttonMd" style={styles.logoutText}>
+        <Ionicons name="log-out-outline" size={moderate(20)} color={colors.primary} />
+        <AppText variant="buttonMd">
           {profileMenuStrings.logOut}
         </AppText>
       </TouchableOpacity>
@@ -114,12 +113,8 @@ const styles = StyleSheet.create({
     borderRadius: radii.lg,
     paddingHorizontal: spacing[2],
     paddingVertical: spacing[1],
-    minWidth: 28,
+    minWidth: horizontalScale(28),
     alignItems: 'center',
-  },
-  menuBadgeText: {
-    fontSize: fontSizes.xs,
-    fontWeight: 'bold',
   },
   logoutButton: {
     flexDirection: 'row',
@@ -128,9 +123,5 @@ const styles = StyleSheet.create({
     gap: spacing[2],
     paddingVertical: spacing[4],
     marginBottom: spacing[6],
-  },
-  logoutText: {
-    fontSize: fontSizes.sm,
-    fontWeight: 'bold',
   },
 });

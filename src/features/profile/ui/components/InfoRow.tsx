@@ -3,7 +3,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { AppText } from '@/shared/ui';
 import type { AccountDetailsInfoRowProps } from '@/shared/types';
-import { spacing, sizes, fontWeights, lineHeights } from '@/shared/theme';
+import { spacing, sizes } from '@/shared/theme';
 
 export function InfoRow({ icon, label, value, onEdit }: AccountDetailsInfoRowProps) {
   const colors = useThemeColors();
@@ -20,11 +20,11 @@ export function InfoRow({ icon, label, value, onEdit }: AccountDetailsInfoRowPro
         <View style={styles.rowStack}>
           <AppText
             variant="body2"
-            style={[styles.label, { color: colors.textSecondary, marginBottom: spacing[1] }]}
+            style={{ color: colors.textSecondary, marginBottom: spacing[1] }}
           >
             {label}
           </AppText>
-          <AppText variant="body1" style={[styles.value, { color: colors.text }]}>
+          <AppText variant="body1" style={{ color: colors.text }}>
             {value}
           </AppText>
         </View>
@@ -58,12 +58,6 @@ const styles = StyleSheet.create({
   rowIcon: {
     marginRight: spacing[4],
     marginTop: spacing[1],
-  },
-  label: {
-    lineHeight: lineHeights.sm,
-  },
-  value: {
-    fontWeight: fontWeights.medium,
   },
   editButton: {
     padding: spacing[1],

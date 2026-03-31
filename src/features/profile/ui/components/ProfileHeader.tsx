@@ -1,19 +1,17 @@
 import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
-import { colors as staticColors, spacing, fontSizes } from '@/shared/theme';
+import { horizontalScale, moderate, verticalScale } from '@/shared/theme';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { useProfileStore } from '../../data/store/profile.store';
-import { getLevelInfo, getLevelNumber } from '../../helpers/level';
 import type { ProfileHeaderProps } from '@/shared/types';
 
 export function ProfileHeader({
   displayName,
   username,
   email,
-  xp,
   avatarUrl: initialAvatarUrl,
-  level,
+  onBackPress,
   onSettingsPress,
 }: ProfileHeaderProps) {
   const colors = useThemeColors();
@@ -21,24 +19,28 @@ export function ProfileHeader({
   const avatarUrl = initialAvatarUrl ? `${initialAvatarUrl}?v=${avatarVersion}` : null;
   const avatarInitials = (displayName || username || email || 'U').substring(0, 2).toUpperCase();
 
-  const levelInfo = getLevelInfo(xp, level);
-  const levelNumber = getLevelNumber(xp);
-
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerSide} />
+        <TouchableOpacity
+          style={[styles.iconButton, styles.leftButton, { backgroundColor: colors.primary }]}
+          onPress={onBackPress}
+        >
+          <Ionicons name="arrow-back" size={moderate(18)} color={colors.white} />
+        </TouchableOpacity>
+
         <View style={styles.headerCenter}>
-          <AppText variant="h3" style={[styles.headerTitle, { color: colors.text }]}>
+          <AppText variant="h4" style={{ color: colors.white }}>
             Profile
           </AppText>
-          <Ionicons name="person-outline" size={18} color={colors.primary} />
+          <Ionicons name="person-outline" size={moderate(16)} color={colors.primary} />
         </View>
+
         <TouchableOpacity
-          style={[styles.notificationButton, { backgroundColor: colors.primary }]}
+          style={[styles.iconButton, { backgroundColor: colors.primary }]}
           onPress={onSettingsPress}
         >
-          <Ionicons name="settings-outline" size={20} color={colors.white} />
+          <Ionicons name="settings-outline" size={moderate(18)} color={colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -47,128 +49,80 @@ export function ProfileHeader({
           <View
             style={[
               styles.avatar,
-              { backgroundColor: colors.card, borderColor: colors.inputBorder },
+              { backgroundColor: colors.white, borderColor: 'rgba(255,255,255,0.16)' },
             ]}
           >
             {avatarUrl ? (
               <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
             ) : (
-              <AppText variant="h1" style={[styles.avatarText, { color: colors.text }]}>
+              <AppText variant="h2" style={{ color: colors.primaryDark }}>
                 {avatarInitials}
               </AppText>
             )}
           </View>
         </View>
 
-        <AppText variant="h4" style={[styles.username, { color: colors.text }]}>
+        <AppText variant="h4" style={[styles.username, { color: colors.white }]}>
           {displayName || username || 'User'}
         </AppText>
-        <AppText variant="body2" style={[styles.email, { color: colors.textSecondary }]}>
+        <AppText variant="body2" style={[styles.email, { color: 'rgba(255,255,255,0.72)' }]}>
           {email}
         </AppText>
-
-        <View style={[styles.levelBadgeContainer, { backgroundColor: colors.card }]}>
-          <AppText variant="body1" style={styles.trophyIcon}>
-            🏆
-          </AppText>
-          <AppText variant="label" style={[styles.levelBadgeText, { color: colors.success }]}>
-            {levelInfo.level} Level {levelNumber}
-          </AppText>
-          <AppText variant="body2" style={[styles.levelXpText, { color: colors.textSecondary }]}>
-            {' '}
-            {xp.toLocaleString()} XP
-          </AppText>
-        </View>
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingTop: verticalScale(6),
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: spacing[4],
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: staticColors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerSide: {
-    width: 36,
+    marginBottom: verticalScale(24),
   },
   headerCenter: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing[1],
+    gap: horizontalScale(6),
   },
-  headerTitle: {
-    fontSize: fontSizes.lg,
-    fontWeight: 'bold',
+  leftButton: {
+    marginRight: horizontalScale(12),
   },
-  notificationButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  iconButton: {
+    width: horizontalScale(36),
+    height: verticalScale(36),
+    borderRadius: moderate(18),
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileSection: {
     alignItems: 'center',
-    marginBottom: spacing[4],
   },
   avatarContainer: {
-    marginBottom: spacing[2],
+    marginBottom: verticalScale(14),
   },
   avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: horizontalScale(88),
+    height: verticalScale(88),
+    borderRadius: moderate(44),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
-  },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    borderWidth: moderate(3),
   },
   username: {
-    fontSize: fontSizes.lg,
-    fontWeight: 'bold',
-    marginBottom: spacing[1],
+    marginBottom: verticalScale(4),
   },
   email: {
-    fontSize: fontSizes.sm,
-    marginBottom: spacing[2],
-  },
-  levelBadgeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[2],
-    borderRadius: 20,
-  },
-  trophyIcon: {
-    fontSize: fontSizes.md,
-    marginRight: spacing[1],
-  },
-  levelBadgeText: {
-    fontSize: fontSizes.sm,
-    fontWeight: '600',
-  },
-  levelXpText: {
-    fontSize: fontSizes.sm,
+    opacity: 0.9,
   },
   avatarImage: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
+    width: horizontalScale(82),
+    height: verticalScale(82),
+    borderRadius: moderate(41),
   },
 });

@@ -1,104 +1,106 @@
-import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText } from '@/shared/ui';
-import { colors, spacing, fontSizes, radii } from '@/shared/theme';
+import { useThemeColors } from '@/app/providers/ThemeProvider';
+import { horizontalScale, moderate, verticalScale } from '@/shared/theme';
 import type { LevelCardProps } from '@/shared/types';
 
-export function LevelCard({ levelInfo, xp }: LevelCardProps) {
+export function LevelCard({ levelInfo, xp, ctaLabel, onCtaPress }: LevelCardProps) {
+  const colors = useThemeColors();
+
   return (
-    <View style={styles.rankCard}>
+    <LinearGradient colors={['#FF2D2D', colors.primaryDark]} style={styles.rankCard}>
       <View style={styles.rankHeader}>
-        <AppText variant="label" style={styles.rankTitle}>
+        <AppText variant="label" style={{ color: colors.white }}>
           Legacy Rank
         </AppText>
-        <AppText variant="h5" style={styles.rankLevel}>
+        <AppText variant="h5" style={{ color: colors.white }}>
           {levelInfo.level}
         </AppText>
       </View>
       <View style={styles.rankProgressContainer}>
-        <View style={styles.rankProgressBar}>
-          <View style={[styles.rankProgress, { width: `${levelInfo.progress}%` }]} />
+        <View style={[styles.rankProgressBar, { backgroundColor: 'rgba(255,255,255,0.92)' }]}>
+          <View
+            style={[
+              styles.rankProgress,
+              { width: `${levelInfo.progress}%`, backgroundColor: colors.primaryDark },
+            ]}
+          />
         </View>
       </View>
       <View style={styles.rankFooter}>
-        <AppText variant="captionSm" style={styles.rankXpText}>
+        <AppText variant="captionSm" style={[styles.rankXpText, { color: colors.white }]}>
           {xp.toLocaleString()} XP
         </AppText>
-        <AppText variant="captionSm" style={styles.rankNextText}>
+        <AppText
+          variant="captionSm"
+          style={[styles.rankNextText, { color: 'rgba(255,255,255,0.84)' }]}
+        >
           {levelInfo.nextLevel}: {levelInfo.nextXp.toLocaleString()} XP
         </AppText>
       </View>
 
-      <TouchableOpacity style={styles.invitationBanner}>
-        <AppText variant="body2" style={styles.invitationText}>
-          You Have Pending Battle Invites
+      <TouchableOpacity
+        style={[styles.invitationBanner, { backgroundColor: 'rgba(0,0,0,0.72)' }]}
+        onPress={onCtaPress}
+      >
+        <AppText variant="body2" style={[styles.invitationText, { color: colors.white }]}>
+          {ctaLabel}
         </AppText>
-        <Ionicons name="arrow-forward" size={18} color={colors.text} />
+        <Ionicons name="arrow-forward" size={moderate(16)} color={colors.white} />
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   rankCard: {
-    backgroundColor: colors.primary,
-    borderRadius: radii.lg,
-    padding: spacing[4],
-    marginBottom: spacing[4],
+    borderRadius: moderate(12),
+    paddingHorizontal: horizontalScale(14),
+    paddingVertical: verticalScale(14),
+    marginBottom: verticalScale(16),
   },
   rankHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing[2],
-  },
-  rankTitle: {
-    color: colors.white,
-    fontSize: fontSizes.sm,
-    fontWeight: 'bold',
-  },
-  rankLevel: {
-    color: colors.white,
-    fontSize: fontSizes.sm,
-    fontWeight: 'bold',
+    marginBottom: verticalScale(12),
   },
   rankProgressContainer: {
-    marginBottom: spacing[2],
+    marginBottom: verticalScale(10),
   },
   rankProgressBar: {
-    height: spacing[2],
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: radii.sm,
+    height: verticalScale(10),
+    borderRadius: moderate(999),
+    overflow: 'hidden',
   },
   rankProgress: {
     height: '100%',
-    backgroundColor: colors.white,
-    borderRadius: radii.sm,
+    borderRadius: moderate(999),
   },
   rankFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing[4],
+    marginBottom: verticalScale(14),
   },
   rankXpText: {
-    color: colors.white,
-    fontSize: fontSizes.xs,
+    flex: 1,
   },
   rankNextText: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: fontSizes.xs,
+    textAlign: 'right',
+    flex: 1,
   },
   invitationBanner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: radii.lg,
-    padding: spacing[4],
+    borderRadius: moderate(999),
+    paddingHorizontal: horizontalScale(14),
+    paddingVertical: verticalScale(10),
   },
   invitationText: {
-    color: colors.white,
-    fontSize: fontSizes.sm,
+    flex: 1,
+    marginRight: horizontalScale(12),
   },
 });

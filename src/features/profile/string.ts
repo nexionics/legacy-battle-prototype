@@ -8,6 +8,33 @@ export const logoutAlertStrings = {
 export const profileScreenStrings = {
   loadingMessage: 'Loading profile...',
   errorTitle: 'Could not load profile',
+  title: 'Profile',
+  stats: {
+    rank: 'Rank',
+    xp: 'XP',
+    streak: 'Streak',
+  },
+  streakFallback: 'No streak',
+  streakWinsSuffix: 'Wins',
+  rankCardTitle: 'Legacy Rank',
+  inviteBannerLabel: 'You Have Pending Battle Invites',
+  walletTitle: 'Total BC',
+  walletAction: 'View More',
+  crewTitle: 'Your Crew',
+  crewAction: 'Manage Crew',
+  recentActivityTitle: 'Recent Activity',
+  activity: {
+    winsTitle: 'Battle wins recorded',
+    winsSubtitle: 'Your latest victories are pushing your legacy forward.',
+    lossesTitle: 'Battles completed',
+    lossesSubtitle: 'Stay active and turn the next matchup into a win.',
+    challengesTitle: 'Challenges played',
+    challengesSubtitle: 'Keep showing up and stack more XP.',
+    emptyTitle: 'No activity yet',
+    emptySubtitle: 'Your recent battles and XP gains will appear here.',
+    recentLabel: 'Recently',
+    nowLabel: 'Now',
+  },
 } as const;
 
 export const profileMenuComingSoonStrings = {
