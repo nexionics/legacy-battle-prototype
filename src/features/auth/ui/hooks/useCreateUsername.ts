@@ -8,7 +8,7 @@ import { useToast } from '@/app/providers/useToast';
 import { logoutSession } from '../../data/logoutSession';
 import { useAuthStore } from '../../data/store/auth.store';
 import type { AuthStackParamList } from '@/shared/types';
-import { getCheckUsername, postSetUsername } from '../../data/api/authApi';
+import { getCheckUsername, patchSetUsername } from '../../data/api/authApi';
 import { createUsernameScreenStrings, loginScreenStrings } from '../../string';
 import { useDebouncedCallback } from 'use-debounce';
 import { formatUsernameForApi } from '@/shared/utils/helpers';
@@ -76,7 +76,7 @@ export function useCreateUsername() {
     const displayName = data.username.trim();
     const canonicalUsername = formatUsernameForApi(displayName);
 
-    const result = await postSetUsername({
+    const result = await patchSetUsername({
       username: canonicalUsername,
       displayName,
     });

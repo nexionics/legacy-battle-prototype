@@ -57,7 +57,7 @@ export async function postSignup(body: SignupRequest): Promise<ApiResponse<Signu
 export async function postVerifyOtp(
   body: VerifyOtpRequest,
 ): Promise<ApiResponse<VerifyOtpResponseData>> {
-  const path = '/auth/verify-otp';
+  const path = '/auth/signup/verify-otp';
   try {
     const res = await authHttp.post(path, body);
     return parseApiResponse<VerifyOtpResponseData>(path, res.status, res.data as object);
@@ -70,7 +70,7 @@ export async function postVerifyOtp(
 export async function postResendOtp(
   body: ResendOtpRequest,
 ): Promise<ApiResponse<ResendOtpResponseData>> {
-  const path = '/auth/resend-otp';
+  const path = '/auth/signup/resend-otp';
   try {
     const res = await authHttp.post(path, body);
     return parseApiResponse<ResendOtpResponseData>(path, res.status, res.data as object);
@@ -94,12 +94,12 @@ export async function postRefreshToken(
   }
 }
 
-export async function postSetUsername(
+export async function patchSetUsername(
   body: SetUsernameRequest,
 ): Promise<ApiResponse<SetUsernameResponseData>> {
-  const path = '/auth/set-username';
+  const path = '/auth/signup/username';
   try {
-    const res = await authenticatedHttp.post(path, body);
+    const res = await authenticatedHttp.patch(path, body);
     return parseApiResponse<SetUsernameResponseData>(path, res.status, res.data as object);
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Network error';
@@ -174,7 +174,7 @@ export async function postLogout(): Promise<ApiResponse<LogoutResponseData>> {
 export async function getCheckUsername(
   username: string,
 ): Promise<ApiResponse<CheckUsernameResponseData>> {
-  const path = `/auth/check-username?username=${encodeURIComponent(username)}`;
+  const path = `/auth/signup/check-username?username=${encodeURIComponent(username)}`;
   try {
     const res = await authenticatedHttp.get(path);
     const parsed = parseApiResponse<Record<string, unknown>>(path, res.status, res.data as object);
