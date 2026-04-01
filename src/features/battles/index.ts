@@ -1,4 +1,3 @@
-export * from './api';
 export { default as BattlesScreen } from './ui/screens/BattlesScreen';
 export { default as CreateBattleScreen } from './ui/screens/CreateBattleScreen';
 export { default as BattleDetailScreen } from './ui/screens/BattleDetailScreen';

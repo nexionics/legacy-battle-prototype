@@ -120,22 +120,25 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
     const description = generateBattleDescription();
     const creatorPickTeam = getCreatorWinningTeam();
 
-    const { error } = await createMutation.mutateAsync({
-      creatorId: user.id,
-      title: title.trim(),
-      description: description || undefined,
-      eventId: eventId.trim() || undefined,
-      stake: parseInt(stake) || 0,
-      creatorPick: creatorPickTeam,
-      visibility: visibility || 'public',
-    });
+    const vis = visibility === 'crew' ? 'public' : visibility || 'public';
 
-    if (error) {
-      Alert.alert('Failed', error.message);
-      return;
+    try {
+      await createMutation.mutateAsync({
+        type: 'CREW_PREDICTION',
+        mode: 'STANDARD',
+        eventId: eventId.trim() || undefined,
+        stakeAmount: parseInt(stake, 10) || 0,
+        visibility: vis,
+        initialMetadata: {
+          title: title.trim(),
+          description: description || undefined,
+          creatorWinningTeam: creatorPickTeam,
+        },
+      });
+      navigation.goBack();
+    } catch (e) {
+      Alert.alert('Failed', e instanceof Error ? e.message : 'Could not create battle');
     }
-
-    navigation.goBack();
   };
 
   const DropdownModal = ({

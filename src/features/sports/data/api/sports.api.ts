@@ -1,12 +1,27 @@
+/**
+ * Sports feature public API: HTTP data + display helpers + optional TheSportsDB fallback.
+ */
 export {
-  getResultByEventId,
-  getUpcomingGames,
-  getRecentResults,
-  getUpcomingBySport,
-  getResultsBySport,
-  AVAILABLE_SPORTS,
+  fetchSportsLeagues,
+  fetchSportsUpcoming,
+  fetchSportsResults,
+  fetchSportsEventById,
+} from './sports.http';
+
+export { mapSportsEventDtoToSportsEvent } from './mappers';
+
+export {
   formatEventTime,
   formatScore,
   getSportIcon,
-} from '../../api/sportsApi';
-export type { SportsEvent } from '../../api/sportsApi';
+  AVAILABLE_SPORTS,
+} from '../lib/sportsDisplay';
+
+export {
+  LEAGUE_IDS,
+  getNextLeagueEvents,
+  getPreviousLeagueEvents,
+  getLeagueDetails,
+  getTeamDetails,
+  lookupTheSportsDbEventById,
+} from '../lib/thesportsdbFallback';

@@ -1,23 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { joinBattleRequest } from '../api/battles.api';
+import { inviteToBattleRequest } from '../api/battles.api';
+import type { InviteToBattlePayload } from '../api/types';
 import { battlesKeys } from '../keys';
 
-export function useJoinBattle(battleId: string | undefined) {
+export function useInviteToBattle(battleId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (pick: string) => {
+    mutationFn: async (body: InviteToBattlePayload) => {
       if (!battleId) {
         throw new Error('Missing battle');
       }
-      const res = await joinBattleRequest(battleId, { pick });
+      const res = await inviteToBattleRequest(battleId, body);
       if (!res.success) {
         throw new Error(res.error.message);
       }
       return res.data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: battlesKeys.all });
       if (battleId) {
         await queryClient.invalidateQueries({ queryKey: battlesKeys.detail(battleId) });
       }

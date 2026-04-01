@@ -57,7 +57,6 @@
     "expo-env.d.ts"
   ],
   "exclude": [
-    "supabase",
     "node_modules"
   ],
   "extends": "expo/tsconfig.base"

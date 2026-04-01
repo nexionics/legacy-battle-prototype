@@ -258,7 +258,7 @@ export const contactUsScreenStrings = {
 } as const;
 
 export const devDebugScreenStrings = {
-  title: 'Supabase Connection Test',
+  title: 'API Connection Test',
   statusLabel: 'Status',
   errorLabel: 'Error',
   detailsLabel: 'Details',
@@ -266,10 +266,6 @@ export const devDebugScreenStrings = {
   retryConnection: 'Retry Connection',
   backToApp: 'Back to App',
   environmentLabel: 'Environment',
-  urlSet: 'Set',
-  urlMissing: 'Missing',
-  keySet: 'Set',
-  keyMissing: 'Missing',
-  urlCaption: 'URL:',
-  keyCaption: 'Key:',
+  apiBaseCaption: 'REST API base URL:',
+  apiEnvUnsetHint: '(EXPO_PUBLIC_API_URL not set; using default)',
 } as const;

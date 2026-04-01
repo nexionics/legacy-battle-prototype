@@ -1,2 +1,3 @@
 export { useCreateBattle } from './useCreateBattle';
 export { useJoinBattle } from './useJoinBattle';
+export { useInviteToBattle } from './useInviteToBattle';

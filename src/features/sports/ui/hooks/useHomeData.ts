@@ -3,11 +3,11 @@ import { useRecentResultsQuery } from '../../data/queries/useRecentResultsQuery'
 import { useQuickPickBattlesQuery } from '@/features/battles/data/queries/useQuickPickBattlesQuery';
 import { useMyAcceptedBattlesQuery } from '@/features/battles/data/queries/useMyAcceptedBattlesQuery';
 
-export function useHomeData(userId: string | undefined) {
+export function useHomeData(_userId: string | undefined) {
   const upcomingQuery = useUpcomingGamesQuery();
   const recentQuery = useRecentResultsQuery();
-  const quickPicksQuery = useQuickPickBattlesQuery(userId, 5);
-  const myBattlesQuery = useMyAcceptedBattlesQuery(userId, 5);
+  const quickPicksQuery = useQuickPickBattlesQuery(5, 1);
+  const myBattlesQuery = useMyAcceptedBattlesQuery(5, 1);
 
   const upcomingGames = upcomingQuery.data ?? [];
   const recentResults = recentQuery.data ?? [];

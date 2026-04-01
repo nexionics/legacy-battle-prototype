@@ -1,16 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
+import { fetchBattlesQuickPicks } from '../api/battles.api';
+import { mapBattleListItemToExploreBattle } from '../api/mappers';
 import { battlesKeys } from '../keys';
-import { getQuickPickBattles } from '../api/battles.api';
+import type { Battle } from '@/shared/types';
 
-export function useQuickPickBattlesQuery(userId: string | undefined, limit = 5) {
+export function useQuickPickBattlesQuery(limit = 20, page = 1) {
   return useQuery({
-    queryKey: battlesKeys.quickPicks(userId ?? ''),
-    queryFn: async () => {
-      if (!userId) return [];
-      const { data, error } = await getQuickPickBattles(userId, limit);
-      if (error) throw error;
-      return data ?? [];
+    queryKey: battlesKeys.quickPicks({ limit, page }),
+    queryFn: async (): Promise<Battle[]> => {
+      const res = await fetchBattlesQuickPicks({ limit, page });
+      if (!res.success) {
+        throw new Error(res.error.message);
+      }
+      return res.data.items.map((row) => mapBattleListItemToExploreBattle(row));
     },
-    enabled: !!userId,
   });
 }

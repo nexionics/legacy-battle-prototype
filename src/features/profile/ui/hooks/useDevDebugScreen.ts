@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { supabase } from '@/shared/lib/supabaseClient';
+import { useCallback, useEffect } from 'react';
+import { authenticatedHttp } from '@/shared/lib/httpClient';
+import { parseApiResponse } from '@/shared/utils/helpers';
 import type { DevDebugScreenProps } from '@/shared/types';
 import type { ConnectionStatus } from '@/shared/types';
 import { useProfileStore } from '../../data/store/profile.store';
@@ -14,35 +15,35 @@ export function useDevDebugScreen({ navigation }: Pick<DevDebugScreenProps, 'nav
   const setDebugError = useProfileStore((s) => s.setDebugError);
   const setDebugDetails = useProfileStore((s) => s.setDebugDetails);
 
-  const testConnection = async () => {
+  const testConnection = useCallback(async () => {
     setConnectionStatus('testing');
     setDebugError(null);
     setDebugDetails('');
 
+    const path = '/sports/leagues';
     try {
-      const { error, count } = await supabase
-        .from('profiles')
-        .select('id', { count: 'exact', head: true });
-
-      if (error) {
-        console.error('Supabase error:', error);
-        setDebugError(error.message);
-        setConnectionStatus('error');
-        setDebugDetails(`Code: ${error.code}\nHint: ${error.hint || 'None'}`);
-      } else {
+      const res = await authenticatedHttp.get(path);
+      const parsed = parseApiResponse<unknown[]>(path, res.status, res.data);
+      if (parsed.success) {
+        const n = Array.isArray(parsed.data) ? parsed.data.length : 0;
         setConnectionStatus('ok');
-        setDebugDetails(`Profiles count: ${count ?? 0}`);
+        setDebugDetails(`REST API OK — GET ${path} (${n} leagues)`);
+      } else {
+        setDebugError(parsed.error.message);
+        setConnectionStatus('error');
+        setDebugDetails(`HTTP ${parsed.error.statusCode} — ${path}`);
       }
-    } catch (e: any) {
-      console.error('Connection error:', e);
-      setDebugError(e.message);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Request failed';
+      setDebugError(message);
       setConnectionStatus('error');
+      setDebugDetails(path);
     }
-  };
+  }, [setConnectionStatus, setDebugError, setDebugDetails]);
 
   useEffect(() => {
     void testConnection();
-  }, []);
+  }, [testConnection]);
 
   const getStatusColor = (s: ConnectionStatus): string => {
     switch (s) {

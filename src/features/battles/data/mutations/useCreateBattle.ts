@@ -1,15 +1,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createBattleRequest } from '../api/battles.api';
+import type { CreateBattlePayload } from '../api/types';
 import { battlesKeys } from '../keys';
-import { createBattle } from '../api/battles.api';
-import type { CreateBattleParams } from '@/shared/types';
 
 export function useCreateBattle() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: CreateBattleParams) => createBattle(params),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: battlesKeys.lists() });
+    mutationFn: async (payload: CreateBattlePayload) => {
+      const res = await createBattleRequest(payload);
+      if (!res.success) {
+        throw new Error(res.error.message);
+      }
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: battlesKeys.all });
     },
   });
 }

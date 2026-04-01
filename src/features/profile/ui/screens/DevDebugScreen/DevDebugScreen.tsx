@@ -1,4 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { baseURL } from '@/shared/constants/constants';
 import { colors, spacing, radii, borderWidths } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
 import type { DevDebugScreenProps } from '@/shared/types';
@@ -88,15 +89,13 @@ export function DevDebugScreen({
             {devDebugScreenStrings.environmentLabel}
           </AppText>
           <AppText variant="captionSm" style={{ marginBottom: spacing[1] }}>
-            {devDebugScreenStrings.urlCaption}{' '}
-            {process.env.EXPO_PUBLIC_SUPABASE_URL ? devDebugScreenStrings.urlSet : devDebugScreenStrings.urlMissing}
+            {devDebugScreenStrings.apiBaseCaption} {baseURL}
           </AppText>
-          <AppText variant="captionSm" style={{ marginBottom: spacing[1] }}>
-            {devDebugScreenStrings.keyCaption}{' '}
-            {process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-              ? devDebugScreenStrings.keySet
-              : devDebugScreenStrings.keyMissing}
-          </AppText>
+          {!process.env.EXPO_PUBLIC_API_URL ? (
+            <AppText variant="captionSm" color={colors.textSecondary}>
+              {devDebugScreenStrings.apiEnvUnsetHint}
+            </AppText>
+          ) : null}
         </View>
       </View>
     </Screen>

@@ -93,7 +93,7 @@ src/
 1. **Screens** live in `features/<feature>/screens/`. No global `screens/` folder.
 2. **Feature logic** stays inside the feature. Shared code goes in `shared/`.
 3. **Features must not import from other features.** Only `shared/` is the cross-feature layer.
-4. **Avoid require cycles:** screens and feature code must not import from the feature barrel (`@/features/auth`). Use subpaths instead (e.g. `@/features/auth/hooks/useAuth`, `@/features/battles/api`).
+4. **Avoid require cycles:** screens and feature code must not import from the feature barrel (`@/features/auth`). Use subpaths instead (e.g. `@/features/auth/hooks/useAuth`, `@/features/battles/data/api/battles.api`).
 5. **Supabase client** is in `shared/lib/supabaseClient.ts`. All Supabase usage goes through this singleton.
 6. **TanStack Query** – `queryClient` lives in `shared/lib/queryClient.ts`. Query/mutation logic lives in `features/<feature>/api/` or `features/<feature>/hooks/`.
 7. **Zustand** – Feature-scoped stores in `features/<feature>/store/`. Auth store is in `features/auth/store/authStore.ts` and is the only app-wide store (used by MainRouter and AuthProvider).
@@ -255,7 +255,7 @@ The same structure and rules are encoded in `.cursor/rules/react-native-architec
 
 - **Folder structure:** Feature-first layout; screens and API per feature; shared UI, lib, theme, hooks, types under `shared/`.
 - **Navigation:** App/auth stacks and bottom tab in `app/navigation/`; bottom tab extracted to `BottomTab.tsx`; navigation types and no `any` for tab/stack screens.
-- **Require cycles:** Removed by having screens and feature code import from subpaths (e.g. `@/features/auth/hooks/useAuth`, `@/features/battles/api`) instead of the feature barrel.
+- **Require cycles:** Removed by having screens and feature code import from subpaths (e.g. `@/features/auth/hooks/useAuth`, `@/features/battles/data/api/battles.api`) instead of the feature barrel.
 - **Theme:** Single theme in `shared/theme`; tokens use scaling; vertical/horizontal convention; `FontFamily` with Montserrat + Roboto; `AppText` and shared UI updated to use theme and `AppText` where appropriate.
 - **Zustand:** Auth store in `features/auth/store/authStore.ts`; persisted; logout clears `queryClient`.
 - **TanStack Query:** Single `queryClient` in `shared/lib/queryClient.ts`; used at root; feature API/hooks own query/mutation logic.

@@ -27,6 +27,7 @@ export type BattleStatus = DomainBattleStatus | string;
 export function getStatusColor(status: BattleStatus): string {
   switch (status) {
     case 'open':
+    case 'pending':
       return defaultColors.success;
     case 'active':
       return defaultColors.primary;

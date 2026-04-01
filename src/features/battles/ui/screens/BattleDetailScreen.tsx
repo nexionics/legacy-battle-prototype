@@ -81,19 +81,13 @@ export default function BattleDetailScreen({ navigation, route }: BattleDetailSc
       return;
     }
 
-    const { error } = await joinBattle({
-      battleId: battleId!,
-      userId: user.id,
-      pick: effectivePick,
-    });
-
-    if (error) {
-      Alert.alert('Join failed', error.message);
-      return;
+    try {
+      await joinBattle(effectivePick);
+      setPick('');
+      Alert.alert('Joined!', 'You have successfully joined this battle.');
+    } catch (e) {
+      Alert.alert('Join failed', e instanceof Error ? e.message : 'Unknown error');
     }
-
-    setPick('');
-    Alert.alert('Joined!', 'You have successfully joined this battle.');
   };
 
   const matchEnded =
