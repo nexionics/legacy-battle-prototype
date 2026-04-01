@@ -61,6 +61,11 @@ export const loginScreenStrings = {
     loginWithBiometrics: 'Log in with biometrics',
     usePasswordInstead: 'Use password instead',
     notYou: 'Not You ?',
+    notYouSignOutTitle: 'Sign out?',
+    notYouSignOutMessage:
+      'Continuing will sign out the current account on this device. You can then sign in with a different email.',
+    notYouSignOutConfirm: 'Yes, sign out',
+    notYouSignOutCancel: 'Cancel',
     forgotPassword: 'Forgot password?',
     submitLogIn: 'Log in with password',
     biometricSignInFailed: 'Too many attempts. Try your password.',

@@ -145,6 +145,7 @@ export type {
   ToastContextProps,
   SelectionOption,
   SelectionModalProps,
+  ActionPromptModalProps,
   ScreenProps,
   LevelCardProps,
   WalletCardProps,

@@ -18,6 +18,7 @@ export function useProfile(userId: string | undefined) {
   const battleStats = data?.battleStats ?? { wins: 0, losses: 0, challenges: 0 };
   const crewCount = data?.crewCount ?? 0;
   const followingCount = data?.followingCount ?? 0;
+  const crewPreviewMembers = data?.crewPreviewMembers ?? [];
 
   useEffect(() => {
     if (!userId) return;
@@ -30,6 +31,7 @@ export function useProfile(userId: string | undefined) {
               battleStats: { wins: 0, losses: 0, challenges: 0 },
               crewCount: 0,
               followingCount: 0,
+              crewPreviewMembers: [],
             },
       );
     });
@@ -69,6 +71,7 @@ export function useProfile(userId: string | undefined) {
     setIsEditing,
     battleStats,
     crewCount,
+    crewPreviewMembers,
     followingCount,
     saveProfile,
     refetch: profileQuery.refetch,

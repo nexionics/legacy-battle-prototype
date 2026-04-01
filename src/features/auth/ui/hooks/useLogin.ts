@@ -26,6 +26,7 @@ export function useLogin() {
   const deviceId = useAuthStore((s) => s.deviceId);
   const setDeviceId = useAuthStore((s) => s.setDeviceId);
   const setExpoPushToken = useAuthStore((s) => s.setExpoPushToken);
+  const setLocallyUnlocked = useAuthStore((s) => s.setLocallyUnlocked);
   const loginMutation = useLoginMutation();
   const googleSocialMutation = useGoogleSocialAuthMutation();
   const [googleFlowLoading, setGoogleFlowLoading] = useState(false);
@@ -125,10 +126,12 @@ export function useLogin() {
 
     if (!authData.hasUsername) {
       setNeedsUsername(true);
+      setLocallyUnlocked(true);
       navigation.navigate('CreateUsername');
       return;
     }
     setNeedsUsername(false);
+    setLocallyUnlocked(true);
   };
 
   const onBeforeBack = () => {

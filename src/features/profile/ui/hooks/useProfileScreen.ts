@@ -23,6 +23,7 @@ export function useProfileScreen({ navigation }: Pick<ProfileScreenProps, 'navig
     profileError,
     battleStats,
     crewCount,
+    crewPreviewMembers,
     followingCount,
     refetch,
   } = useProfile(user?.id);
@@ -51,6 +52,7 @@ export function useProfileScreen({ navigation }: Pick<ProfileScreenProps, 'navig
     refetchProfile: refetch,
     battleStats,
     crewCount,
+    crewPreviewMembers,
     followingCount,
     user,
     mode,

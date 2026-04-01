@@ -51,6 +51,9 @@ export type UseLoginWithBiometricsReturn = {
   onUsePasswordInstead: () => void;
   onForgotPasswordPress: () => void;
   onNotYouPress: () => void;
+  notYouPromptVisible: boolean;
+  onNotYouPromptConfirm: () => void;
+  onNotYouPromptCancel: () => void;
   loginScreenStrings: typeof loginScreenStrings;
 };
 

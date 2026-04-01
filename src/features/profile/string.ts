@@ -21,6 +21,7 @@ export const profileScreenStrings = {
   walletTitle: 'Total BC',
   walletAction: 'View More',
   crewTitle: 'Your Crew',
+  crewEmptyHint: 'No crew members yet. Add friends to build your crew.',
   crewAction: 'Manage Crew',
   recentActivityTitle: 'Recent Activity',
   activity: {

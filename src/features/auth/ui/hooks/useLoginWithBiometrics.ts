@@ -6,6 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { TextInput } from 'react-native';
 import { useToast } from '@/app/providers/useToast';
 import { getBiometricSecureItem } from '../../data/biometricSecureStorage';
+import { logoutSession } from '../../data/logoutSession';
 import { useAuthStore } from '../../data/store/auth.store';
 import { useLoginMutation } from '../../data/api/authMutations';
 import { rnBiometrics, signInWithBiometrics } from '../../lib/biometrics';
@@ -29,6 +30,7 @@ export function useLoginWithBiometrics() {
   const [displayName, setDisplayName] = useState('');
   const [accountEmail, setAccountEmail] = useState<string | null>(null);
   const [biometricBusy, setBiometricBusy] = useState(false);
+  const [notYouPromptVisible, setNotYouPromptVisible] = useState(false);
   const biometricInFlight = useRef(false);
 
   const form = useForm<BiometricPasswordLoginFormValues>({
@@ -139,6 +141,21 @@ export function useLoginWithBiometrics() {
         result.data.userId,
         result.data.hasUsername,
       );
+      return;
+    }
+
+    const raw = result.data as unknown as Record<string, unknown>;
+    if (
+      typeof raw.accessToken === 'string' &&
+      typeof raw.refreshToken === 'string' &&
+      typeof raw.userId === 'string'
+    ) {
+      applyAuthSuccess(
+        raw.accessToken,
+        raw.refreshToken,
+        raw.userId,
+        typeof raw.hasUsername === 'boolean' ? raw.hasUsername : true,
+      );
     }
   };
 
@@ -150,8 +167,28 @@ export function useLoginWithBiometrics() {
     navigation.navigate('ForgotPassword');
   };
 
+  const runNotYouSignOut = useCallback(() => {
+    void (async () => {
+      try {
+        await logoutSession();
+      } catch {
+        useAuthStore.getState().logout();
+      }
+      navigation.replace('EmailLogin');
+    })();
+  }, [navigation]);
+
   const onNotYouPress = () => {
-    navigation.navigate('EmailLogin');
+    setNotYouPromptVisible(true);
+  };
+
+  const onNotYouPromptCancel = () => {
+    setNotYouPromptVisible(false);
+  };
+
+  const onNotYouPromptConfirm = () => {
+    setNotYouPromptVisible(false);
+    runNotYouSignOut();
   };
 
   return {
@@ -169,6 +206,9 @@ export function useLoginWithBiometrics() {
     onUsePasswordInstead,
     onForgotPasswordPress,
     onNotYouPress,
+    notYouPromptVisible,
+    onNotYouPromptConfirm,
+    onNotYouPromptCancel,
     loginScreenStrings,
   };
 }

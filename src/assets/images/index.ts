@@ -11,4 +11,5 @@
 export default {
   battleHand: require('./battle-hand.png'),
   battleNowButton: require('./battle-now-button.png'),
+  rankBg: require('./rank-bg.png'),
 };

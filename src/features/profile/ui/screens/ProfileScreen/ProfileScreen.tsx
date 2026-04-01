@@ -23,6 +23,7 @@ export function ProfileScreen({
   refetchProfile,
   battleStats,
   crewCount,
+  crewPreviewMembers,
   user,
   onBackPress,
   onSettingsPress,
@@ -50,10 +51,6 @@ export function ProfileScreen({
     battleStats,
     strings: profileScreenStrings,
   });
-
-  const avatarLabel = (profile?.displayName || profile?.username || user?.displayName || 'LB')
-    .substring(0, 2)
-    .toUpperCase();
 
   return (
     <>
@@ -114,8 +111,8 @@ export function ProfileScreen({
               <ProfileCrewCard
                 title={profileScreenStrings.crewTitle}
                 crewCount={crewCount}
-                avatarUrl={profile?.avatarUrl}
-                avatarLabel={avatarLabel}
+                emptyHint={profileScreenStrings.crewEmptyHint}
+                crewPreviewMembers={crewPreviewMembers}
                 buttonLabel={profileScreenStrings.crewAction}
                 onPress={onCrewPress}
               />

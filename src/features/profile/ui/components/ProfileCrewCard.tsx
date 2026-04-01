@@ -4,18 +4,22 @@ import { AppText } from '@/shared/ui';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { horizontalScale, moderate, verticalScale } from '@/shared/theme';
 import type { ProfileCrewCardProps } from '@/shared/types';
+import { getInitials } from '@/shared/utils';
 
-const PREVIEW_ITEMS = [0, 1, 2, 3];
+const AVATAR_OFFSET = 18;
 
 export function ProfileCrewCard({
   title,
   crewCount,
-  avatarUrl,
-  avatarLabel,
+  emptyHint,
+  crewPreviewMembers,
   buttonLabel,
   onPress,
 }: ProfileCrewCardProps) {
   const colors = useThemeColors();
+
+  const visibleSlots = crewCount > 0 ? Math.min(4, crewCount) : 0;
+  const showOverflowBadge = crewCount > 4;
 
   return (
     <View
@@ -31,38 +35,51 @@ export function ProfileCrewCard({
         </AppText>
       </View>
 
-      <View style={styles.previewRow}>
-        {PREVIEW_ITEMS.map((item, index) => (
-          <View
-            key={item}
-            style={[
-              styles.avatarShell,
-              {
-                left: horizontalScale(index * 18),
-                backgroundColor: colors.card,
-                borderColor: colors.backgroundLight,
-                zIndex: PREVIEW_ITEMS.length - index,
-              },
-            ]}
-          >
-            {avatarUrl && index === 0 ? (
-              <Image source={{ uri: avatarUrl }} style={styles.avatarImage} />
-            ) : (
-              <AppText variant="captionSm" style={{ color: colors.text }}>
-                {avatarLabel}
-              </AppText>
-            )}
-          </View>
-        ))}
-
-        <View
-          style={[styles.countBubble, { left: horizontalScale(72), backgroundColor: colors.white }]}
-        >
-          <AppText variant="captionSm" style={{ color: colors.black }}>
-            +{crewCount}
+      {crewCount === 0 ? (
+        <View style={styles.emptyRow}>
+          <Ionicons name="people-outline" size={moderate(22)} color={colors.textMuted} />
+          <AppText variant="body2" style={[styles.emptyHint, { color: colors.textSecondary }]}>
+            {emptyHint}
           </AppText>
         </View>
-      </View>
+      ) : (
+        <View style={styles.previewRow}>
+          {Array.from({ length: visibleSlots }, (_, index) => {
+            const isOverflowSlot = showOverflowBadge && index === 3;
+            const left = horizontalScale(index * AVATAR_OFFSET);
+            const member = crewPreviewMembers[index];
+
+            return (
+              <View
+                key={index}
+                style={[
+                  styles.avatarShell,
+                  {
+                    left,
+                    backgroundColor: colors.card,
+                    borderColor: colors.backgroundLight,
+                    zIndex: visibleSlots - index,
+                  },
+                ]}
+              >
+                {isOverflowSlot ? (
+                  <AppText variant="captionSm" style={{ color: colors.text }}>
+                    +{crewCount - 3}
+                  </AppText>
+                ) : member?.avatarUrl ? (
+                  <Image source={{ uri: member.avatarUrl }} style={styles.avatarImage} />
+                ) : member ? (
+                  <AppText variant="captionSm" style={{ color: colors.text }} numberOfLines={1}>
+                    {getInitials(member.displayName, member.username) || '?'}
+                  </AppText>
+                ) : (
+                  <Ionicons name="person" size={moderate(14)} color={colors.textSecondary} />
+                )}
+              </View>
+            );
+          })}
+        </View>
+      )}
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: colors.primary }]}
@@ -89,6 +106,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: horizontalScale(6),
   },
+  emptyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: horizontalScale(10),
+    marginTop: verticalScale(14),
+    marginBottom: verticalScale(16),
+    paddingVertical: verticalScale(4),
+  },
+  emptyHint: {
+    flex: 1,
+    lineHeight: verticalScale(20),
+  },
   previewRow: {
     height: verticalScale(34),
     marginTop: verticalScale(14),
@@ -107,14 +136,6 @@ const styles = StyleSheet.create({
   avatarImage: {
     width: '100%',
     height: '100%',
-  },
-  countBubble: {
-    position: 'absolute',
-    width: horizontalScale(30),
-    height: verticalScale(30),
-    borderRadius: moderate(15),
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
     borderRadius: moderate(999),

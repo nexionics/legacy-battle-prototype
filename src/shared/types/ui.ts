@@ -254,6 +254,17 @@ export interface ToastContextProps {
   showToast: (type: 'success' | 'fail', message: string) => void;
 }
 
+/** Centered confirm/cancel dialog; theme-aware when rendered under ThemeProvider. */
+export interface ActionPromptModalProps {
+  visible: boolean;
+  title: string;
+  message: string;
+  confirmLabel: string;
+  cancelLabel: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
 export interface SelectionOption<T extends string = string> {
   key: T;
   label: string;
@@ -321,8 +332,10 @@ export interface ProfileHeaderProps {
 export interface ProfileCrewCardProps {
   title: string;
   crewCount: number;
-  avatarUrl?: string | null;
-  avatarLabel: string;
+  /** Shown when `crewCount === 0` instead of a fake avatar stack. */
+  emptyHint: string;
+  /** First crew members for the stacked preview; image if `avatarUrl` set, else initials. */
+  crewPreviewMembers: CrewUserSummary[];
   buttonLabel: string;
   onPress: () => void;
 }
