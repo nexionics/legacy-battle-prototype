@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Alert, Linking, Share } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { Share } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useToast } from '@/app/providers/useToast';
 import { useAuth } from '@/shared/hooks/useAuth';
 import type { AddFriendScreenProps } from '@/shared/types';
+import { useCrewInvitationLinkQuery } from '../../data/queries/useCrewInvitationLinkQuery';
 import { addFriendScreenStrings } from '../../string';
 import { useAddFriend } from './useAddFriend';
 
@@ -15,6 +17,7 @@ export function useAddFriendScreen({ navigation }: Pick<AddFriendScreenProps, 'n
   const { showToast } = useToast();
   const { user } = useAuth();
   const [submittingFriendId, setSubmittingFriendId] = useState<string | null>(null);
+
   const {
     searchQuery,
     setSearchQuery,
@@ -25,6 +28,21 @@ export function useAddFriendScreen({ navigation }: Pick<AddFriendScreenProps, 'n
     handleSearch,
     handleAddFriend,
   } = useAddFriend(user?.id);
+
+  const {
+    data: inviteLink,
+    isLoading: inviteLinkLoading,
+    isError: inviteLinkError,
+    error: inviteLinkQueryError,
+    refetch: refetchInviteLink,
+  } = useCrewInvitationLinkQuery();
+
+  const inviteLinkErrorMessage = useMemo(() => {
+    if (!inviteLinkError || !inviteLinkQueryError) return null;
+    return inviteLinkQueryError instanceof Error
+      ? inviteLinkQueryError.message
+      : addFriendScreenStrings.linkUnavailable;
+  }, [inviteLinkError, inviteLinkQueryError]);
 
   const onAddFriendPress = async (friendId: string, friendName: string) => {
     setSubmittingFriendId(friendId);
@@ -45,42 +63,40 @@ export function useAddFriendScreen({ navigation }: Pick<AddFriendScreenProps, 'n
     }
   };
 
-  const onInviteViaTextPress = async () => {
-    const message = addFriendScreenStrings.inviteMessage;
-    const url = `sms:&body=${encodeURIComponent(message)}`;
-
-    try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
+  const onCopyInviteLinkPress = useCallback(async () => {
+    let link = inviteLink;
+    if (!link) {
+      const { data, isError } = await refetchInviteLink();
+      if (isError || !data) {
+        showToast('fail', inviteLinkErrorMessage ?? addFriendScreenStrings.linkUnavailable);
         return;
       }
-      await Share.share({ message });
-    } catch {
-      await Share.share({ message });
+      link = data;
     }
-  };
-
-  const onInviteViaEmailPress = async () => {
-    const url = `mailto:?subject=${encodeURIComponent(addFriendScreenStrings.inviteEmailSubject)}&body=${encodeURIComponent(addFriendScreenStrings.inviteEmailBody)}`;
-
     try {
-      const supported = await Linking.canOpenURL(url);
-      if (!supported) {
-        Alert.alert(
-          addFriendScreenStrings.alerts.genericTitle,
-          addFriendScreenStrings.alerts.emailUnavailable,
-        );
+      await Clipboard.setStringAsync(link);
+      showToast('success', addFriendScreenStrings.success.copiedLink);
+    } catch {
+      showToast('fail', addFriendScreenStrings.errors.copyFailed);
+    }
+  }, [inviteLink, inviteLinkErrorMessage, refetchInviteLink, showToast]);
+
+  const onShareInviteLinkPress = useCallback(async () => {
+    let link = inviteLink;
+    if (!link) {
+      const { data, isError } = await refetchInviteLink();
+      if (isError || !data) {
+        showToast('fail', inviteLinkErrorMessage ?? addFriendScreenStrings.linkUnavailable);
         return;
       }
-      await Linking.openURL(url);
-    } catch {
-      Alert.alert(
-        addFriendScreenStrings.alerts.genericTitle,
-        addFriendScreenStrings.alerts.emailOpenFailed,
-      );
+      link = data;
     }
-  };
+    try {
+      await Share.share({ message: link, url: link });
+    } catch {
+      showToast('fail', addFriendScreenStrings.errors.shareFailed);
+    }
+  }, [inviteLink, inviteLinkErrorMessage, refetchInviteLink, showToast]);
 
   return {
     searchQuery,
@@ -92,9 +108,13 @@ export function useAddFriendScreen({ navigation }: Pick<AddFriendScreenProps, 'n
     submittingFriendId,
     onSearchPress: handleSearch,
     onAddFriendPress,
-    onInviteViaTextPress,
-    onInviteViaEmailPress,
+    inviteLink,
+    inviteLinkLoading,
+    inviteLinkErrorMessage,
+    onCopyInviteLinkPress,
+    onShareInviteLinkPress,
     onBackPress: () => navigation.goBack(),
+    onNotificationPress: () => undefined,
     strings: addFriendScreenStrings,
   };
 }

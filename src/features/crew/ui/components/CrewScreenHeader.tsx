@@ -18,12 +18,16 @@ export function CrewScreenHeader({
       </TouchableOpacity>
 
       <View style={styles.headerCenter}>
-        <AppText variant="h4">{title}</AppText>
-        <Ionicons
-          name={iconName as keyof typeof Ionicons.glyphMap}
-          size={moderate(18)}
-          color={colors.primary}
-        />
+        <AppText variant="h4" style={!iconName ? styles.headerTitleOnly : undefined}>
+          {title}
+        </AppText>
+        {iconName ? (
+          <Ionicons
+            name={iconName as keyof typeof Ionicons.glyphMap}
+            size={moderate(18)}
+            color={colors.primary}
+          />
+        ) : null}
       </View>
 
       {rightActionIconName && onRightActionPress ? (
@@ -58,9 +62,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerCenter: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing[2],
+  },
+  headerTitleOnly: {
+    textAlign: 'center',
   },
   actionButton: {
     width: horizontalScale(36),

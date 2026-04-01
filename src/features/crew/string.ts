@@ -36,6 +36,13 @@ export const friendsScreenStrings = {
 
 export const addFriendScreenStrings = {
   title: 'Add Crew',
+  pageHeading: 'Grow Your Crew',
+  pageSubtitle: 'Search by username or share your invite link with friends',
+  shareInviteLinkTitle: 'Share Invite Link',
+  shareInviteLinkSubtitle: 'Share The Battle Invite Link',
+  linkLoading: 'Loading invite link…',
+  linkUnavailable: 'Could not load invite link',
+  copyButton: 'Copy',
   searchTitle: 'Search for Crew',
   searchSubtitle: 'Find people by username',
   searchPlaceholder: 'Enter username',
@@ -43,25 +50,19 @@ export const addFriendScreenStrings = {
   searchingMessage: 'Searching...',
   emptyTitle: 'No users found',
   emptySubtitle: 'Try a different username',
-  inviteTitle: 'Invite to Crew',
-  inviteSubtitle: "Invite people who aren't on Legacy Battle yet",
-  inviteViaTextTitle: 'Invite via Text Message',
-  inviteViaTextSubtitle: 'Send an SMS invitation to your contacts',
-  inviteViaEmailTitle: 'Invite via Email',
-  inviteViaEmailSubtitle: 'Send an email invitation',
   dividerLabel: 'OR',
+  errors: {
+    copyFailed: 'Could not copy to clipboard.',
+    shareFailed: 'Could not open the share sheet.',
+  },
+  success: {
+    copiedLink: 'Invite link copied.',
+  },
   alerts: {
     genericTitle: 'Error',
     alreadySentTitle: 'Already Sent',
     alreadySentMessage: 'You already have a pending request with this user.',
     requestSentTitle: 'Crew Request Sent',
     requestSentMessage: (friendName: string) => `A crew request has been sent to ${friendName}.`,
-    emailUnavailable: 'Email is not available on this device.',
-    emailOpenFailed: 'Could not open the email app.',
   },
-  inviteMessage:
-    'Hey! Join me on Legacy Battle - the ultimate sports prediction app! Download it here: [App Store Link]',
-  inviteEmailSubject: 'Join me on Legacy Battle!',
-  inviteEmailBody:
-    "Hey!\n\nI've been using Legacy Battle to make sports predictions and challenge friends. You should join me!\n\nDownload the app here: [App Store Link]\n\nSee you on the battlefield!",
 } as const;

@@ -34,25 +34,30 @@ authenticatedHttp.interceptors.request.use((config: InternalAxiosRequestConfig) 
   return config;
 });
 
-// Response interceptor to handle backend error structure
-const handleResponseError = (response: AxiosResponse): AxiosResponse => {
-  const data: unknown = response.data;
-  if (!data || typeof data !== 'object') return response;
-
-  const record = data as Record<string, unknown>;
-  if (record.success === false) {
-    const errorData: unknown = 'error' in record && record.error !== undefined ? record.error : record;
-    const errorRecord =
-      errorData && typeof errorData === 'object' ? (errorData as Record<string, unknown>) : {};
-
-    const message = typeof errorRecord.message === 'string' ? errorRecord.message : 'Unknown error';
-    const error = new Error(message);
-    Object.assign(error, errorRecord);
-    throw error;
+/**
+ * Ensures `response.data` is a parsed object when the server returned JSON as a string (e.g.
+ * `text/plain` or missing `Content-Type`). Call sites that read `.data` directly then still see the
+ * same shape as `parseApiResponse`.
+ */
+function parseJsonResponseBody(response: AxiosResponse): AxiosResponse {
+  const data = response.data;
+  if (typeof data === 'string') {
+    const t = data.trim();
+    if (!t.length) {
+      response.data = null;
+      return response;
+    }
+    const c = t[0];
+    if (c === '{' || c === '[') {
+      try {
+        response.data = JSON.parse(t);
+      } catch {
+        /* leave as string */
+      }
+    }
   }
-
   return response;
-};
+}
 
-authHttp.interceptors.response.use(handleResponseError);
-authenticatedHttp.interceptors.response.use(handleResponseError);
+authHttp.interceptors.response.use(parseJsonResponseBody);
+authenticatedHttp.interceptors.response.use(parseJsonResponseBody);

@@ -43,3 +43,9 @@ export type CrewSearchResponse = ApiResponse<PaginatedItems<CrewUserSummary>>;
 export type CrewRequestStatusResponse = ApiResponse<CrewRequestStatusData>;
 export type SendCrewRequestResponse = ApiResponse<CrewRequestItem>;
 export type RespondToCrewRequestResponse = ApiResponse<CrewActionMessage>;
+
+export interface CrewInvitationLinkData {
+  inviteLink: string;
+}
+
+export type CrewInvitationLinkResponse = ApiResponse<CrewInvitationLinkData>;

@@ -469,7 +469,8 @@ export interface ScoreDisplayProps {
 
 export interface CrewScreenHeaderProps {
   title: string;
-  iconName: string;
+  /** When omitted, only the title is shown centered (no trailing icon). */
+  iconName?: string;
   onBackPress: () => void;
   rightActionIconName?: string;
   onRightActionPress?: () => void;

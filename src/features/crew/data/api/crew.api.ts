@@ -1,6 +1,7 @@
 import { authenticatedHttp } from '@/shared/lib/httpClient';
 import { networkFailure, parseApiResponse } from '@/shared/utils/helpers';
 import type {
+  CrewInvitationLinkResponse,
   CrewMembersResponse,
   CrewRequestResponseStatus,
   CrewRequestStatusResponse,
@@ -108,6 +109,17 @@ export async function respondToCrewRequest(
   const path = `/crew/request/${encodeURIComponent(requestId)}/respond`;
   try {
     const res = await authenticatedHttp.post(path, { status });
+    return parseApiResponse(path, res.status, res.data as object);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Network error';
+    return networkFailure(path, message);
+  }
+}
+
+export async function getCrewInvitationLink(): Promise<CrewInvitationLinkResponse> {
+  const path = '/crew/invitation/link';
+  try {
+    const res = await authenticatedHttp.get(path);
     return parseApiResponse(path, res.status, res.data as object);
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Network error';

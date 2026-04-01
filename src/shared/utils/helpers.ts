@@ -97,24 +97,63 @@ export function normalizeCheckUsernameData(data: Record<string, unknown>): Norma
 }
 
 /**
+ * Turns axios `response.data` into a plain object when the server sent JSON as a string (wrong
+ * `Content-Type`, proxies, or RN quirks). Without this, `parseApiResponse` sees a string and
+ * returns "Invalid response from server", and callers often mislabel failures as "Network error".
+ */
+export function normalizeApiResponseBody(body: unknown): object | null {
+  if (body === null || body === undefined) {
+    return null;
+  }
+  if (typeof body === 'object' && !Array.isArray(body)) {
+    return body as object;
+  }
+  if (typeof body === 'string') {
+    const t = body.trim();
+    if (!t.length) {
+      return null;
+    }
+    const c = t[0];
+    if (c !== '{' && c !== '[') {
+      return null;
+    }
+    try {
+      const parsed: unknown = JSON.parse(t);
+      if (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return parsed as object;
+      }
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+function isEnvelopeSuccess(value: unknown): boolean {
+  return value === true || value === 1 || value === 'true';
+}
+
+function isEnvelopeFailure(value: unknown): boolean {
+  return value === false || value === 0 || value === 'false';
+}
+
+/**
  * Parses a JSON body from an HTTP response into the app's standard `{ success, data | error }` envelope.
  * When the body is missing or not a valid envelope, returns a synthetic failure with HTTP `status`.
  *
  * @param path - Request path (stored on the error object for debugging).
  * @param status - HTTP status code from the transport layer.
- * @param body - Parsed JSON body (often `response.data` from axios).
+ * @param body - `response.data` from axios (object or JSON string).
  */
-export function parseApiResponse<T>(
-  path: string,
-  status: number,
-  body: object | null | undefined,
-): ApiResponse<T> {
-  if (body !== null && body !== undefined && typeof body === 'object' && 'success' in body) {
-    const r = body as ApiResponse<T>;
-    if (r.success === true) {
-      return r;
+export function parseApiResponse<T>(path: string, status: number, body: unknown): ApiResponse<T> {
+  const obj = normalizeApiResponseBody(body);
+  if (obj !== null && 'success' in obj) {
+    const r = obj as ApiResponse<T>;
+    if (isEnvelopeSuccess(r.success)) {
+      const raw = r as { success: unknown; data: T };
+      return { success: true, data: raw.data };
     }
-    if (r.success === false && 'error' in r) {
+    if (isEnvelopeFailure(r.success) && 'error' in r) {
       return r;
     }
   }
