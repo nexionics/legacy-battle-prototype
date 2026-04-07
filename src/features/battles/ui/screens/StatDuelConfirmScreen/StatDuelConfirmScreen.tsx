@@ -140,7 +140,9 @@ export function StatDuelConfirmScreen(props: StatDuelConfirmScreenViewProps) {
             value={
               visibility === 'private'
                 ? battlesStrings.statDuel.visibilityPrivate
-                : battlesStrings.statDuel.visibilityPublic
+                : visibility === 'crew'
+                  ? battlesStrings.battleVisibility.crewOnly
+                  : battlesStrings.statDuel.visibilityPublic
             }
           />
           <DetailRow

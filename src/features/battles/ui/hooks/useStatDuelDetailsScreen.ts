@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import type { StatDuelDetailsScreenProps } from '@/shared/types';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import { STAT_DUEL_SPORTS, MOCK_GAMES, POSITIONS_BY_SPORT } from '@/shared/constants';
+import {
+  statDuelDetailsSchema,
+  type StatDuelDetailsFormValues,
+} from '@/features/battles/data/validation/statDuelFlow.schema';
 
 export type StatDuelDetailsScreenViewProps = ReturnType<typeof useStatDuelDetailsScreen>;
 
@@ -9,7 +15,9 @@ export function useStatDuelDetailsScreen({
   navigation,
   route,
 }: Pick<StatDuelDetailsScreenProps, 'navigation' | 'route'>) {
-  const { visibility, battleMode: routeBattleMode } = route?.params || {};
+  const { visibility: routeVisibility, battleMode: routeBattleMode } = route?.params || {};
+  const storeVisibility = useStatDuelStore((s) => s.visibility);
+  const effectiveVisibility = routeVisibility ?? storeVisibility ?? null;
 
   const battleMode = useStatDuelStore((s) => s.battleMode);
   const selectedSport = useStatDuelStore((s) => s.selectedSport);
@@ -30,14 +38,29 @@ export function useStatDuelDetailsScreen({
   const setShowPositionModal = useStatDuelStore((s) => s.setShowPositionModal);
 
   useEffect(() => {
-    if (visibility) setVisibility(visibility);
+    if (routeVisibility) setVisibility(routeVisibility);
     if (routeBattleMode) setBattleMode(routeBattleMode);
-  }, [visibility, routeBattleMode, setVisibility, setBattleMode]);
+  }, [routeVisibility, routeBattleMode, setVisibility, setBattleMode]);
 
   const effectiveBattleMode = battleMode ?? routeBattleMode;
   const isStandardMode =
     effectiveBattleMode === 'STANDARD' || effectiveBattleMode === 'BOTH_PICKS';
   const isFantasyMode = effectiveBattleMode === 'FANTASY';
+
+  const detailsSchema = useMemo(() => statDuelDetailsSchema(isStandardMode), [isStandardMode]);
+
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<StatDuelDetailsFormValues>({
+    resolver: yupResolver(detailsSchema),
+    mode: 'onChange',
+    values: {
+      sport: selectedSport ?? '',
+      game: selectedGame ?? '',
+      position: selectedPosition ?? '',
+    },
+  });
 
   const filteredGames = useMemo(
     () =>
@@ -54,13 +77,9 @@ export function useStatDuelDetailsScreen({
   const selectedGameData = MOCK_GAMES.find((g) => g.id === selectedGame);
   const selectedPositionData = availablePositions.find((p) => p.id === selectedPosition);
 
-  const canContinue = isStandardMode
-    ? Boolean(selectedSport && selectedGame && selectedPosition)
-    : Boolean(selectedSport && selectedPosition);
-
-  const onContinue = useCallback(() => {
+  const submitDetails = useCallback(() => {
     navigation.navigate('StatDuelChampion', {
-      visibility,
+      visibility: effectiveVisibility ?? undefined,
       battleMode: effectiveBattleMode,
       sport: selectedSport,
       game: isStandardMode ? selectedGameData ?? null : null,
@@ -69,7 +88,7 @@ export function useStatDuelDetailsScreen({
     });
   }, [
     navigation,
-    visibility,
+    effectiveVisibility,
     effectiveBattleMode,
     selectedSport,
     isStandardMode,
@@ -78,13 +97,17 @@ export function useStatDuelDetailsScreen({
     selectedPositionData?.name,
   ]);
 
+  const onContinue = useCallback(() => {
+    void handleSubmit(submitDetails)();
+  }, [handleSubmit, submitDetails]);
+
   const onBack = useCallback(() => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      navigation.navigate('StatDuelMode', { visibility });
+      navigation.navigate('StatDuelMode', { visibility: effectiveVisibility ?? undefined });
     }
-  }, [navigation, visibility]);
+  }, [navigation, effectiveVisibility]);
 
   const onSelectSport = useCallback(
     (sportId: string) => {
@@ -113,7 +136,7 @@ export function useStatDuelDetailsScreen({
   );
 
   return {
-    visibility,
+    visibility: effectiveVisibility,
     effectiveBattleMode,
     isStandardMode,
     isFantasyMode,
@@ -133,7 +156,12 @@ export function useStatDuelDetailsScreen({
     selectedPositionData,
     filteredGames,
     availablePositions,
-    canContinue,
+    canContinue: isValid,
+    detailsErrors: {
+      sport: errors.sport?.message,
+      game: errors.game?.message,
+      position: errors.position?.message,
+    },
     onContinue,
     onBack,
     onSelectSport,

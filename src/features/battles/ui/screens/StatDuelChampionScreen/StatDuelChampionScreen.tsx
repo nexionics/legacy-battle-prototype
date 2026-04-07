@@ -31,6 +31,7 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
     selectedDirectionData,
     statDescription,
     canContinue,
+    championErrors,
     onContinue,
     onBack,
     onSelectPlayer,
@@ -69,12 +70,20 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
             {battlesStrings.statDuel.pickPlayer}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
-          <TouchableOpacity style={styles.dropdown} onPress={() => setShowPlayerModal(true)}>
+          <TouchableOpacity
+            style={[styles.dropdown, championErrors.playerId ? styles.dropdownError : null]}
+            onPress={() => setShowPlayerModal(true)}
+          >
             <AppText variant="body2" color={player ? colors.text : colors.muted}>
               {player ? player.name : battlesStrings.statDuel.pickPlayersPlaceholder}
             </AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
+          {championErrors.playerId ? (
+            <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+              {championErrors.playerId}
+            </AppText>
+          ) : null}
         </View>
 
         <View style={styles.dropdownContainer}>
@@ -82,12 +91,20 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
             {battlesStrings.statDuel.statCategory}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
-          <TouchableOpacity style={styles.dropdown} onPress={() => setShowStatModal(true)}>
+          <TouchableOpacity
+            style={[styles.dropdown, championErrors.statCategoryId ? styles.dropdownError : null]}
+            onPress={() => setShowStatModal(true)}
+          >
             <AppText variant="body2" color={statCategory ? colors.text : colors.muted}>
               {statCategory?.name || battlesStrings.statDuel.selectStatCategory}
             </AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
+          {championErrors.statCategoryId ? (
+            <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+              {championErrors.statCategoryId}
+            </AppText>
+          ) : null}
         </View>
 
         {isStandardMode ? (
@@ -96,12 +113,20 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
               {battlesStrings.statDuel.chooseDirection}{' '}
               <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
             </AppText>
-            <TouchableOpacity style={styles.dropdown} onPress={() => setShowDirectionModal(true)}>
+            <TouchableOpacity
+              style={[styles.dropdown, championErrors.direction ? styles.dropdownError : null]}
+              onPress={() => setShowDirectionModal(true)}
+            >
               <AppText variant="body2" color={direction ? colors.text : colors.muted}>
                 {selectedDirectionData?.label || battlesStrings.statDuel.selectDirection}
               </AppText>
               <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
+            {championErrors.direction ? (
+              <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+                {championErrors.direction}
+              </AppText>
+            ) : null}
           </View>
         ) : null}
 
@@ -110,10 +135,18 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
             {battlesStrings.statDuel.stakeBc}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
-          <TouchableOpacity style={styles.dropdown} onPress={() => setShowStakeModal(true)}>
+          <TouchableOpacity
+            style={[styles.dropdown, championErrors.stake ? styles.dropdownError : null]}
+            onPress={() => setShowStakeModal(true)}
+          >
             <AppText variant="body2">{battlesFormatStakeBc(stake)}</AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
+          {championErrors.stake ? (
+            <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+              {championErrors.stake}
+            </AppText>
+          ) : null}
         </View>
 
         {player && statCategory ? (
@@ -284,6 +317,12 @@ const styles = StyleSheet.create({
     borderColor: colors.inputBorder,
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[4],
+  },
+  dropdownError: {
+    borderColor: colors.primary,
+  },
+  fieldError: {
+    marginTop: spacing[1],
   },
   infoCard: {
     backgroundColor: colors.card,

@@ -21,6 +21,7 @@ export function StatDuelOpponentScreen(props: StatDuelOpponentScreenViewProps) {
     onSelectOpponentFromSheet,
     onAddFriendFromSheet,
     canContinue,
+    opponentError,
     onContinue,
     onBack,
   } = props;
@@ -71,7 +72,7 @@ export function StatDuelOpponentScreen(props: StatDuelOpponentScreenViewProps) {
               {battlesStrings.statDuel.addOpponent}
             </AppText>
             <TouchableOpacity
-              style={styles.searchTrigger}
+              style={[styles.searchTrigger, opponentError ? styles.searchTriggerError : null]}
               onPress={openOpponentPicker}
               activeOpacity={0.85}
               accessibilityRole="button"
@@ -82,6 +83,11 @@ export function StatDuelOpponentScreen(props: StatDuelOpponentScreenViewProps) {
                 {battlesStrings.statDuel.searchOpponentPlaceholder}
               </AppText>
             </TouchableOpacity>
+            {opponentError ? (
+              <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+                {opponentError}
+              </AppText>
+            ) : null}
 
             {selectedOpponent ? (
               <View style={styles.selectedOpponentCard}>
@@ -272,8 +278,14 @@ const styles = StyleSheet.create({
     borderColor: colors.inputBorder,
     paddingHorizontal: spacing[4],
     gap: spacing[2],
-    marginBottom: spacing[4],
+    marginBottom: spacing[2],
     minHeight: verticalScale(48),
+  },
+  searchTriggerError: {
+    borderColor: colors.primary,
+  },
+  fieldError: {
+    marginBottom: spacing[4],
   },
   searchTriggerText: {
     flex: 1,

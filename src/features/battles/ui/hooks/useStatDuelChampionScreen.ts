@@ -1,4 +1,6 @@
 import { useCallback, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { battlesStatCompareDescription } from '@/features/battles/string';
 import type {
   StatDuelChampionScreenProps,
@@ -11,6 +13,10 @@ import {
   DIRECTION_OPTIONS,
   STAT_CATEGORIES_BY_SPORT,
 } from '@/shared/constants';
+import {
+  statDuelChampionSchema,
+  type StatDuelChampionFormValues,
+} from '@/features/battles/data/validation/statDuelFlow.schema';
 
 export type StatDuelChampionScreenViewProps = ReturnType<typeof useStatDuelChampionScreen>;
 
@@ -18,7 +24,16 @@ export function useStatDuelChampionScreen({
   navigation,
   route,
 }: Pick<StatDuelChampionScreenProps, 'navigation' | 'route'>) {
-  const { visibility, battleMode, sport, game, position, positionName } = route?.params || {};
+  const {
+    visibility: routeVisibility,
+    battleMode,
+    sport,
+    game,
+    position,
+    positionName,
+  } = route?.params || {};
+  const storeVisibility = useStatDuelStore((s) => s.visibility);
+  const effectiveVisibility = routeVisibility ?? storeVisibility ?? null;
 
   const player = useStatDuelStore((s) => s.player);
   const statCategory = useStatDuelStore((s) => s.statCategory);
@@ -41,6 +56,22 @@ export function useStatDuelChampionScreen({
 
   const isStandardMode = battleMode === 'STANDARD' || battleMode === 'BOTH_PICKS';
   const isFantasyMode = battleMode === 'FANTASY';
+
+  const championSchema = useMemo(() => statDuelChampionSchema(isStandardMode), [isStandardMode]);
+
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<StatDuelChampionFormValues>({
+    resolver: yupResolver(championSchema),
+    mode: 'onChange',
+    values: {
+      playerId: player?.id ?? '',
+      statCategoryId: statCategory?.id ?? '',
+      stake: stake ?? '',
+      direction: direction ?? '',
+    },
+  });
 
   const filteredPlayers = useMemo(
     () =>
@@ -69,13 +100,9 @@ export function useStatDuelChampionScreen({
     return battlesStatCompareDescription(statCategory.name);
   }, [statCategory, player]);
 
-  const canContinue = isStandardMode
-    ? Boolean(player && statCategory && stake && direction)
-    : Boolean(player && statCategory && stake);
-
-  const onContinue = useCallback(() => {
+  const submitChampion = useCallback(() => {
     navigation.navigate('StatDuelOpponent', {
-      visibility,
+      visibility: effectiveVisibility ?? undefined,
       battleMode,
       sport,
       game,
@@ -89,7 +116,7 @@ export function useStatDuelChampionScreen({
     });
   }, [
     navigation,
-    visibility,
+    effectiveVisibility,
     battleMode,
     sport,
     game,
@@ -102,13 +129,20 @@ export function useStatDuelChampionScreen({
     selectedDirectionData?.label,
   ]);
 
+  const onContinue = useCallback(() => {
+    void handleSubmit(submitChampion)();
+  }, [handleSubmit, submitChampion]);
+
   const onBack = useCallback(() => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      navigation.navigate('StatDuelDetails', { visibility, battleMode });
+      navigation.navigate('StatDuelDetails', {
+        visibility: effectiveVisibility ?? undefined,
+        battleMode,
+      });
     }
-  }, [navigation, visibility, battleMode]);
+  }, [navigation, effectiveVisibility, battleMode]);
 
   const onSelectPlayer = useCallback(
     (p: StatDuelPlayer) => {
@@ -145,7 +179,7 @@ export function useStatDuelChampionScreen({
   );
 
   return {
-    visibility,
+    visibility: effectiveVisibility,
     battleMode,
     sport,
     game,
@@ -171,7 +205,13 @@ export function useStatDuelChampionScreen({
     statOptions,
     selectedDirectionData,
     statDescription,
-    canContinue,
+    canContinue: isValid,
+    championErrors: {
+      playerId: errors.playerId?.message,
+      statCategoryId: errors.statCategoryId?.message,
+      stake: errors.stake?.message,
+      direction: errors.direction?.message,
+    },
     onContinue,
     onBack,
     onSelectPlayer,

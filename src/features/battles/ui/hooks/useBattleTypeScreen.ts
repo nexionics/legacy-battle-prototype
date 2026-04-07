@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { AppStackParamList } from '@/app/navigation/types';
+import type { BattleTypeScreenProps } from '@/shared/types';
 import { colors } from '@/shared/theme';
 import { useBattlesStore } from '@/features/battles/data/store/battles.store';
 import type { BattleTypeOption } from '@/shared/types';
@@ -19,7 +18,11 @@ const BATTLE_TYPES_RESOLVED = resolveBattleTypes();
 
 export type BattleTypeScreenViewProps = ReturnType<typeof useBattleTypeScreen>;
 
-export function useBattleTypeScreen(navigation: NativeStackNavigationProp<AppStackParamList>) {
+export function useBattleTypeScreen({
+  navigation,
+  route,
+}: Pick<BattleTypeScreenProps, 'navigation' | 'route'>) {
+  const visibility = route.params?.visibility;
   const selectedType = useBattlesStore((s) => s.selectedType);
   const setSelectedType = useBattlesStore((s) => s.setSelectedType);
 
@@ -39,10 +42,10 @@ export function useBattleTypeScreen(navigation: NativeStackNavigationProp<AppSta
       if (type.id === 'GAME_DUEL') {
         navigation.navigate('StartBattle');
       } else if (type.id === 'STAT_DUEL') {
-        navigation.navigate('StatDuelMode');
+        navigation.navigate('StatDuelMode', { visibility });
       }
     },
-    [navigation, setSelectedType],
+    [navigation, setSelectedType, visibility],
   );
 
   return {

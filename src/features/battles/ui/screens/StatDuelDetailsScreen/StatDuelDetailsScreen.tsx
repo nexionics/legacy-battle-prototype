@@ -12,12 +12,14 @@ function DropdownButton({
   placeholder,
   onPress,
   required = false,
+  errorMessage,
 }: {
   label: string;
   value: string | null;
   placeholder: string;
   onPress: () => void;
   required?: boolean;
+  errorMessage?: string;
 }) {
   return (
     <View style={styles.dropdownContainer}>
@@ -26,12 +28,20 @@ function DropdownButton({
         {required && ' *'}{' '}
         <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
       </AppText>
-      <TouchableOpacity style={styles.dropdown} onPress={onPress}>
+      <TouchableOpacity
+        style={[styles.dropdown, errorMessage ? styles.dropdownError : null]}
+        onPress={onPress}
+      >
         <AppText variant="body2" color={value ? colors.text : colors.textMuted}>
           {value || placeholder}
         </AppText>
         <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
       </TouchableOpacity>
+      {errorMessage ? (
+        <AppText variant="captionSm" color={colors.primary} style={styles.fieldError}>
+          {errorMessage}
+        </AppText>
+      ) : null}
     </View>
   );
 }
@@ -58,6 +68,7 @@ export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
     filteredGames,
     availablePositions,
     canContinue,
+    detailsErrors,
     onContinue,
     onBack,
     onSelectSport,
@@ -118,6 +129,7 @@ export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
           placeholder={battlesStrings.statDuel.selectSport}
           onPress={() => setShowSportModal(true)}
           required
+          errorMessage={detailsErrors.sport}
         />
 
         {isStandardMode ? (
@@ -127,6 +139,7 @@ export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
             placeholder={battlesStrings.statDuel.selectEvent}
             onPress={() => setShowGameModal(true)}
             required
+            errorMessage={detailsErrors.game}
           />
         ) : null}
 
@@ -136,6 +149,7 @@ export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
           placeholder={battlesStrings.statDuel.selectPosition}
           onPress={() => setShowPositionModal(true)}
           required
+          errorMessage={detailsErrors.position}
         />
 
         <View style={styles.timeRow}>
@@ -396,6 +410,12 @@ const styles = StyleSheet.create({
     borderColor: colors.inputBorder,
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[4],
+  },
+  dropdownError: {
+    borderColor: colors.primary,
+  },
+  fieldError: {
+    marginTop: spacing[1],
   },
   timeRow: {
     flexDirection: 'row',

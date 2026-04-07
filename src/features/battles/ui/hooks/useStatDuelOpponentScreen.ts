@@ -1,7 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import type { StatDuelOpponent, StatDuelOpponentScreenProps } from '@/shared/types';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import { MOCK_OPPONENTS } from '@/shared/constants';
+import {
+  statDuelOpponentSchema,
+  type StatDuelOpponentFormValues,
+} from '@/features/battles/data/validation/statDuelFlow.schema';
 
 export type StatDuelOpponentScreenViewProps = ReturnType<typeof useStatDuelOpponentScreen>;
 
@@ -9,13 +15,41 @@ export function useStatDuelOpponentScreen({
   navigation,
   route,
 }: Pick<StatDuelOpponentScreenProps, 'navigation' | 'route'>) {
-  const { visibility, battleMode, sport, game, player, statCategory, stake } = route?.params || {};
+  const {
+    visibility: routeVisibility,
+    battleMode,
+    sport,
+    game,
+    position,
+    positionName,
+    player,
+    statCategory,
+    stake,
+    direction,
+    directionName,
+  } = route?.params || {};
+  const storeVisibility = useStatDuelStore((s) => s.visibility);
+  const effectiveVisibility = routeVisibility ?? storeVisibility ?? null;
+  const isPrivate = effectiveVisibility === 'private';
 
   const selectedOpponent = useStatDuelStore((s) => s.selectedOpponent);
   const setSelectedOpponent = useStatDuelStore((s) => s.setSelectedOpponent);
 
   const [opponentPickerOpen, setOpponentPickerOpen] = useState(false);
   const [sheetSearchQuery, setSheetSearchQuery] = useState('');
+
+  const opponentSchema = useMemo(() => statDuelOpponentSchema(isPrivate), [isPrivate]);
+
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<StatDuelOpponentFormValues>({
+    resolver: yupResolver(opponentSchema),
+    mode: 'onChange',
+    values: {
+      opponentId: selectedOpponent?.id ?? '',
+    },
+  });
 
   const filteredSheetOpponents = useMemo(
     () =>
@@ -50,11 +84,9 @@ export function useStatDuelOpponentScreen({
     navigation.navigate('AddFriend');
   }, [navigation, closeOpponentPicker]);
 
-  const canContinue = Boolean(selectedOpponent || visibility === 'public');
-
-  const onContinue = useCallback(() => {
+  const submitOpponent = useCallback(() => {
     navigation.navigate('StatDuelConfirm', {
-      visibility,
+      visibility: effectiveVisibility ?? undefined,
       battleMode,
       sport,
       game,
@@ -65,7 +97,7 @@ export function useStatDuelOpponentScreen({
     });
   }, [
     navigation,
-    visibility,
+    effectiveVisibility,
     battleMode,
     sport,
     game,
@@ -75,22 +107,35 @@ export function useStatDuelOpponentScreen({
     selectedOpponent,
   ]);
 
+  const onContinue = useCallback(() => {
+    void handleSubmit(submitOpponent)();
+  }, [handleSubmit, submitOpponent]);
+
   const onBack = useCallback(() => {
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      navigation.navigate('StatDuelChampion', { visibility, battleMode, sport, game });
+      navigation.navigate('StatDuelChampion', {
+        visibility: effectiveVisibility ?? undefined,
+        battleMode,
+        sport,
+        game,
+        position,
+        positionName,
+      });
     }
-  }, [navigation, visibility, battleMode, sport, game]);
+  }, [navigation, effectiveVisibility, battleMode, sport, game, position, positionName]);
 
   return {
-    visibility,
+    visibility: effectiveVisibility,
     battleMode,
     sport,
     game,
     player,
     statCategory,
     stake,
+    direction,
+    directionName,
     opponentPickerOpen,
     sheetSearchQuery,
     setSheetSearchQuery,
@@ -101,7 +146,8 @@ export function useStatDuelOpponentScreen({
     filteredSheetOpponents,
     onSelectOpponentFromSheet,
     onAddFriendFromSheet,
-    canContinue,
+    canContinue: isValid,
+    opponentError: errors.opponentId?.message,
     onContinue,
     onBack,
   };

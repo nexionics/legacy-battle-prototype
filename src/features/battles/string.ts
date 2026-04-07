@@ -214,6 +214,16 @@ export const battlesStrings = {
     fantasyInfo:
       'In Fantasy Mode, you can pick any player from the selected sport and position. Your opponent can also pick any player of the same sport and position.',
     selectSportFirst: 'Select a sport first',
+    validation: {
+      sportRequired: 'Select a sport',
+      eventRequired: 'Select an event',
+      positionRequired: 'Select a position',
+      playerRequired: 'Pick a player',
+      statCategoryRequired: 'Select a stat category',
+      stakeRequired: 'Select a stake',
+      directionRequired: 'Select a direction (Most or Least)',
+      opponentRequired: 'Select an opponent to continue',
+    },
     championSubtitle: 'Choose Stats To Battle On',
     championHeading: 'Choose Your Champion And The Dueling Stats',
     pickPlayer: 'Pick Player *',

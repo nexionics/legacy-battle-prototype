@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { BattleMode, StatDuelModeScreenProps } from '@/shared/types';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 
@@ -11,6 +11,13 @@ export function useStatDuelModeScreen({
   const { visibility } = route?.params || {};
   const battleMode = useStatDuelStore((s) => s.battleMode);
   const setBattleMode = useStatDuelStore((s) => s.setBattleMode);
+  const setVisibility = useStatDuelStore((s) => s.setVisibility);
+
+  useEffect(() => {
+    if (visibility) {
+      setVisibility(visibility);
+    }
+  }, [visibility, setVisibility]);
 
   const onSelectMode = useCallback(
     (mode: BattleMode) => {
