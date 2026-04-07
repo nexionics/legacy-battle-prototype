@@ -1,14 +1,7 @@
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
-import { AppText, Screen, Input } from '@/shared/ui';
+import { AppText, Screen, Input, AppModal } from '@/shared/ui';
 import type { DropdownOption } from '@/shared/types';
 import { battlesStrings } from '@/features/battles/string';
 import type { CreateBattleScreenViewProps } from '../../hooks/useCreateBattleScreen';
@@ -27,29 +20,27 @@ function DropdownModal({
   title: string;
 }) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
-        <View style={styles.modalContent}>
-          <AppText variant="h4" style={styles.modalTitle}>
-            {modalTitle}
-          </AppText>
-          {options.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              style={styles.modalOption}
-              onPress={() => {
-                onSelect(option.value);
-                onClose();
-              }}
-            >
-              <AppText variant="body2" style={{ textAlign: 'center' }}>
-                {option.label}
-              </AppText>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </TouchableOpacity>
-    </Modal>
+    <AppModal visible={visible} onRequestClose={onClose} presentation="center" animationType="fade">
+      <View style={styles.modalContent}>
+        <AppText variant="h4" style={styles.modalTitle}>
+          {modalTitle}
+        </AppText>
+        {options.map((option) => (
+          <TouchableOpacity
+            key={option.value}
+            style={styles.modalOption}
+            onPress={() => {
+              onSelect(option.value);
+              onClose();
+            }}
+          >
+            <AppText variant="body2" style={{ textAlign: 'center' }}>
+              {option.label}
+            </AppText>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </AppModal>
   );
 }
 
@@ -302,12 +293,6 @@ const styles = StyleSheet.create({
   },
   createButtonDisabled: {
     opacity: 0.7,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.overlayHeavy,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   modalContent: {
     backgroundColor: colors.card,

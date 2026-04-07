@@ -238,6 +238,9 @@ export const battlesStrings = {
     opponentTitle: 'Pick An Opponent For Battle',
     opponentSubtitle: 'Pick Your Opponent And Players To Battle On.',
     searchOpponentPlaceholder: 'search opponent',
+    chooseFriendSheetTitle: 'Choose Your Friend To Battle',
+    sheetSearchPlaceholder: 'Search',
+    sheetAddFriend: 'Add Friend',
     addOpponent: 'Add Opponent',
     selectedOpponent: 'Selected Opponent',
     publicBattle: 'Public Battle',
@@ -281,4 +284,8 @@ export function battlesFormatStakeBc(stake: string | number): string {
 
 export function battlesStatCompareDescription(statName: string): string {
   return `Compare Total ${statName} For Both Players`;
+}
+
+export function battlesStatDuelOpponentLevelRank(level: number, rank: string): string {
+  return `Level ${level}, ${rank}`;
 }

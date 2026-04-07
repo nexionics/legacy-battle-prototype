@@ -143,6 +143,8 @@ export type {
   LoadingStateProps,
   ToastProps,
   ToastContextProps,
+  AppModalPresentation,
+  AppModalProps,
   SelectionOption,
   SelectionModalProps,
   AppDialogProps,

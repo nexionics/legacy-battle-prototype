@@ -1,7 +1,7 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
-import { AppText, Screen } from '@/shared/ui';
+import { AppText, Screen, AppModal } from '@/shared/ui';
 import { STAT_DUEL_SPORTS } from '@/shared/constants';
 import { battlesStrings } from '@/features/battles/string';
 import type { StatDuelDetailsScreenViewProps } from '../../hooks/useStatDuelDetailsScreen';
@@ -199,99 +199,108 @@ export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={showSportModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <AppText variant="h4">{battlesStrings.statDuel.selectSport}</AppText>
-              <TouchableOpacity onPress={() => setShowSportModal(false)}>
-                <Ionicons name="close" size={24} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            {STAT_DUEL_SPORTS.map((sport) => (
+      <AppModal
+        visible={showSportModal}
+        onRequestClose={() => setShowSportModal(false)}
+        presentation="bottom"
+        animationType="slide"
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <AppText variant="h4">{battlesStrings.statDuel.selectSport}</AppText>
+            <TouchableOpacity onPress={() => setShowSportModal(false)}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+          {STAT_DUEL_SPORTS.map((sport) => (
+            <TouchableOpacity
+              key={sport.id}
+              style={styles.modalOption}
+              onPress={() => onSelectSport(sport.id)}
+            >
+              <AppText style={styles.modalOptionIcon}>{sport.icon}</AppText>
+              <AppText variant="body2" style={{ flex: 1 }}>
+                {sport.name}
+              </AppText>
+              {selectedSport === sport.id ? (
+                <Ionicons name="checkmark" size={20} color={colors.primary} />
+              ) : null}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </AppModal>
+
+      <AppModal
+        visible={showGameModal}
+        onRequestClose={() => setShowGameModal(false)}
+        presentation="bottom"
+        animationType="slide"
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <AppText variant="h4">{battlesStrings.statDuel.selectEvent}</AppText>
+            <TouchableOpacity onPress={() => setShowGameModal(false)}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+          {filteredGames.length > 0 ? (
+            filteredGames.map((game) => (
               <TouchableOpacity
-                key={sport.id}
+                key={game.id}
                 style={styles.modalOption}
-                onPress={() => onSelectSport(sport.id)}
+                onPress={() => onSelectGame(game.id)}
               >
-                <AppText style={styles.modalOptionIcon}>{sport.icon}</AppText>
                 <AppText variant="body2" style={{ flex: 1 }}>
-                  {sport.name}
+                  {game.name}
                 </AppText>
-                {selectedSport === sport.id ? (
+                {selectedGame === game.id ? (
                   <Ionicons name="checkmark" size={20} color={colors.primary} />
                 ) : null}
               </TouchableOpacity>
-            ))}
-          </View>
+            ))
+          ) : (
+            <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
+              {battlesStrings.statDuel.selectSportFirst}
+            </AppText>
+          )}
         </View>
-      </Modal>
+      </AppModal>
 
-      <Modal visible={showGameModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <AppText variant="h4">{battlesStrings.statDuel.selectEvent}</AppText>
-              <TouchableOpacity onPress={() => setShowGameModal(false)}>
-                <Ionicons name="close" size={24} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            {filteredGames.length > 0 ? (
-              filteredGames.map((game) => (
-                <TouchableOpacity
-                  key={game.id}
-                  style={styles.modalOption}
-                  onPress={() => onSelectGame(game.id)}
-                >
-                  <AppText variant="body2" style={{ flex: 1 }}>
-                    {game.name}
-                  </AppText>
-                  {selectedGame === game.id ? (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
-                  ) : null}
-                </TouchableOpacity>
-              ))
-            ) : (
-              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
-                {battlesStrings.statDuel.selectSportFirst}
-              </AppText>
-            )}
+      <AppModal
+        visible={showPositionModal}
+        onRequestClose={() => setShowPositionModal(false)}
+        presentation="bottom"
+        animationType="slide"
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <AppText variant="h4">{battlesStrings.statDuel.selectPosition}</AppText>
+            <TouchableOpacity onPress={() => setShowPositionModal(false)}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-
-      <Modal visible={showPositionModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <AppText variant="h4">{battlesStrings.statDuel.selectPosition}</AppText>
-              <TouchableOpacity onPress={() => setShowPositionModal(false)}>
-                <Ionicons name="close" size={24} color={colors.text} />
+          {availablePositions.length > 0 ? (
+            availablePositions.map((position) => (
+              <TouchableOpacity
+                key={position.id}
+                style={styles.modalOption}
+                onPress={() => onSelectPosition(position.id)}
+              >
+                <AppText variant="body2" style={{ flex: 1 }}>
+                  {position.name}
+                </AppText>
+                {selectedPosition === position.id ? (
+                  <Ionicons name="checkmark" size={20} color={colors.primary} />
+                ) : null}
               </TouchableOpacity>
-            </View>
-            {availablePositions.length > 0 ? (
-              availablePositions.map((position) => (
-                <TouchableOpacity
-                  key={position.id}
-                  style={styles.modalOption}
-                  onPress={() => onSelectPosition(position.id)}
-                >
-                  <AppText variant="body2" style={{ flex: 1 }}>
-                    {position.name}
-                  </AppText>
-                  {selectedPosition === position.id ? (
-                    <Ionicons name="checkmark" size={20} color={colors.primary} />
-                  ) : null}
-                </TouchableOpacity>
-              ))
-            ) : (
-              <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
-                {battlesStrings.statDuel.selectSportFirst}
-              </AppText>
-            )}
-          </View>
+            ))
+          ) : (
+            <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
+              {battlesStrings.statDuel.selectSportFirst}
+            </AppText>
+          )}
         </View>
-      </Modal>
+      </AppModal>
     </Screen>
   );
 }
@@ -439,11 +448,6 @@ const styles = StyleSheet.create({
   },
   continueIconText: {
     fontSize: 16,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.overlayHeavy,
-    justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: colors.background,

@@ -647,11 +647,46 @@ export const STAKE_OPTIONS: SelectionOption[] = [
 // ─── Stat duel opponent (mock opponents) ─────────────────────────────────────
 
 export const MOCK_OPPONENTS: StatDuelOpponent[] = [
-  { id: '1', username: 'player1', display_name: 'Alex Johnson' },
-  { id: '2', username: 'player2', display_name: 'Sarah Smith' },
-  { id: '3', username: 'player3', display_name: 'Mike Brown' },
-  { id: '4', username: 'player4', display_name: 'Emily Davis' },
-  { id: '5', username: 'player5', display_name: 'Chris Wilson' },
+  {
+    id: '1',
+    username: 'patrick_m',
+    display_name: 'Patrick Mahomes',
+    subtitle: 'Chinaza D.',
+    level: 12,
+    rankLabel: 'Champion',
+  },
+  {
+    id: '2',
+    username: 'player2',
+    display_name: 'Sarah Smith',
+    subtitle: 'Sarah S.',
+    level: 8,
+    rankLabel: 'Pro',
+  },
+  {
+    id: '3',
+    username: 'player3',
+    display_name: 'Mike Brown',
+    subtitle: 'M. Brown',
+    level: 5,
+    rankLabel: 'Rookie',
+  },
+  {
+    id: '4',
+    username: 'player4',
+    display_name: 'Emily Davis',
+    subtitle: 'E. Davis',
+    level: 10,
+    rankLabel: 'Veteran',
+  },
+  {
+    id: '5',
+    username: 'player5',
+    display_name: 'Chris Wilson',
+    subtitle: 'C. Wilson',
+    level: 15,
+    rankLabel: 'Legend',
+  },
 ];
 
 // ─── Explore / home components ─────────────────────────────────────────────

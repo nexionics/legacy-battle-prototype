@@ -1,6 +1,6 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AppText, Screen, ScreenHeader, ProgressBar, Avatar, SearchInput } from '@/shared/ui';
+import { AppText, Screen, ScreenHeader, ProgressBar, Avatar, SearchInput, AppModal } from '@/shared/ui';
 import { SelectionModal } from '@/shared/ui';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
 import { getInitials } from '@/shared/utils';
@@ -146,77 +146,76 @@ export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={showPlayerModal} transparent animationType="slide">
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowPlayerModal(false)}
-        >
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-            <View style={styles.modalHeader}>
-              <AppText variant="h5">{battlesStrings.statDuel.searchPlayersTitle}</AppText>
-              <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
-                <Ionicons name="close" size={24} color={colors.text} />
-              </TouchableOpacity>
-            </View>
+      <AppModal
+        visible={showPlayerModal}
+        onRequestClose={() => setShowPlayerModal(false)}
+        presentation="bottom"
+        animationType="slide"
+      >
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <AppText variant="h5">{battlesStrings.statDuel.searchPlayersTitle}</AppText>
+            <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
 
-            <SearchInput
-              value={playerSearch}
-              onChangeText={setPlayerSearch}
-              placeholder={battlesStrings.statDuel.searchPlayersPlaceholder}
-              style={styles.searchSpacing}
-            />
+          <SearchInput
+            value={playerSearch}
+            onChangeText={setPlayerSearch}
+            placeholder={battlesStrings.statDuel.searchPlayersPlaceholder}
+            style={styles.searchSpacing}
+          />
 
-            <View style={styles.filterTabs}>
-              <TouchableOpacity style={[styles.filterTab, styles.filterTabActive]}>
-                <Ionicons name="person-outline" size={16} color={colors.white} />
-                <AppText variant="captionSm" color={colors.white}>
-                  {battlesStrings.statDuel.filterPs}
-                </AppText>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.filterTab}>
-                <Ionicons name="filter-outline" size={16} color={colors.textSecondary} />
-                <AppText variant="captionSm" color={colors.textSecondary}>
-                  {battlesStrings.statDuel.filterLabel}
-                </AppText>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.filterTabs}>
+            <TouchableOpacity style={[styles.filterTab, styles.filterTabActive]}>
+              <Ionicons name="person-outline" size={16} color={colors.white} />
+              <AppText variant="captionSm" color={colors.white}>
+                {battlesStrings.statDuel.filterPs}
+              </AppText>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.filterTab}>
+              <Ionicons name="filter-outline" size={16} color={colors.textSecondary} />
+              <AppText variant="captionSm" color={colors.textSecondary}>
+                {battlesStrings.statDuel.filterLabel}
+              </AppText>
+            </TouchableOpacity>
+          </View>
 
-            <ScrollView style={styles.playerList}>
-              {filteredPlayers.map((row) => (
-                <TouchableOpacity
-                  key={row.id}
-                  style={styles.playerOption}
-                  onPress={() => onSelectPlayer(row as StatDuelPlayer)}
-                >
-                  <Avatar
-                    initials={getInitials(row.name)}
-                    size="sm"
-                    backgroundColor={colors.primary}
-                    borderColor={colors.primary}
-                    textColor={colors.white}
-                  />
-                  <View style={styles.playerInfo}>
-                    <AppText variant="label">{row.name}</AppText>
-                    <AppText variant="captionSm" color={colors.textSecondary}>
-                      {row.position}
+          <ScrollView style={styles.playerList}>
+            {filteredPlayers.map((row) => (
+              <TouchableOpacity
+                key={row.id}
+                style={styles.playerOption}
+                onPress={() => onSelectPlayer(row as StatDuelPlayer)}
+              >
+                <Avatar
+                  initials={getInitials(row.name)}
+                  size="sm"
+                  backgroundColor={colors.primary}
+                  borderColor={colors.primary}
+                  textColor={colors.white}
+                />
+                <View style={styles.playerInfo}>
+                  <AppText variant="label">{row.name}</AppText>
+                  <AppText variant="captionSm" color={colors.textSecondary}>
+                    {row.position}
+                  </AppText>
+                </View>
+                <View style={styles.playerTeamBadge}>
+                  <AppText variant="captionSm">{row.team}</AppText>
+                  <View style={styles.activeIndicator}>
+                    <View style={styles.activeDot} />
+                    <AppText variant="captionSm" color={colors.success}>
+                      {battlesStrings.statDuel.playerActive}
                     </AppText>
                   </View>
-                  <View style={styles.playerTeamBadge}>
-                    <AppText variant="captionSm">{row.team}</AppText>
-                    <View style={styles.activeIndicator}>
-                      <View style={styles.activeDot} />
-                      <AppText variant="captionSm" color={colors.success}>
-                        {battlesStrings.statDuel.playerActive}
-                      </AppText>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </AppModal>
 
       <SelectionModal
         visible={showStatModal}
@@ -312,11 +311,6 @@ const styles = StyleSheet.create({
   },
   continueButtonDisabled: {
     opacity: 0.5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.overlayHeavy,
-    justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: colors.background,

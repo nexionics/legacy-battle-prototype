@@ -3,4 +3,5 @@ export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { SelectionModal, type SelectionOption } from './SelectionModal';
 export { AppDialog } from './AppDialog';
+export { AppModal } from './AppModal';
 export { SuccessBottomSheet, type SuccessBottomSheetProps } from './SuccessBottomSheet';

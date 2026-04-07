@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import type { StatDuelOpponentScreenProps } from '@/shared/types';
+import { useCallback, useMemo, useState } from 'react';
+import type { StatDuelOpponent, StatDuelOpponentScreenProps } from '@/shared/types';
 import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
 import { MOCK_OPPONENTS } from '@/shared/constants';
 
@@ -11,20 +11,44 @@ export function useStatDuelOpponentScreen({
 }: Pick<StatDuelOpponentScreenProps, 'navigation' | 'route'>) {
   const { visibility, battleMode, sport, game, player, statCategory, stake } = route?.params || {};
 
-  const opponentSearchQuery = useStatDuelStore((s) => s.opponentSearchQuery);
   const selectedOpponent = useStatDuelStore((s) => s.selectedOpponent);
-  const setOpponentSearchQuery = useStatDuelStore((s) => s.setOpponentSearchQuery);
   const setSelectedOpponent = useStatDuelStore((s) => s.setSelectedOpponent);
 
-  const filteredOpponents = useMemo(
+  const [opponentPickerOpen, setOpponentPickerOpen] = useState(false);
+  const [sheetSearchQuery, setSheetSearchQuery] = useState('');
+
+  const filteredSheetOpponents = useMemo(
     () =>
       MOCK_OPPONENTS.filter(
         (o) =>
-          o.display_name.toLowerCase().includes(opponentSearchQuery.toLowerCase()) ||
-          (o.username?.toLowerCase().includes(opponentSearchQuery.toLowerCase()) ?? false),
+          o.display_name.toLowerCase().includes(sheetSearchQuery.toLowerCase()) ||
+          (o.username?.toLowerCase().includes(sheetSearchQuery.toLowerCase()) ?? false) ||
+          (o.subtitle?.toLowerCase().includes(sheetSearchQuery.toLowerCase()) ?? false),
       ),
-    [opponentSearchQuery],
+    [sheetSearchQuery],
   );
+
+  const openOpponentPicker = useCallback(() => {
+    setSheetSearchQuery('');
+    setOpponentPickerOpen(true);
+  }, []);
+
+  const closeOpponentPicker = useCallback(() => {
+    setOpponentPickerOpen(false);
+  }, []);
+
+  const onSelectOpponentFromSheet = useCallback(
+    (opponent: StatDuelOpponent) => {
+      setSelectedOpponent(opponent);
+      closeOpponentPicker();
+    },
+    [setSelectedOpponent, closeOpponentPicker],
+  );
+
+  const onAddFriendFromSheet = useCallback(() => {
+    closeOpponentPicker();
+    navigation.navigate('AddFriend');
+  }, [navigation, closeOpponentPicker]);
 
   const canContinue = Boolean(selectedOpponent || visibility === 'public');
 
@@ -67,11 +91,16 @@ export function useStatDuelOpponentScreen({
     player,
     statCategory,
     stake,
-    opponentSearchQuery,
+    opponentPickerOpen,
+    sheetSearchQuery,
+    setSheetSearchQuery,
+    openOpponentPicker,
+    closeOpponentPicker,
     selectedOpponent,
-    setOpponentSearchQuery,
     setSelectedOpponent,
-    filteredOpponents,
+    filteredSheetOpponents,
+    onSelectOpponentFromSheet,
+    onAddFriendFromSheet,
     canContinue,
     onContinue,
     onBack,

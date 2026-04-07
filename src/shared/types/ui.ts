@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { StyleProp, TextInputProps, TextProps, ViewStyle } from 'react-native';
 import type { AuthHeaderVariant, IconNameEnum } from '@/shared/utils/enum';
 import type { TypographyVariant } from '@/shared/theme';
@@ -252,6 +253,20 @@ export interface ToastProps {
 
 export interface ToastContextProps {
   showToast: (type: 'success' | 'fail', message: string) => void;
+}
+
+export type AppModalPresentation = 'center' | 'bottom';
+
+export interface AppModalProps {
+  visible: boolean;
+  onRequestClose: () => void;
+  children: ReactNode;
+  /** Centered overlay vs bottom sheet alignment. Default `center`. */
+  presentation?: AppModalPresentation;
+  /** Defaults: `fade` for center, `slide` for bottom. */
+  animationType?: 'none' | 'slide' | 'fade';
+  /** Backdrop fill. Defaults to theme `overlayHeavy`. */
+  backdropColor?: string;
 }
 
 /** Shared fields for the `AppDialog` component. */

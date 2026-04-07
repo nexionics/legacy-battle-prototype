@@ -40,6 +40,10 @@ export interface StatDuelOpponent {
   id: string;
   display_name: string;
   username?: string;
+  /** Secondary line under display name (e.g. alternate name). */
+  subtitle?: string;
+  level?: number;
+  rankLabel?: string;
 }
 
 /** Sport option for StartBattleScreen */
