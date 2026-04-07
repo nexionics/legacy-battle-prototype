@@ -1,3 +1,4 @@
+import { battlesStrings } from '@/features/battles/string';
 import type { Battle, BattleParticipant, BattleStatus, ExploreBattle } from '@/shared/types';
 import type {
   BattleDetailDto,
@@ -18,7 +19,7 @@ function listItemToBattle(row: BattleListItemDto, overrides?: Partial<Battle>): 
   const title =
     row.event?.displayName?.trim() ||
     row.type.replace(/_/g, ' ') ||
-    'Battle';
+    battlesStrings.api.defaultBattleTitle;
   return {
     id: row.id,
     creator_id: overrides?.creator_id ?? '',

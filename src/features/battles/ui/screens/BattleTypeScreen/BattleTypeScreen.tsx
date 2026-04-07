@@ -1,48 +1,25 @@
-import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useBattlesStore } from '@/features/battles/data/store/battles.store';
-import type { BattleTypeScreenProps, BattleTypeOption } from '@/shared/types';
-import { BATTLE_TYPES } from '@/shared/constants';
+import If from '@/shared/ui/atoms/If';
+import { battlesStrings } from '@/features/battles/string';
+import type { BattleTypeScreenViewProps } from '../../hooks/useBattleTypeScreen';
 
-const resolveBattleTypes = (): BattleTypeOption[] =>
-  BATTLE_TYPES.map((t) => ({
-    ...t,
-    iconColor:
-      t.iconColor in colors ? (colors as Record<string, string>)[t.iconColor] : t.iconColor,
-    badgeColor:
-      t.badgeColor in colors ? (colors as Record<string, string>)[t.badgeColor] : t.badgeColor,
-  })) as BattleTypeOption[];
-
-const BATTLE_TYPES_RESOLVED = resolveBattleTypes();
-
-export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) {
-  const selectedType = useBattlesStore((s) => s.selectedType);
-  const setSelectedType = useBattlesStore((s) => s.setSelectedType);
-
-  const handleSelectType = (type: BattleTypeOption) => {
-    if (!type.enabled) {
-      return;
-    }
-    setSelectedType(type.id);
-
-    if (type.id === 'GAME_DUEL') {
-      navigation.navigate('StartBattle');
-    } else if (type.id === 'STAT_DUEL') {
-      navigation.navigate('StatDuelMode');
-    }
-  };
-
+export function BattleTypeScreen({
+  selectedType,
+  battleTypes,
+  onBack,
+  onSelectType,
+}: BattleTypeScreenViewProps) {
   return (
     <Screen scroll>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <Ionicons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <AppText variant="h4">Create Battle</AppText>
+          <AppText variant="h4">{battlesStrings.common.createBattle}</AppText>
           <View style={styles.headerIcon}>
             <Ionicons name="globe-outline" size={20} color={colors.text} />
           </View>
@@ -56,19 +33,19 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: '16.67%' }]} />
         </View>
-        <AppText variant="label">1/6</AppText>
+        <AppText variant="label">{battlesStrings.battleType.progress}</AppText>
       </View>
 
       <View style={styles.titleSection}>
         <AppText variant="h2" style={styles.sectionTitle}>
-          Choose Battle Type
+          {battlesStrings.battleType.chooseTitle}
         </AppText>
         <AppText variant="body2" color={colors.textSecondary}>
-          Choose The Type Of Battle You Want To Create
+          {battlesStrings.battleType.chooseSubtitle}
         </AppText>
       </View>
 
-      {BATTLE_TYPES_RESOLVED.map((type) => (
+      {battleTypes.map((type) => (
         <TouchableOpacity
           key={type.id}
           style={[
@@ -76,7 +53,7 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
             selectedType === type.id && styles.typeCardSelected,
             !type.enabled && styles.typeCardDisabled,
           ]}
-          onPress={() => handleSelectType(type)}
+          onPress={() => onSelectType(type)}
           activeOpacity={type.enabled ? 0.7 : 1}
         >
           <View style={styles.typeCardHeader}>
@@ -93,7 +70,7 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
             <View
               style={[styles.radioButton, selectedType === type.id && styles.radioButtonSelected]}
             >
-              {selectedType === type.id && <View style={styles.radioButtonInner} />}
+              {selectedType === type.id ? <View style={styles.radioButtonInner} /> : null}
             </View>
           </View>
 
@@ -124,13 +101,13 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
             ))}
           </View>
 
-          {!type.enabled && (
+          <If condition={!type.enabled}>
             <View style={styles.comingSoonOverlay}>
               <AppText variant="captionSm" color={colors.white}>
-                Coming Soon
+                {battlesStrings.common.comingSoon}
               </AppText>
             </View>
-          )}
+          </If>
         </TouchableOpacity>
       ))}
 
@@ -140,14 +117,14 @@ export default function BattleTypeScreen({ navigation }: BattleTypeScreenProps) 
         </View>
         <View style={styles.oracleTextContainer}>
           <AppText variant="buttonMd" style={styles.oracleTitle}>
-            Oracle Verified
+            {battlesStrings.common.oracleVerified}
           </AppText>
           <AppText
             variant="captionSm"
             color={colors.textSecondary}
             style={styles.oracleDescription}
           >
-            Winner Decided By Official Data Source. Attesters Only Activate If Data Is Delayed.
+            {battlesStrings.common.oracleVerifiedBody}
           </AppText>
         </View>
       </View>

@@ -1,3 +1,4 @@
+import { battlesStrings } from '@/features/battles/string';
 import { authenticatedHttp } from '@/shared/lib/httpClient';
 import { networkFailure, parseApiResponse } from '@/shared/utils/helpers';
 import type {
@@ -35,7 +36,7 @@ export async function fetchBattlesPage(
     const res = await authenticatedHttp.get(path);
     return parseApiResponse<PaginatedBattlesDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -46,7 +47,7 @@ export async function fetchBattlesExplore(): Promise<BattlesExploreResponse> {
     const res = await authenticatedHttp.get(path);
     return parseApiResponse<BattlesExploreDataDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -57,7 +58,7 @@ export async function fetchBattleDetail(battleId: string): Promise<BattleDetailR
     const res = await authenticatedHttp.get(path);
     return parseApiResponse<BattleDetailDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -70,7 +71,7 @@ export async function fetchBattlesQuickPicks(
     const res = await authenticatedHttp.get(path);
     return parseApiResponse<PaginatedBattlesDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -83,7 +84,7 @@ export async function fetchMyActiveBattles(
     const res = await authenticatedHttp.get(path);
     return parseApiResponse<PaginatedBattlesDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -96,7 +97,7 @@ export async function createBattleRequest(
     const res = await authenticatedHttp.post(path, payload);
     return parseApiResponse<BattleListItemDto>(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -110,7 +111,7 @@ export async function joinBattleRequest(
     const res = await authenticatedHttp.post(path, body);
     return parseApiResponse(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }
@@ -124,7 +125,7 @@ export async function inviteToBattleRequest(
     const res = await authenticatedHttp.post(path, body);
     return parseApiResponse(path, res.status, res.data);
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Network error';
+    const message = e instanceof Error ? e.message : battlesStrings.errors.network;
     return networkFailure(path, message);
   }
 }

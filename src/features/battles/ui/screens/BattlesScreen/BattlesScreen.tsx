@@ -1,9 +1,5 @@
-import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import type { CompositeScreenProps } from '@react-navigation/native';
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, spacing, radii } from '@/shared/theme';
 import {
   AppText,
@@ -15,29 +11,28 @@ import {
   EmptyState,
   ErrorState,
 } from '@/shared/ui';
+import If from '@/shared/ui/atoms/If';
+import { battlesStrings } from '@/features/battles/string';
 import { getStatusColor, formatRelativeDate } from '@/shared/utils';
-import { useBattles } from '@/features/battles/ui/hooks';
-import type { AppStackParamList, TabParamList } from '@/app/navigation/types';
-import type { TabType } from '@/shared/types';
 import { BATTLES_LIST_TABS } from '@/shared/constants';
+import type { BattlesScreenViewProps } from '../../hooks/useBattlesScreen';
 
-type BattlesScreenProps = CompositeScreenProps<
-  BottomTabScreenProps<TabParamList, 'Battles'>,
-  NativeStackScreenProps<AppStackParamList>
->;
-
-export default function BattlesScreen({ navigation }: BattlesScreenProps) {
+export function BattlesScreen(props: BattlesScreenViewProps) {
   const {
-    battles: filteredBattles,
-    isLoading: listLoading,
-    isRefreshing: listRefreshing,
+    filteredBattles,
+    listLoading,
+    listRefreshing,
     listActiveTab,
-    error: listError,
-    refetch,
-    setListActiveTab,
-  } = useBattles();
+    listError,
+    onRefresh,
+    onCreateBattle,
+    onOpenBattleDetail,
+    onTabChange,
+    onRetry,
+  } = props;
 
-  const onRefresh = () => refetch();
+  const showList = !listLoading && !listError && filteredBattles.length > 0;
+  const showEmpty = !listLoading && !listError && filteredBattles.length === 0;
 
   return (
     <Screen padding={0} edges={['top', 'left', 'right']}>
@@ -53,46 +48,42 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
         }
       >
         <ScreenHeader
-          title="My Battles"
+          title={battlesStrings.battlesList.screenTitle}
           rightSlot={
-            <TouchableOpacity
-              style={styles.createButton}
-              onPress={() => navigation.navigate('CreateBattle')}
-            >
+            <TouchableOpacity style={styles.createButton} onPress={onCreateBattle}>
               <Ionicons name="add" size={20} color={colors.white} />
               <AppText variant="buttonMd" color={colors.white}>
-                Create
+                {battlesStrings.battlesList.create}
               </AppText>
             </TouchableOpacity>
           }
         />
 
-        <TabBar
-          tabs={BATTLES_LIST_TABS}
-          activeTab={listActiveTab}
-          onTabChange={(key) => setListActiveTab(key as TabType)}
-        />
+        <TabBar tabs={BATTLES_LIST_TABS} activeTab={listActiveTab} onTabChange={onTabChange} />
 
-        {listLoading ? (
-          <LoadingState message="Loading battles..." />
-        ) : listError ? (
-          <ErrorState message={listError?.message ?? 'Failed to load'} onRetry={() => refetch()} />
-        ) : filteredBattles.length === 0 ? (
+        <If condition={listLoading}>
+          <LoadingState message={battlesStrings.battlesList.loading} />
+        </If>
+        <If condition={!listLoading && !!listError}>
+          <ErrorState
+            message={listError?.message ?? battlesStrings.battlesList.loadFailed}
+            onRetry={onRetry}
+          />
+        </If>
+        <If condition={showEmpty}>
           <EmptyState
-            title={`No ${listActiveTab} battles`}
-            message="Create your first battle to get started."
+            title={battlesStrings.battlesList.emptyTitle(listActiveTab)}
+            message={battlesStrings.battlesList.emptyMessage}
           >
-            <TouchableOpacity
-              style={styles.emptyButton}
-              onPress={() => navigation.navigate('CreateBattle')}
-            >
+            <TouchableOpacity style={styles.emptyButton} onPress={onCreateBattle}>
               <AppText variant="buttonMd" color={colors.white}>
-                Create Your First Battle
+                {battlesStrings.battlesList.createFirstBattle}
               </AppText>
             </TouchableOpacity>
           </EmptyState>
-        ) : (
-          filteredBattles.map((battle) => (
+        </If>
+        <If condition={showList}>
+          {filteredBattles.map((battle) => (
             <View key={battle.id} style={styles.battleCard}>
               <View style={styles.battleHeader}>
                 <View style={styles.battleLeft}>
@@ -104,7 +95,7 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
                       {battle.title}
                     </AppText>
                     <AppText variant="captionSm" color={colors.textSecondary} numberOfLines={1}>
-                      {battle.description || 'No description'}
+                      {battle.description || battlesStrings.battlesList.noDescription}
                     </AppText>
                   </View>
                 </View>
@@ -113,7 +104,7 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
               <View style={styles.battleDetails}>
                 <View style={styles.stakeInfo}>
                   <AppText variant="captionSm" color={colors.textSecondary}>
-                    Stake:
+                    {battlesStrings.battlesList.stake}
                   </AppText>
                   <AppText variant="captionSm" style={{ fontWeight: 'bold' }}>
                     {battle.stake} BC
@@ -129,21 +120,23 @@ export default function BattlesScreen({ navigation }: BattlesScreenProps) {
               <View style={styles.battleFooter}>
                 <View style={styles.battleTypeBadge}>
                   <AppText variant="captionSm" color={colors.textSecondary}>
-                    {battle.event_id ? 'Sports Event' : 'Custom Battle'}
+                    {battle.event_id
+                      ? battlesStrings.battlesList.sportsEvent
+                      : battlesStrings.battlesList.customBattle}
                   </AppText>
                 </View>
                 <TouchableOpacity
                   style={styles.viewButton}
-                  onPress={() => navigation.navigate('BattleDetail', { battleId: battle.id })}
+                  onPress={() => onOpenBattleDetail(battle.id)}
                 >
                   <AppText variant="buttonMd" color={colors.white}>
-                    View
+                    {battlesStrings.common.view}
                   </AppText>
                 </TouchableOpacity>
               </View>
             </View>
-          ))
-        )}
+          ))}
+        </If>
       </ScrollView>
     </Screen>
   );

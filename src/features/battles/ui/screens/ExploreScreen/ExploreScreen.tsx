@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors as staticColors, spacing } from '@/shared/theme';
 import { AppText, Screen, SearchInput } from '@/shared/ui';
+import If from '@/shared/ui/atoms/If';
 import { useThemeColors } from '@/app/providers/ThemeProvider';
-import { useExploreBattles } from '@/features/battles/ui/hooks';
+import { battlesStrings } from '@/features/battles/string';
 import { CategoryPills } from '@/features/battles/ui/components/CategoryPills';
 import { ExploreBattleCard } from '@/features/battles/ui/components/ExploreBattleCard';
 import { CategoriesSection } from '@/features/battles/ui/components/CategoriesSection';
 import { TopPlayersSection } from '@/features/battles/ui/components/TopPlayersSection';
 import { EXPLORE_TABS, EXPLORE_TAB_SUBTITLES } from '@/shared/constants';
+import type { ExploreScreenViewProps } from '../../hooks/useExploreScreen';
 
-export default function ExploreScreen() {
+export function ExploreScreen(props: ExploreScreenViewProps) {
   const colors = useThemeColors();
-  const [searchQuery, setSearchQuery] = useState('');
-  const { exploreActiveTab, exploreBattles, exploreLoading, setExploreActiveTab } =
-    useExploreBattles();
+  const {
+    searchQuery,
+    onSearchChange,
+    exploreActiveTab,
+    exploreBattles,
+    exploreLoading,
+    setExploreActiveTab,
+  } = props;
+
+  const showEmpty = !exploreLoading && exploreBattles.length === 0;
+  const showList = !exploreLoading && exploreBattles.length > 0;
 
   return (
     <Screen scroll padding={spacing[4]} edges={['top', 'left', 'right']}>
@@ -23,7 +32,7 @@ export default function ExploreScreen() {
         <View style={styles.headerSide} />
         <View style={styles.headerCenter}>
           <AppText variant="h4" style={{ color: colors.text }}>
-            Explore
+            {battlesStrings.explore.title}
           </AppText>
           <Ionicons name="search-outline" size={18} color={colors.primary} />
         </View>
@@ -35,15 +44,15 @@ export default function ExploreScreen() {
       <View style={styles.searchRow}>
         <SearchInput
           value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder="Search"
+          onChangeText={onSearchChange}
+          placeholder={battlesStrings.common.search}
           variant="compact"
           style={styles.searchInputFlex}
         />
         <TouchableOpacity style={styles.filterButton}>
           <Ionicons name="options-outline" size={18} color={colors.text} />
           <AppText variant="body2" style={{ color: colors.text }}>
-            Filter
+            {battlesStrings.common.filter}
           </AppText>
         </TouchableOpacity>
       </View>
@@ -63,21 +72,23 @@ export default function ExploreScreen() {
         </AppText>
       </View>
 
-      {exploreLoading ? (
+      <If condition={exploreLoading}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      ) : exploreBattles.length === 0 ? (
+      </If>
+      <If condition={showEmpty}>
         <View style={styles.emptyContainer}>
           <AppText variant="body2" style={{ color: colors.textSecondary }}>
-            No battles found
+            {battlesStrings.explore.noBattles}
           </AppText>
         </View>
-      ) : (
-        exploreBattles.map((battle) => (
+      </If>
+      <If condition={showList}>
+        {exploreBattles.map((battle) => (
           <ExploreBattleCard key={battle.id} battle={battle} activeTab={exploreActiveTab} />
-        ))
-      )}
+        ))}
+      </If>
 
       <CategoriesSection />
       <TopPlayersSection />

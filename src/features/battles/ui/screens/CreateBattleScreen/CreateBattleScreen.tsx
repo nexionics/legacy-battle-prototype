@@ -1,159 +1,32 @@
-import React, { useEffect } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen, Input } from '@/shared/ui';
-import { deriveTeamsFromTitle } from '@/shared/utils';
-import { useAuth } from '@/shared/hooks/useAuth';
-import { useBattlesStore } from '@/features/battles/data/store/battles.store';
-import type { OutcomeType } from '@/shared/types';
-import { useCreateBattle } from '@/features/battles/data/mutations/useCreateBattle';
-import type { CreateBattleScreenProps, DropdownOption } from '@/shared/types';
+import type { DropdownOption } from '@/shared/types';
+import { battlesStrings } from '@/features/battles/string';
+import type { CreateBattleScreenViewProps } from '../../hooks/useCreateBattleScreen';
 
-export default function CreateBattleScreen({ navigation, route }: CreateBattleScreenProps) {
-  const { user } = useAuth();
-
-  const { prefillTitle, prefillEventId, prefillDescription, homeTeam, awayTeam, visibility } =
-    route?.params || {};
-
-  const title = useBattlesStore((s) => s.title);
-  const eventId = useBattlesStore((s) => s.eventId);
-  const stake = useBattlesStore((s) => s.stake);
-  const selectedTeam = useBattlesStore((s) => s.selectedTeam);
-  const selectedOutcome = useBattlesStore((s) => s.selectedOutcome);
-  const showTeamPicker = useBattlesStore((s) => s.showTeamPicker);
-  const showOutcomePicker = useBattlesStore((s) => s.showOutcomePicker);
-  const setTitle = useBattlesStore((s) => s.setTitle);
-  const setEventId = useBattlesStore((s) => s.setEventId);
-  const setStake = useBattlesStore((s) => s.setStake);
-  const setSelectedTeam = useBattlesStore((s) => s.setSelectedTeam);
-  const setSelectedOutcome = useBattlesStore((s) => s.setSelectedOutcome);
-  const setShowTeamPicker = useBattlesStore((s) => s.setShowTeamPicker);
-  const setShowOutcomePicker = useBattlesStore((s) => s.setShowOutcomePicker);
-  const initCreateBattle = useBattlesStore((s) => s.initCreateBattle);
-
-  const createMutation = useCreateBattle();
-  const createLoading = createMutation.isPending;
-
-  useEffect(() => {
-    initCreateBattle({ title: prefillTitle, eventId: prefillEventId });
-  }, [prefillTitle, prefillEventId]);
-
-  const { home: derivedHome, away: derivedAway } = deriveTeamsFromTitle(prefillTitle);
-  const finalHomeTeam = homeTeam || derivedHome;
-  const finalAwayTeam = awayTeam || derivedAway;
-
-  const teamOptions: DropdownOption[] =
-    finalHomeTeam && finalAwayTeam
-      ? [
-          { label: finalHomeTeam, value: 'home' },
-          { label: finalAwayTeam, value: 'away' },
-        ]
-      : [];
-
-  const outcomeOptions: DropdownOption[] = [
-    { label: 'Will Win', value: 'WIN' },
-    { label: 'Will Lose', value: 'LOSE' },
-  ];
-
-  const getSelectedTeamLabel = () => {
-    if (!selectedTeam) return 'Select Team';
-    const option = teamOptions.find((o) => o.value === selectedTeam);
-    return option?.label || 'Select Team';
-  };
-
-  const getSelectedOutcomeLabel = () => {
-    if (!selectedOutcome) return 'Select Outcome';
-    const option = outcomeOptions.find((o) => o.value === selectedOutcome);
-    return option?.label || 'Select Outcome';
-  };
-
-  const generateBattleDescription = () => {
-    if (selectedTeam && selectedOutcome && teamOptions.length > 0) {
-      const teamName = teamOptions.find((o) => o.value === selectedTeam)?.label;
-      const outcome = selectedOutcome === 'WIN' ? 'will win' : 'will lose';
-      return `I predict ${teamName} ${outcome}`;
-    }
-    return '';
-  };
-
-  const getCreatorWinningTeam = () => {
-    if (!selectedTeam || !selectedOutcome || !finalHomeTeam || !finalAwayTeam) return undefined;
-    const pickedHome = selectedTeam === 'home';
-    const willWin = selectedOutcome === 'WIN';
-    if (pickedHome && willWin) return finalHomeTeam;
-    if (pickedHome && !willWin) return finalAwayTeam;
-    if (!pickedHome && willWin) return finalAwayTeam;
-    if (!pickedHome && !willWin) return finalHomeTeam;
-    return undefined;
-  };
-
-  const onCreate = async () => {
-    if (!title.trim()) {
-      Alert.alert('Error', 'Please enter a battle title');
-      return;
-    }
-
-    if (teamOptions.length > 0 && !selectedTeam) {
-      Alert.alert('Error', 'Please select a team');
-      return;
-    }
-
-    if (teamOptions.length > 0 && !selectedOutcome) {
-      Alert.alert('Error', 'Please select an outcome');
-      return;
-    }
-
-    if (!user) {
-      Alert.alert('Error', 'You must be logged in to create a battle');
-      return;
-    }
-
-    const description = generateBattleDescription();
-    const creatorPickTeam = getCreatorWinningTeam();
-
-    const vis = visibility === 'crew' ? 'public' : visibility || 'public';
-
-    try {
-      await createMutation.mutateAsync({
-        type: 'CREW_PREDICTION',
-        mode: 'STANDARD',
-        eventId: eventId.trim() || undefined,
-        stakeAmount: parseInt(stake, 10) || 0,
-        visibility: vis,
-        initialMetadata: {
-          title: title.trim(),
-          description: description || undefined,
-          creatorWinningTeam: creatorPickTeam,
-        },
-      });
-      navigation.goBack();
-    } catch (e) {
-      Alert.alert('Failed', e instanceof Error ? e.message : 'Could not create battle');
-    }
-  };
-
-  const DropdownModal = ({
-    visible,
-    onClose,
-    options,
-    onSelect,
-    title: modalTitle,
-  }: {
-    visible: boolean;
-    onClose: () => void;
-    options: DropdownOption[];
-    onSelect: (value: string) => void;
-    title: string;
-  }) => (
+function DropdownModal({
+  visible,
+  onClose,
+  options,
+  onSelect,
+  title: modalTitle,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  options: DropdownOption[];
+  onSelect: (value: string) => void;
+  title: string;
+}) {
+  return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
         <View style={styles.modalContent}>
@@ -178,24 +51,54 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
       </TouchableOpacity>
     </Modal>
   );
+}
+
+export function CreateBattleScreen(props: CreateBattleScreenViewProps) {
+  const {
+    prefillEventId,
+    title,
+    eventId,
+    stake,
+    selectedTeam,
+    selectedOutcome,
+    showTeamPicker,
+    showOutcomePicker,
+    teamOptions,
+    outcomeOptions,
+    selectedTeamLabel,
+    selectedOutcomeLabel,
+    battleDescription,
+    showTeamSetup,
+    showPredictionPreview,
+    createLoading,
+    setTitle,
+    setEventId,
+    setStake,
+    setSelectedTeam,
+    setShowTeamPicker,
+    setShowOutcomePicker,
+    onBack,
+    onCreate,
+    onSelectOutcome,
+  } = props;
 
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
-          <AppText variant="h4">Create Battle</AppText>
+          <AppText variant="h4">{battlesStrings.createBattle.screenTitle}</AppText>
           <View style={styles.placeholder} />
         </View>
 
         <View style={styles.form}>
           <Input
-            label="Title"
+            label={battlesStrings.createBattle.titleLabel}
             value={title}
             onChangeText={setTitle}
-            placeholder="e.g., Chiefs vs Bills - Who wins?"
+            placeholder={battlesStrings.createBattle.titlePlaceholder}
             placeholderTextColor={colors.textSecondary}
             maxLength={100}
             required
@@ -203,13 +106,13 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
             inputTextStyle={styles.inputFont}
           />
 
-          {teamOptions.length > 0 && (
+          {showTeamSetup ? (
             <View style={styles.inputGroup}>
               <AppText variant="label" style={styles.label}>
-                Battle Setup
+                {battlesStrings.createBattle.battleSetup}
               </AppText>
               <AppText variant="helper" color={colors.textSecondary} style={styles.setupHint}>
-                Select your prediction for this game
+                {battlesStrings.createBattle.setupHint}
               </AppText>
 
               <View style={styles.dropdownRow}>
@@ -218,7 +121,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
                     variant="body2"
                     color={selectedTeam ? colors.text : colors.textSecondary}
                   >
-                    {getSelectedTeamLabel()}
+                    {selectedTeamLabel}
                   </AppText>
                   <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
                 </TouchableOpacity>
@@ -231,29 +134,29 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
                     variant="body2"
                     color={selectedOutcome ? colors.text : colors.textSecondary}
                   >
-                    {getSelectedOutcomeLabel()}
+                    {selectedOutcomeLabel}
                   </AppText>
                   <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
                 </TouchableOpacity>
               </View>
 
-              {selectedTeam && selectedOutcome && (
+              {showPredictionPreview ? (
                 <View style={styles.predictionPreview}>
                   <Ionicons name="checkmark-circle" size={16} color={colors.primary} />
                   <AppText variant="body2" style={{ flex: 1 }}>
-                    {generateBattleDescription()}
+                    {battleDescription}
                   </AppText>
                 </View>
-              )}
+              ) : null}
             </View>
-          )}
+          ) : null}
 
           <View style={styles.inputGroup}>
             <Input
-              label="Game/Event ID"
+              label={battlesStrings.createBattle.eventIdLabel}
               value={eventId}
               onChangeText={setEventId}
-              placeholder="Sports event ID"
+              placeholder={battlesStrings.createBattle.eventIdPlaceholder}
               placeholderTextColor={colors.textSecondary}
               editable={!prefillEventId}
               wrapperStyle={eventId ? styles.inputDisabled : undefined}
@@ -261,23 +164,23 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
             />
             {eventId ? (
               <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>
-                Linked to live game data
+                {battlesStrings.createBattle.linkedGame}
               </AppText>
             ) : null}
           </View>
 
           <View style={styles.inputGroup}>
             <Input
-              label="Stake (BC)"
+              label={battlesStrings.createBattle.stakeLabel}
               value={stake}
               onChangeText={(text) => setStake(text.replace(/[^0-9]/g, ''))}
-              placeholder="0"
+              placeholder={battlesStrings.createBattle.stakePlaceholder}
               placeholderTextColor={colors.textSecondary}
               keyboardType="numeric"
               inputTextStyle={styles.inputFont}
             />
             <AppText variant="helper" color={colors.textSecondary} style={styles.hint}>
-              Battle Coins to wager (optional)
+              {battlesStrings.createBattle.stakeHint}
             </AppText>
           </View>
         </View>
@@ -293,7 +196,7 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
             <>
               <Ionicons name="flash" size={20} color={colors.white} />
               <AppText variant="buttonMd" color={colors.white}>
-                Create Battle
+                {battlesStrings.createBattle.createButton}
               </AppText>
             </>
           )}
@@ -305,15 +208,15 @@ export default function CreateBattleScreen({ navigation, route }: CreateBattleSc
         onClose={() => setShowTeamPicker(false)}
         options={teamOptions}
         onSelect={(value) => setSelectedTeam(value)}
-        title="Select Team"
+        title={battlesStrings.createBattle.modalSelectTeam}
       />
 
       <DropdownModal
         visible={showOutcomePicker}
         onClose={() => setShowOutcomePicker(false)}
         options={outcomeOptions}
-        onSelect={(value) => setSelectedOutcome(value as OutcomeType)}
-        title="Select Outcome"
+        onSelect={onSelectOutcome}
+        title={battlesStrings.createBattle.modalSelectOutcome}
       />
     </Screen>
   );
@@ -352,10 +255,6 @@ const styles = StyleSheet.create({
   },
   inputFont: {
     fontSize: fontSizes.sm,
-  },
-  textArea: {
-    minHeight: 100,
-    textAlignVertical: 'top',
   },
   hint: {
     marginTop: spacing[2] / 2,

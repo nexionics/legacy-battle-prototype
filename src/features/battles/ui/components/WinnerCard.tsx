@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import type { WinnerCardProps } from '@/shared/types';
 
 export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCardProps) {
@@ -12,10 +13,10 @@ export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCard
         <View style={styles.winnerCard}>
           <Ionicons name="trophy" size={32} color={colors.gold} />
           <AppText variant="h4" style={styles.winnerTitle}>
-            Battle Resolved
+            {battlesStrings.winnerCard.battleResolved}
           </AppText>
           <AppText variant="label" color={colors.gold} style={styles.winnerName}>
-            Winner: {winnerName}
+            {battlesStrings.battleDetail.winnerLine(winnerName)}
           </AppText>
           {battle.final_outcome &&
             (() => {
@@ -32,14 +33,16 @@ export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCard
                     color={colors.textSecondary}
                     style={styles.outcomeText}
                   >
-                    {outcome.home_team ?? 'Home'}: {outcome.home_score ?? '-'}
+                    {outcome.home_team ?? battlesStrings.winnerCard.homeFallback}:{' '}
+                    {outcome.home_score ?? '-'}
                   </AppText>
                   <AppText
                     variant="captionSm"
                     color={colors.textSecondary}
                     style={styles.outcomeText}
                   >
-                    {outcome.away_team ?? 'Away'}: {outcome.away_score ?? '-'}
+                    {outcome.away_team ?? battlesStrings.winnerCard.awayFallback}:{' '}
+                    {outcome.away_score ?? '-'}
                   </AppText>
                 </View>
               );
@@ -51,7 +54,7 @@ export function WinnerCard({ battle, winnerName, pendingResolution }: WinnerCard
         <View style={styles.autoResolveNotice}>
           <Ionicons name="hourglass-outline" size={20} color={colors.warning} />
           <AppText variant="label" color={colors.warning}>
-            Game finished. Auto-resolving shortly...
+            {battlesStrings.winnerCard.autoResolving}
           </AppText>
         </View>
       )}

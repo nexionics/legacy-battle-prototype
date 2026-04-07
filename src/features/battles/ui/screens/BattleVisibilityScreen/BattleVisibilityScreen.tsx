@@ -1,50 +1,30 @@
-import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, radii, fontSizes } from '@/shared/theme';
+import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import type { BattleVisibilityScreenProps } from '@/shared/types';
+import { battlesStrings } from '@/features/battles/string';
+import type { BattleVisibilityScreenViewProps } from '../../hooks/useBattleVisibilityScreen';
 
-export default function BattleVisibilityScreen({ navigation, route }: BattleVisibilityScreenProps) {
-  const { prefillTitle, prefillEventId, homeTeam, awayTeam } = route?.params || {};
-  const hasGameData = !!prefillTitle && !!prefillEventId;
-
-  const handleSelectVisibility = (visibility: 'private' | 'public' | 'crew') => {
-    if (hasGameData) {
-      navigation.navigate('CreateBattle', {
-        prefillTitle,
-        prefillEventId,
-        homeTeam,
-        awayTeam,
-        visibility,
-      });
-    } else {
-      navigation.navigate('BattleType', { visibility });
-    }
-  };
-
+export function BattleVisibilityScreen({ onBack, onSelectVisibility }: BattleVisibilityScreenViewProps) {
   return (
     <Screen padding={0}>
       <View style={styles.content}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <Ionicons name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.titleSection}>
           <AppText variant="h2" style={styles.title}>
-            Select Battle Type
+            {battlesStrings.battleVisibility.screenTitle}
           </AppText>
           <AppText variant="body2" color={colors.textSecondary}>
-            Choose The Type Of Battle You Want To Create
+            {battlesStrings.battleVisibility.subtitle}
           </AppText>
         </View>
 
-        <TouchableOpacity
-          style={styles.optionCard}
-          onPress={() => handleSelectVisibility('private')}
-        >
+        <TouchableOpacity style={styles.optionCard} onPress={() => onSelectVisibility('private')}>
           <View style={styles.optionIconContainer}>
             <View style={styles.privateIcon}>
               <Ionicons name="shield" size={24} color={colors.gold} />
@@ -54,14 +34,14 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
             </View>
           </View>
           <View style={styles.optionTextContainer}>
-            <AppText variant="h5">Private</AppText>
+            <AppText variant="h5">{battlesStrings.battleVisibility.private}</AppText>
             <AppText variant="helper" color={colors.textSecondary}>
-              Only Invited Opponent Can Join
+              {battlesStrings.battleVisibility.privateHint}
             </AppText>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionCard} onPress={() => handleSelectVisibility('crew')}>
+        <TouchableOpacity style={styles.optionCard} onPress={() => onSelectVisibility('crew')}>
           <View style={styles.optionIconContainer}>
             <View style={styles.crewIcon}>
               <Ionicons name="people" size={24} color={colors.success} />
@@ -71,17 +51,14 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
             </View>
           </View>
           <View style={styles.optionTextContainer}>
-            <AppText variant="h5">Crew Only</AppText>
+            <AppText variant="h5">{battlesStrings.battleVisibility.crewOnly}</AppText>
             <AppText variant="helper" color={colors.textSecondary}>
-              Only Your Crew Members Can Join This Battle
+              {battlesStrings.battleVisibility.crewHint}
             </AppText>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.optionCard}
-          onPress={() => handleSelectVisibility('public')}
-        >
+        <TouchableOpacity style={styles.optionCard} onPress={() => onSelectVisibility('public')}>
           <View style={styles.optionIconContainer}>
             <View style={styles.publicIcon}>
               <Ionicons name="globe" size={24} color={colors.info} />
@@ -91,9 +68,9 @@ export default function BattleVisibilityScreen({ navigation, route }: BattleVisi
             </View>
           </View>
           <View style={styles.optionTextContainer}>
-            <AppText variant="h5">Public</AppText>
+            <AppText variant="h5">{battlesStrings.battleVisibility.public}</AppText>
             <AppText variant="helper" color={colors.textSecondary}>
-              Anyone Can Join The Battle From The Explore Page
+              {battlesStrings.battleVisibility.publicHint}
             </AppText>
           </View>
         </TouchableOpacity>

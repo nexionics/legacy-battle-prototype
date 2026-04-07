@@ -3,29 +3,36 @@ import { useThemeColors } from '@/app/providers/ThemeProvider';
 import { horizontalScale, moderate, spacing, radii, verticalScale } from '@/shared/theme';
 import { AppText } from '../atoms/AppText';
 import { Button } from '../molecules/Button';
-import type { ActionPromptModalProps } from '@/shared/types';
+import type { AppDialogProps } from '@/shared/types';
 
-export function ActionPromptModal({
-  visible,
-  title,
-  message,
-  confirmLabel,
-  cancelLabel,
-  onConfirm,
-  onCancel,
-}: ActionPromptModalProps) {
+const DEFAULT_DISMISS_LABEL = 'OK';
+
+/**
+ * Theme-aware modal dialog. Prefer this over `Alert.alert` for consistent styling.
+ * - `showActions: false` — informational only; single dismiss control.
+ * - `showActions: true` — cancel + confirm (or equivalent primary action).
+ */
+export function AppDialog(props: AppDialogProps) {
   const colors = useThemeColors();
+
+  const handleRequestClose = () => {
+    if (props.showActions) {
+      props.onCancel();
+    } else {
+      props.onDismiss();
+    }
+  };
 
   return (
     <Modal
-      visible={visible}
+      visible={props.visible}
       transparent
       animationType="fade"
       statusBarTranslucent
-      onRequestClose={onCancel}
+      onRequestClose={handleRequestClose}
     >
       <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
-        <Pressable style={styles.backdrop} onPress={onCancel} accessibilityRole="button" />
+        <Pressable style={styles.backdrop} onPress={handleRequestClose} accessibilityRole="button" />
         <View
           style={[
             styles.card,
@@ -34,22 +41,31 @@ export function ActionPromptModal({
               borderColor: colors.cardBorder,
             },
           ]}
-          accessibilityRole="none"
+          accessibilityRole="alert"
+          accessibilityLabel={`${props.title}. ${props.message}`}
         >
           <AppText variant="h5" style={[styles.title, { color: colors.text }]}>
-            {title}
+            {props.title}
           </AppText>
           <AppText variant="body2" style={[styles.message, { color: colors.textSecondary }]}>
-            {message}
+            {props.message}
           </AppText>
-          <View style={styles.actions}>
-            <Button variant="outline" onPress={onCancel} style={styles.actionButton}>
-              {cancelLabel}
-            </Button>
-            <Button variant="primary" onPress={onConfirm} style={styles.actionButton}>
-              {confirmLabel}
-            </Button>
-          </View>
+          {props.showActions ? (
+            <View style={styles.actions}>
+              <Button variant="outline" onPress={props.onCancel} style={styles.actionButton}>
+                {props.cancelLabel}
+              </Button>
+              <Button variant="primary" onPress={props.onConfirm} style={styles.actionButton}>
+                {props.confirmLabel}
+              </Button>
+            </View>
+          ) : (
+            <View style={styles.actionsSingle}>
+              <Button variant="primary" onPress={props.onDismiss} style={styles.singleActionButton}>
+                {props.dismissLabel ?? DEFAULT_DISMISS_LABEL}
+              </Button>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
@@ -87,7 +103,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing[3],
   },
+  actionsSingle: {
+    flexDirection: 'row',
+  },
   actionButton: {
+    flex: 1,
+    minHeight: moderate(48),
+    paddingVertical: verticalScale(12),
+  },
+  singleActionButton: {
     flex: 1,
     minHeight: moderate(48),
     paddingVertical: verticalScale(12),

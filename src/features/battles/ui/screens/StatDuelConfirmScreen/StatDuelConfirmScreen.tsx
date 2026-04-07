@@ -1,155 +1,20 @@
-import React from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, Screen, ScreenHeader, ProgressBar } from '@/shared/ui';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
+import {
+  battlesFormatStakeBc,
+  battlesStatCategorySummary,
+  battlesStrings,
+} from '@/features/battles/string';
 import { getBattleModeLabel } from '@/shared/utils';
-import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-import type { StatDuelConfirmScreenProps } from '@/shared/types';
-
-export default function StatDuelConfirmScreen({ navigation, route }: StatDuelConfirmScreenProps) {
-  const { visibility, battleMode, sport, game, player, statCategory, stake, opponent } =
-    route?.params || {};
-
-  const isSubmitting = useStatDuelStore((s) => s.isSubmitting);
-  const setIsSubmitting = useStatDuelStore((s) => s.setIsSubmitting);
-  const reset = useStatDuelStore((s) => s.reset);
-
-  const handleCreateBattle = async () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      reset();
-      Alert.alert('Battle Created!', 'Your Stat Duel has been created successfully.', [
-        { text: 'OK', onPress: () => navigation.navigate('MainTabs') },
-      ]);
-    }, 1500);
-  };
-
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.navigate('StatDuelOpponent', {
-        visibility,
-        battleMode,
-        sport,
-        game,
-        player,
-        statCategory,
-        stake,
-      });
-    }
-  };
-
-  return (
-    <Screen padding={0}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ScreenHeader
-          title="Create Battle"
-          onBack={handleBack}
-          rightSlot={
-            <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="notifications-outline" size={20} color={colors.primary} />
-            </TouchableOpacity>
-          }
-        />
-
-        <View style={styles.progressRow}>
-          <ProgressBar progress={1} />
-          <AppText variant="label">6/6</AppText>
-        </View>
-
-        <View style={styles.titleSection}>
-          <AppText variant="h4">Confirm Challenge Details</AppText>
-          <AppText variant="body2" color={colors.textSecondary}>
-            Confirm The Details Of Your Battle
-          </AppText>
-        </View>
-
-        <View style={styles.card}>
-          <SummaryRow
-            label="Stat Category:"
-            value={`${statCategory?.name || 'Passing Yards'} (H2H)`}
-          />
-          <SummaryRow label="Game/Event:" value={game?.name || 'Chiefs vs Bills, Week 5'} />
-          <SummaryRow
-            label="Player:"
-            value={player?.name || 'Mahomes'}
-            valueColor={colors.primary}
-          />
-        </View>
-
-        <View style={styles.lockTimeBanner}>
-          <Ionicons name="lock-closed" size={16} color={colors.primary} />
-          <AppText variant="captionSm">Lock: "Locks At Kickoff — Sun 8:00 PM</AppText>
-        </View>
-
-        <View style={styles.card}>
-          <AppText variant="label">Official Rules</AppText>
-          <AppText variant="captionSm" color={colors.textSecondary} style={styles.rulesText}>
-            Tie Rule: If Both QBs Have Same Passing Yards — Tie.{'\n'}
-            Minimum Attempts: x10 Passes Required For Each QB.{'\n'}
-            Evidence: Winner Decided By Official Data Source. Attesters Only Activate If Data Is
-            Delayed.{'\n'}
-            Info Note: *Rules Are Automatically Enforced At Resolution
-          </AppText>
-        </View>
-
-        <View style={styles.oracleCard}>
-          <View style={styles.oracleIcon}>
-            <Ionicons name="shield-checkmark" size={24} color={colors.primary} />
-          </View>
-          <View style={styles.oracleContent}>
-            <AppText variant="label">Oracle Verified</AppText>
-            <AppText variant="captionSm" color={colors.textSecondary}>
-              Winner Decided By Official Data Source. Attesters Only Activate If Data Is Delayed.
-            </AppText>
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <DetailRow label="Battle Mode" value={getBattleModeLabel(battleMode ?? 'STANDARD')} />
-          <DetailRow label="Visibility" value={visibility === 'private' ? 'Private' : 'Public'} />
-          <DetailRow label="Stake" value={`${stake} BC`} />
-          {opponent ? <DetailRow label="Opponent" value={opponent.display_name} /> : null}
-        </View>
-      </ScrollView>
-
-      <View style={styles.footer}>
-        <View style={styles.lockTimeFooter}>
-          <Ionicons name="lock-closed" size={14} color={colors.primary} />
-          <AppText variant="captionSm" color={colors.primary}>
-            Lock Time: Locks At Kickoff (8:00 PM)
-          </AppText>
-        </View>
-        <TouchableOpacity
-          style={[styles.continueButton, isSubmitting && styles.continueButtonDisabled]}
-          onPress={handleCreateBattle}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <>
-              <AppText variant="buttonLg" color={colors.white}>
-                Continue
-              </AppText>
-              <AppText variant="body1">⚔</AppText>
-            </>
-          )}
-        </TouchableOpacity>
-      </View>
-    </Screen>
-  );
-}
+import type { StatDuelConfirmScreenViewProps } from '../../hooks/useStatDuelConfirmScreen';
 
 function SummaryRow({
   label,
@@ -181,6 +46,138 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       </AppText>
       <AppText variant="label">{value}</AppText>
     </View>
+  );
+}
+
+export function StatDuelConfirmScreen(props: StatDuelConfirmScreenViewProps) {
+  const {
+    visibility,
+    battleMode,
+    game,
+    player,
+    statCategory,
+    stake,
+    opponent,
+    isSubmitting,
+    onCreateBattle,
+    onBack,
+  } = props;
+
+  return (
+    <Screen padding={0}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScreenHeader
+          title={battlesStrings.common.createBattle}
+          onBack={onBack}
+          rightSlot={
+            <TouchableOpacity style={styles.notificationButton}>
+              <Ionicons name="notifications-outline" size={20} color={colors.primary} />
+            </TouchableOpacity>
+          }
+        />
+
+        <View style={styles.progressRow}>
+          <ProgressBar progress={1} />
+          <AppText variant="label">{battlesStrings.statDuel.progress6of6}</AppText>
+        </View>
+
+        <View style={styles.titleSection}>
+          <AppText variant="h4">{battlesStrings.statDuel.confirmTitle}</AppText>
+          <AppText variant="body2" color={colors.textSecondary}>
+            {battlesStrings.statDuel.confirmSubtitle}
+          </AppText>
+        </View>
+
+        <View style={styles.card}>
+          <SummaryRow
+            label={battlesStrings.statDuel.summaryStatCategory}
+            value={battlesStatCategorySummary(
+              statCategory?.name || battlesStrings.statDuel.defaultStatCategory,
+            )}
+          />
+          <SummaryRow
+            label={battlesStrings.statDuel.summaryGameEvent}
+            value={game?.name || battlesStrings.statDuel.defaultGame}
+          />
+          <SummaryRow
+            label={battlesStrings.statDuel.summaryPlayer}
+            value={player?.name || battlesStrings.statDuel.defaultPlayer}
+            valueColor={colors.primary}
+          />
+        </View>
+
+        <View style={styles.lockTimeBanner}>
+          <Ionicons name="lock-closed" size={16} color={colors.primary} />
+          <AppText variant="captionSm">{battlesStrings.statDuel.lockKickoff}</AppText>
+        </View>
+
+        <View style={styles.card}>
+          <AppText variant="label">{battlesStrings.statDuel.officialRules}</AppText>
+          <AppText variant="captionSm" color={colors.textSecondary} style={styles.rulesText}>
+            {battlesStrings.statDuel.confirmRules}
+          </AppText>
+        </View>
+
+        <View style={styles.oracleCard}>
+          <View style={styles.oracleIcon}>
+            <Ionicons name="shield-checkmark" size={24} color={colors.primary} />
+          </View>
+          <View style={styles.oracleContent}>
+            <AppText variant="label">{battlesStrings.common.oracleVerified}</AppText>
+            <AppText variant="captionSm" color={colors.textSecondary}>
+              {battlesStrings.common.oracleVerifiedBody}
+            </AppText>
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <DetailRow
+            label={battlesStrings.statDuel.detailBattleMode}
+            value={getBattleModeLabel(battleMode ?? 'STANDARD')}
+          />
+          <DetailRow
+            label={battlesStrings.statDuel.detailVisibility}
+            value={
+              visibility === 'private'
+                ? battlesStrings.statDuel.visibilityPrivate
+                : battlesStrings.statDuel.visibilityPublic
+            }
+          />
+          <DetailRow
+            label={battlesStrings.statDuel.detailStake}
+            value={battlesFormatStakeBc(stake ?? '')}
+          />
+          {opponent ? (
+            <DetailRow label={battlesStrings.statDuel.detailOpponent} value={opponent.display_name} />
+          ) : null}
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <View style={styles.lockTimeFooter}>
+          <Ionicons name="lock-closed" size={14} color={colors.primary} />
+          <AppText variant="captionSm" color={colors.primary}>
+            {battlesStrings.statDuel.lockFooter}
+          </AppText>
+        </View>
+        <TouchableOpacity
+          style={[styles.continueButton, isSubmitting && styles.continueButtonDisabled]}
+          onPress={onCreateBattle}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <ActivityIndicator color={colors.white} />
+          ) : (
+            <>
+              <AppText variant="buttonLg" color={colors.white}>
+                {battlesStrings.common.continue}
+              </AppText>
+              <AppText variant="body1">⚔</AppText>
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
+    </Screen>
   );
 }
 

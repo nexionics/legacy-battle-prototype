@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import type { ExploreBattleCardProps } from '@/shared/types';
 
 export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps) {
@@ -19,13 +20,13 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
           ]}
         >
           <AppText variant="captionSm" color={colors.white} style={{ fontSize: 10 }}>
-            {activeTab === 'Trending' ? 'Ongoing' : activeTab}
+            {activeTab === 'Trending' ? battlesStrings.explore.tagOngoing : activeTab}
           </AppText>
         </View>
         <View style={styles.tagOutline}>
           <Ionicons name="football-outline" size={12} color={colors.textSecondary} />
           <AppText variant="captionSm" color={colors.textSecondary} style={{ fontSize: 10 }}>
-            Game Pick
+            {battlesStrings.explore.gamePick}
           </AppText>
         </View>
         <View style={styles.entryFee}>
@@ -33,13 +34,13 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
             🪙
           </AppText>
           <AppText variant="captionSm" color={colors.textSecondary} style={{ fontSize: 10 }}>
-            {battle.stake || 50} Bc Entry
+            {battlesStrings.explore.bcEntry(battle.stake || 50)}
           </AppText>
         </View>
       </View>
 
       <AppText variant="buttonMd" style={{ marginBottom: spacing[2] }}>
-        {battle.title || 'Super Bowl QB Passing Yards Duel'}
+        {battle.title || battlesStrings.explore.defaultBattleTitle}
       </AppText>
 
       <View style={styles.battlePlayers}>
@@ -48,36 +49,37 @@ export function ExploreBattleCard({ battle, activeTab }: ExploreBattleCardProps)
             🏈
           </AppText>
         </View>
-        <AppText variant="captionSm">Mahomes</AppText>
+        <AppText variant="captionSm">{battlesStrings.explore.mockPlayerA}</AppText>
         <AppText variant="captionSm" color={colors.textSecondary}>
-          Vs
+          {battlesStrings.explore.vs}
         </AppText>
         <View style={styles.playerBadge}>
           <AppText variant="captionSm" style={{ fontSize: 12 }}>
             🏈
           </AppText>
         </View>
-        <AppText variant="captionSm">Burrow</AppText>
+        <AppText variant="captionSm">{battlesStrings.explore.mockPlayerB}</AppText>
       </View>
 
       <View style={styles.battleFooter}>
         <View style={styles.battleInfo}>
           <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
           <AppText variant="captionSm" color={colors.textSecondary}>
-            Created {new Date(battle.created_at).toLocaleDateString()}
+            {battlesStrings.explore.createdPrefix}
+            {new Date(battle.created_at).toLocaleDateString()}
           </AppText>
         </View>
         {activeTab === 'Trending' && (
           <View style={styles.battleInfo}>
             <Ionicons name="people-outline" size={14} color={colors.textSecondary} />
             <AppText variant="captionSm" color={colors.textSecondary}>
-              {battle.participant_count || 247} Joined
+              {battlesStrings.explore.joined(battle.participant_count || 247)}
             </AppText>
           </View>
         )}
         <TouchableOpacity style={styles.joinButton}>
           <AppText variant="buttonMd" color={colors.white}>
-            Join
+            {battlesStrings.common.join}
           </AppText>
         </TouchableOpacity>
       </View>

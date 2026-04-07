@@ -1,88 +1,25 @@
-import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-import type { StatDuelDetailsScreenProps } from '@/shared/types';
-import { STAT_DUEL_SPORTS, MOCK_GAMES, POSITIONS_BY_SPORT } from '@/shared/constants';
+import { STAT_DUEL_SPORTS } from '@/shared/constants';
+import { battlesStrings } from '@/features/battles/string';
+import type { StatDuelDetailsScreenViewProps } from '../../hooks/useStatDuelDetailsScreen';
 
-export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDetailsScreenProps) {
-  const { visibility, battleMode: routeBattleMode } = route?.params || {};
-
-  const battleMode = useStatDuelStore((s) => s.battleMode);
-  const selectedSport = useStatDuelStore((s) => s.selectedSport);
-  const selectedGame = useStatDuelStore((s) => s.selectedGame);
-  const selectedPosition = useStatDuelStore((s) => s.selectedPosition);
-  const startTime = useStatDuelStore((s) => s.startTime);
-  const endTime = useStatDuelStore((s) => s.endTime);
-  const showSportModal = useStatDuelStore((s) => s.showSportModal);
-  const showGameModal = useStatDuelStore((s) => s.showGameModal);
-  const showPositionModal = useStatDuelStore((s) => s.showPositionModal);
-  const setVisibility = useStatDuelStore((s) => s.setVisibility);
-  const setBattleMode = useStatDuelStore((s) => s.setBattleMode);
-  const setSelectedSport = useStatDuelStore((s) => s.setSelectedSport);
-  const setSelectedGame = useStatDuelStore((s) => s.setSelectedGame);
-  const setSelectedPosition = useStatDuelStore((s) => s.setSelectedPosition);
-  const setShowSportModal = useStatDuelStore((s) => s.setShowSportModal);
-  const setShowGameModal = useStatDuelStore((s) => s.setShowGameModal);
-  const setShowPositionModal = useStatDuelStore((s) => s.setShowPositionModal);
-
-  const effectiveBattleMode = battleMode ?? routeBattleMode;
-  const isStandardMode = effectiveBattleMode === 'STANDARD' || effectiveBattleMode === 'BOTH_PICKS';
-  const isFantasyMode = effectiveBattleMode === 'FANTASY';
-
-  useEffect(() => {
-    if (visibility) setVisibility(visibility);
-    if (routeBattleMode) setBattleMode(routeBattleMode);
-  }, [visibility, routeBattleMode]);
-
-  const filteredGames = selectedSport
-    ? MOCK_GAMES.filter((g) => g.sport === selectedSport)
-    : [...MOCK_GAMES];
-
-  const availablePositions = selectedSport ? POSITIONS_BY_SPORT[selectedSport] || [] : [];
-
-  const selectedSportData = STAT_DUEL_SPORTS.find((s) => s.id === selectedSport);
-  const selectedGameData = MOCK_GAMES.find((g) => g.id === selectedGame);
-  const selectedPositionData = availablePositions.find((p) => p.id === selectedPosition);
-
-  const handleContinue = () => {
-    navigation.navigate('StatDuelChampion', {
-      visibility,
-      battleMode: effectiveBattleMode,
-      sport: selectedSport,
-      game: isStandardMode ? selectedGameData : null,
-      position: selectedPosition,
-      positionName: selectedPositionData?.name,
-    });
-  };
-
-  const canContinue = isStandardMode
-    ? selectedSport && selectedGame && selectedPosition
-    : selectedSport && selectedPosition;
-
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.navigate('StatDuelMode', { visibility });
-    }
-  };
-
-  const DropdownButton = ({
-    label,
-    value,
-    placeholder,
-    onPress,
-    required = false,
-  }: {
-    label: string;
-    value: string | null;
-    placeholder: string;
-    onPress: () => void;
-    required?: boolean;
-  }) => (
+function DropdownButton({
+  label,
+  value,
+  placeholder,
+  onPress,
+  required = false,
+}: {
+  label: string;
+  value: string | null;
+  placeholder: string;
+  onPress: () => void;
+  required?: boolean;
+}) {
+  return (
     <View style={styles.dropdownContainer}>
       <AppText variant="captionSm" color={colors.textSecondary}>
         {label}
@@ -97,18 +34,48 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
       </TouchableOpacity>
     </View>
   );
+}
+
+export function StatDuelDetailsScreen(props: StatDuelDetailsScreenViewProps) {
+  const {
+    effectiveBattleMode,
+    isStandardMode,
+    isFantasyMode,
+    selectedSport,
+    selectedGame,
+    selectedPosition,
+    startTime,
+    endTime,
+    showSportModal,
+    showGameModal,
+    showPositionModal,
+    setShowSportModal,
+    setShowGameModal,
+    setShowPositionModal,
+    selectedSportData,
+    selectedGameData,
+    selectedPositionData,
+    filteredGames,
+    availablePositions,
+    canContinue,
+    onContinue,
+    onBack,
+    onSelectSport,
+    onSelectGame,
+    onSelectPosition,
+  } = props;
 
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </View>
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <AppText variant="h4">Create Battle</AppText>
+            <AppText variant="h4">{battlesStrings.common.createBattle}</AppText>
             <View style={styles.headerIcon}>
               <Ionicons name="globe-outline" size={18} color={colors.text} />
             </View>
@@ -122,51 +89,51 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: '50%' }]} />
           </View>
-          <AppText variant="label">3/6</AppText>
+          <AppText variant="label">{battlesStrings.statDuel.progress3of6}</AppText>
         </View>
 
         <View style={styles.titleSection}>
-          <AppText variant="h3">Create Battle</AppText>
+          <AppText variant="h3">{battlesStrings.statDuel.detailsTitle}</AppText>
           <AppText variant="body2" color={colors.textSecondary}>
             {isFantasyMode
-              ? 'Select Sport And Position For Fantasy Battle'
-              : 'Select Event And Position For Standard Battle'}
+              ? battlesStrings.statDuel.detailsSubtitleFantasy
+              : battlesStrings.statDuel.detailsSubtitleStandard}
           </AppText>
         </View>
 
         <View style={styles.modeIndicator}>
           <AppText variant="captionSm" style={{ fontWeight: '600' }}>
-            Mode:{' '}
+            {battlesStrings.statDuel.modeLabel}{' '}
             {effectiveBattleMode === 'STANDARD'
-              ? 'Standard'
+              ? battlesStrings.statDuel.modeStandard
               : effectiveBattleMode === 'FANTASY'
-                ? 'Fantasy'
-                : 'Both Picks'}
+                ? battlesStrings.statDuel.modeFantasy
+                : battlesStrings.statDuel.modeBothPicks}
           </AppText>
         </View>
 
         <DropdownButton
-          label="Choose Sport"
+          label={battlesStrings.statDuel.chooseSport}
           value={selectedSportData ? `${selectedSportData.icon} ${selectedSportData.name}` : null}
-          placeholder="Select Sport"
+          placeholder={battlesStrings.statDuel.selectSport}
           onPress={() => setShowSportModal(true)}
           required
         />
 
-        {isStandardMode && (
+        {isStandardMode ? (
           <DropdownButton
-            label="Choose Event"
+            label={battlesStrings.statDuel.chooseEvent}
             value={selectedGameData?.name || null}
-            placeholder="Select Event"
+            placeholder={battlesStrings.statDuel.selectEvent}
             onPress={() => setShowGameModal(true)}
             required
           />
-        )}
+        ) : null}
 
         <DropdownButton
-          label="Choose Position"
+          label={battlesStrings.statDuel.choosePosition}
           value={selectedPositionData?.name || null}
-          placeholder="Select Position"
+          placeholder={battlesStrings.statDuel.selectPosition}
           onPress={() => setShowPositionModal(true)}
           required
         />
@@ -174,7 +141,8 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.timeRow}>
           <View style={styles.timeColumn}>
             <AppText variant="captionSm" color={colors.textSecondary} style={styles.dropdownLabel}>
-              Start Time <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
+              {battlesStrings.statDuel.startTime}{' '}
+              <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
             </AppText>
             <TouchableOpacity style={styles.dropdown}>
               <AppText variant="body2">{startTime}</AppText>
@@ -183,7 +151,8 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
           </View>
           <View style={styles.timeColumn}>
             <AppText variant="captionSm" color={colors.textSecondary} style={styles.dropdownLabel}>
-              End Time <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
+              {battlesStrings.statDuel.endTime}{' '}
+              <Ionicons name="time-outline" size={14} color={colors.textSecondary} />
             </AppText>
             <TouchableOpacity style={styles.dropdown}>
               <AppText variant="body2">{endTime}</AppText>
@@ -196,12 +165,12 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
           <Ionicons name="lock-closed" size={16} color={colors.primary} />
           <AppText variant="captionSm">
             {isStandardMode
-              ? 'Lock Time: Locks At Game Kickoff'
-              : 'Lock Time: Locks At Earliest Kickoff This Week'}
+              ? battlesStrings.statDuel.lockStandard
+              : battlesStrings.statDuel.lockFantasy}
           </AppText>
         </View>
 
-        {isFantasyMode && (
+        {isFantasyMode ? (
           <View style={styles.infoBox}>
             <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
             <AppText
@@ -209,21 +178,20 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
               color={colors.textSecondary}
               style={{ flex: 1, lineHeight: 18 }}
             >
-              In Fantasy Mode, you can pick any player from the selected sport and position. Your
-              opponent can also pick any player of the same sport and position.
+              {battlesStrings.statDuel.fantasyInfo}
             </AppText>
           </View>
-        )}
+        ) : null}
       </ScrollView>
 
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
-          onPress={handleContinue}
+          onPress={onContinue}
           disabled={!canContinue}
         >
           <AppText variant="buttonLg" color={colors.white}>
-            Continue
+            {battlesStrings.common.continue}
           </AppText>
           <View style={styles.continueIcon}>
             <AppText style={styles.continueIconText}>⚔</AppText>
@@ -235,7 +203,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <AppText variant="h4">Select Sport</AppText>
+              <AppText variant="h4">{battlesStrings.statDuel.selectSport}</AppText>
               <TouchableOpacity onPress={() => setShowSportModal(false)}>
                 <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
@@ -244,20 +212,15 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
               <TouchableOpacity
                 key={sport.id}
                 style={styles.modalOption}
-                onPress={() => {
-                  setSelectedSport(sport.id);
-                  setSelectedGame(null);
-                  setSelectedPosition(null);
-                  setShowSportModal(false);
-                }}
+                onPress={() => onSelectSport(sport.id)}
               >
                 <AppText style={styles.modalOptionIcon}>{sport.icon}</AppText>
                 <AppText variant="body2" style={{ flex: 1 }}>
                   {sport.name}
                 </AppText>
-                {selectedSport === sport.id && (
+                {selectedSport === sport.id ? (
                   <Ionicons name="checkmark" size={20} color={colors.primary} />
-                )}
+                ) : null}
               </TouchableOpacity>
             ))}
           </View>
@@ -268,7 +231,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <AppText variant="h4">Select Event</AppText>
+              <AppText variant="h4">{battlesStrings.statDuel.selectEvent}</AppText>
               <TouchableOpacity onPress={() => setShowGameModal(false)}>
                 <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
@@ -278,22 +241,19 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                 <TouchableOpacity
                   key={game.id}
                   style={styles.modalOption}
-                  onPress={() => {
-                    setSelectedGame(game.id);
-                    setShowGameModal(false);
-                  }}
+                  onPress={() => onSelectGame(game.id)}
                 >
                   <AppText variant="body2" style={{ flex: 1 }}>
                     {game.name}
                   </AppText>
-                  {selectedGame === game.id && (
+                  {selectedGame === game.id ? (
                     <Ionicons name="checkmark" size={20} color={colors.primary} />
-                  )}
+                  ) : null}
                 </TouchableOpacity>
               ))
             ) : (
               <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
-                Select a sport first
+                {battlesStrings.statDuel.selectSportFirst}
               </AppText>
             )}
           </View>
@@ -304,7 +264,7 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <AppText variant="h4">Select Position</AppText>
+              <AppText variant="h4">{battlesStrings.statDuel.selectPosition}</AppText>
               <TouchableOpacity onPress={() => setShowPositionModal(false)}>
                 <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
@@ -314,22 +274,19 @@ export default function StatDuelDetailsScreen({ navigation, route }: StatDuelDet
                 <TouchableOpacity
                   key={position.id}
                   style={styles.modalOption}
-                  onPress={() => {
-                    setSelectedPosition(position.id);
-                    setShowPositionModal(false);
-                  }}
+                  onPress={() => onSelectPosition(position.id)}
                 >
                   <AppText variant="body2" style={{ flex: 1 }}>
                     {position.name}
                   </AppText>
-                  {selectedPosition === position.id && (
+                  {selectedPosition === position.id ? (
                     <Ionicons name="checkmark" size={20} color={colors.primary} />
-                  )}
+                  ) : null}
                 </TouchableOpacity>
               ))
             ) : (
               <AppText variant="body2" color={colors.textSecondary} style={styles.noOptionsText}>
-                Select a sport first
+                {battlesStrings.statDuel.selectSportFirst}
               </AppText>
             )}
           </View>

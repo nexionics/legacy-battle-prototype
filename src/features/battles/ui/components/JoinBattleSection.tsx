@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import type { JoinBattleSectionProps } from '@/shared/types';
 
 export function JoinBattleSection({
@@ -25,7 +26,7 @@ export function JoinBattleSection({
       <View style={styles.joinedBadge}>
         <Ionicons name="checkmark-circle" size={20} color={colors.success} />
         <AppText variant="label" color={colors.success}>
-          You have joined this battle
+          {battlesStrings.joinBattle.joinedMessage}
         </AppText>
       </View>
     );
@@ -36,7 +37,7 @@ export function JoinBattleSection({
   return (
     <View style={styles.joinSection}>
       <AppText variant="buttonMd" style={styles.sectionTitle}>
-        Join This Battle
+        {battlesStrings.joinBattle.sectionTitle}
       </AppText>
       <View style={styles.joinCard}>
         {isHeadToHeadReady ? (
@@ -47,11 +48,13 @@ export function JoinBattleSection({
                 color={colors.textSecondary}
                 style={styles.challengeLabel}
               >
-                Creator's prediction:
+                {battlesStrings.joinBattle.creatorsPrediction}
               </AppText>
               <View style={styles.predictionBox}>
                 <Ionicons name="person" size={16} color={colors.primary} />
-                <AppText variant="label">{creatorWinningTeam} will win</AppText>
+                <AppText variant="label">
+                  {battlesStrings.joinBattle.willWin(creatorWinningTeam ?? '')}
+                </AppText>
               </View>
             </View>
             <View style={styles.challengeInfo}>
@@ -60,12 +63,12 @@ export function JoinBattleSection({
                 color={colors.textSecondary}
                 style={styles.challengeLabel}
               >
-                Your side (if you accept):
+                {battlesStrings.joinBattle.yourSide}
               </AppText>
               <View style={[styles.predictionBox, styles.yourPredictionBox]}>
                 <Ionicons name="flash" size={16} color={colors.success} />
                 <AppText variant="label" color={colors.success}>
-                  {joinerWinningTeam} will win
+                  {battlesStrings.joinBattle.willWin(joinerWinningTeam ?? '')}
                 </AppText>
               </View>
             </View>
@@ -73,7 +76,7 @@ export function JoinBattleSection({
         ) : homeTeamName && awayTeamName ? (
           <>
             <AppText variant="label" style={styles.joinLabel}>
-              Pick the winner:
+              {battlesStrings.joinBattle.pickWinner}
             </AppText>
             <View style={styles.teamPickContainer}>
               <TouchableOpacity
@@ -95,11 +98,11 @@ export function JoinBattleSection({
                   color={colors.textSecondary}
                   style={styles.teamPickLabel}
                 >
-                  Home
+                  {battlesStrings.joinBattle.home}
                 </AppText>
               </TouchableOpacity>
               <AppText variant="buttonMd" color={colors.textSecondary}>
-                vs
+                {battlesStrings.common.vs}
               </AppText>
               <TouchableOpacity
                 style={[
@@ -120,14 +123,14 @@ export function JoinBattleSection({
                   color={colors.textSecondary}
                   style={styles.teamPickLabel}
                 >
-                  Away
+                  {battlesStrings.joinBattle.away}
                 </AppText>
               </TouchableOpacity>
             </View>
           </>
         ) : (
           <AppText variant="body2" color={colors.textSecondary} style={styles.loadingPickText}>
-            Unable to determine teams for this battle
+            {battlesStrings.joinBattle.unableTeams}
           </AppText>
         )}
         <TouchableOpacity
@@ -144,7 +147,9 @@ export function JoinBattleSection({
             <>
               <Ionicons name="enter-outline" size={20} color={colors.white} />
               <AppText variant="buttonMd" color={colors.white}>
-                {isHeadToHeadBattle ? 'Accept Challenge' : 'Join Battle'}
+                {isHeadToHeadBattle
+                  ? battlesStrings.joinBattle.acceptChallenge
+                  : battlesStrings.joinBattle.joinBattle}
               </AppText>
             </>
           )}

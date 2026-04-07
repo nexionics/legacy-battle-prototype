@@ -2,59 +2,34 @@ import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen, SearchInput } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import { getInitials } from '@/shared/utils';
-import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-import type { StatDuelOpponentScreenProps } from '@/shared/types';
-import { MOCK_OPPONENTS } from '@/shared/constants';
+import type { StatDuelOpponentScreenViewProps } from '../../hooks/useStatDuelOpponentScreen';
 
-export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOpponentScreenProps) {
-  const { visibility, battleMode, sport, game, player, statCategory, stake } = route?.params || {};
-
-  const opponentSearchQuery = useStatDuelStore((s) => s.opponentSearchQuery);
-  const selectedOpponent = useStatDuelStore((s) => s.selectedOpponent);
-  const setOpponentSearchQuery = useStatDuelStore((s) => s.setOpponentSearchQuery);
-  const setSelectedOpponent = useStatDuelStore((s) => s.setSelectedOpponent);
-
-  const filteredOpponents = MOCK_OPPONENTS.filter(
-    (o) =>
-      o.display_name.toLowerCase().includes(opponentSearchQuery.toLowerCase()) ||
-      (o.username?.toLowerCase().includes(opponentSearchQuery.toLowerCase()) ?? false),
-  );
-
-  const handleContinue = () => {
-    navigation.navigate('StatDuelConfirm', {
-      visibility,
-      battleMode,
-      sport,
-      game,
-      player,
-      statCategory,
-      stake,
-      opponent: selectedOpponent,
-    });
-  };
-
-  const canContinue = selectedOpponent || visibility === 'public';
-
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.navigate('StatDuelChampion', { visibility, battleMode, sport, game });
-    }
-  };
+export function StatDuelOpponentScreen(props: StatDuelOpponentScreenViewProps) {
+  const {
+    visibility,
+    opponentSearchQuery,
+    selectedOpponent,
+    setOpponentSearchQuery,
+    setSelectedOpponent,
+    filteredOpponents,
+    canContinue,
+    onContinue,
+    onBack,
+  } = props;
 
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </View>
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <AppText variant="h4">Create Battle</AppText>
+            <AppText variant="h4">{battlesStrings.common.createBattle}</AppText>
             <View style={styles.headerIcon}>
               <Ionicons name="globe-outline" size={18} color={colors.text} />
             </View>
@@ -68,13 +43,13 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: '83%' }]} />
           </View>
-          <AppText variant="label">5/6</AppText>
+          <AppText variant="label">{battlesStrings.statDuel.progress5of6}</AppText>
         </View>
 
         <View style={styles.titleSection}>
-          <AppText variant="h4">Pick An Opponent For Battle</AppText>
+          <AppText variant="h4">{battlesStrings.statDuel.opponentTitle}</AppText>
           <AppText variant="body2" color={colors.textSecondary}>
-            Pick Your Opponent And Players To Battle On.
+            {battlesStrings.statDuel.opponentSubtitle}
           </AppText>
         </View>
 
@@ -83,12 +58,12 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
             <SearchInput
               value={opponentSearchQuery}
               onChangeText={setOpponentSearchQuery}
-              placeholder="search opponent"
-              label="Add Opponent"
+              placeholder={battlesStrings.statDuel.searchOpponentPlaceholder}
+              label={battlesStrings.statDuel.addOpponent}
               style={styles.searchInput}
             />
 
-            {opponentSearchQuery.length > 0 && (
+            {opponentSearchQuery.length > 0 ? (
               <View style={styles.searchResults}>
                 {filteredOpponents.map((opponent) => (
                   <TouchableOpacity
@@ -114,22 +89,22 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
                         @{opponent.username}
                       </AppText>
                     </View>
-                    {selectedOpponent?.id === opponent.id && (
+                    {selectedOpponent?.id === opponent.id ? (
                       <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
-                    )}
+                    ) : null}
                   </TouchableOpacity>
                 ))}
               </View>
-            )}
+            ) : null}
 
-            {selectedOpponent && (
+            {selectedOpponent ? (
               <View style={styles.selectedOpponentCard}>
                 <AppText
                   variant="captionSm"
                   color={colors.textSecondary}
                   style={styles.selectedLabel}
                 >
-                  Selected Opponent
+                  {battlesStrings.statDuel.selectedOpponent}
                 </AppText>
                 <View style={styles.selectedOpponentRow}>
                   <View style={styles.opponentAvatar}>
@@ -152,17 +127,16 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
                   </TouchableOpacity>
                 </View>
               </View>
-            )}
+            ) : null}
           </>
         ) : (
           <View style={styles.publicBattleInfo}>
             <Ionicons name="globe-outline" size={48} color={colors.primary} />
             <AppText variant="h4" style={styles.publicBattleTitle}>
-              Public Battle
+              {battlesStrings.statDuel.publicBattle}
             </AppText>
             <AppText variant="body2" color={colors.textSecondary} style={styles.publicBattleText}>
-              This battle will be visible to all users on the Explore page. Anyone can join and
-              accept your challenge.
+              {battlesStrings.statDuel.publicBattleBody}
             </AppText>
           </View>
         )}
@@ -171,11 +145,11 @@ export default function StatDuelOpponentScreen({ navigation, route }: StatDuelOp
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
-          onPress={handleContinue}
+          onPress={onContinue}
           disabled={!canContinue}
         >
           <AppText variant="buttonLg" color={colors.white}>
-            Continue
+            {battlesStrings.common.continue}
           </AppText>
           <View style={styles.continueIcon}>
             <AppText style={styles.continueIconText}>⚔</AppText>

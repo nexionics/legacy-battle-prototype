@@ -254,16 +254,31 @@ export interface ToastContextProps {
   showToast: (type: 'success' | 'fail', message: string) => void;
 }
 
-/** Centered confirm/cancel dialog; theme-aware when rendered under ThemeProvider. */
-export interface ActionPromptModalProps {
+/** Shared fields for the `AppDialog` component. */
+export interface AppDialogBaseProps {
   visible: boolean;
   title: string;
   message: string;
-  confirmLabel: string;
-  cancelLabel: string;
-  onConfirm: () => void;
-  onCancel: () => void;
 }
+
+/** Informational dialog: single dismiss action. */
+export interface AppDialogInfoProps extends AppDialogBaseProps {
+  showActions: false;
+  /** Defaults to "OK" when omitted. */
+  dismissLabel?: string;
+  onDismiss: () => void;
+}
+
+/** Confirm/cancel dialog: two actions. */
+export interface AppDialogActionProps extends AppDialogBaseProps {
+  showActions: true;
+  cancelLabel: string;
+  confirmLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
+export type AppDialogProps = AppDialogInfoProps | AppDialogActionProps;
 
 export interface SelectionOption<T extends string = string> {
   key: T;

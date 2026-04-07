@@ -3,12 +3,13 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
 import { EXPLORE_CATEGORIES } from '@/shared/constants';
+import { battlesStrings } from '@/features/battles/string';
 
 export function CategoriesSection() {
   return (
     <View style={styles.section}>
       <AppText variant="h4" style={{ marginBottom: spacing[2] }}>
-        Categories
+        {battlesStrings.explore.categoriesHeading}
       </AppText>
       <View style={styles.categoriesGrid}>
         {EXPLORE_CATEGORIES.map(({ label, emoji }) => (

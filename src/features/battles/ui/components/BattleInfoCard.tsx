@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, StatusBadge } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import { getStatusColor, formatFullDate } from '@/shared/utils';
 import type { BattleInfoCardProps } from '@/shared/types';
 
@@ -12,7 +13,7 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
       <View style={styles.battleHeader}>
         <View style={styles.battleIcon}>
           <AppText variant="h4" color={colors.white} style={styles.battleIconText}>
-            LB
+            {battlesStrings.battleInfo.initials}
           </AppText>
         </View>
         <StatusBadge label={battle.status} color={getStatusColor(battle.status)} />
@@ -32,14 +33,14 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
         <View style={styles.metaItem}>
           <Ionicons name="flash" size={16} color={colors.primary} />
           <AppText variant="captionSm" color={colors.textSecondary}>
-            Stake:
+            {battlesStrings.battleInfo.stake}
           </AppText>
           <AppText variant="label">{battle.stake} BC</AppText>
         </View>
         <View style={styles.metaItem}>
           <Ionicons name="time-outline" size={16} color={colors.textSecondary} />
           <AppText variant="captionSm" color={colors.textSecondary}>
-            Created:
+            {battlesStrings.battleInfo.created}
           </AppText>
           <AppText variant="label">{formatFullDate(battle.created_at)}</AppText>
         </View>
@@ -47,7 +48,7 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
           <View style={styles.metaItem}>
             <Ionicons name="football-outline" size={16} color={colors.textSecondary} />
             <AppText variant="captionSm" color={colors.textSecondary}>
-              Event:
+              {battlesStrings.battleInfo.event}
             </AppText>
             <AppText variant="label">{battle.event_id}</AppText>
           </View>
@@ -58,7 +59,7 @@ export function BattleInfoCard({ battle, isCreator }: BattleInfoCardProps) {
         <View style={styles.creatorBadge}>
           <Ionicons name="star" size={14} color={colors.primary} />
           <AppText variant="captionSm" color={colors.primary}>
-            You created this battle
+            {battlesStrings.battleInfo.youCreated}
           </AppText>
         </View>
       )}

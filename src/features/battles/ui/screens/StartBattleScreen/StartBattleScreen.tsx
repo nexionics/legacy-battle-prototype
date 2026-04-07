@@ -1,61 +1,33 @@
-import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useBattlesStore } from '@/features/battles/data/store/battles.store';
-import type { StartBattleScreenProps, Sport, BattleCategory } from '@/shared/types';
+import If from '@/shared/ui/atoms/If';
 import { SPORTS, BATTLE_CATEGORIES } from '@/shared/constants';
+import { battlesStrings } from '@/features/battles/string';
+import type { StartBattleScreenViewProps } from '../../hooks/useStartBattleScreen';
 
-export default function StartBattleScreen({ navigation }: StartBattleScreenProps) {
-  const selectedSport = useBattlesStore((s) => s.selectedSport);
-  const setSelectedSport = useBattlesStore((s) => s.setSelectedSport);
-
-  const handleSportSelect = (sport: Sport['id']) => {
-    setSelectedSport(sport);
-  };
-
-  const handleCategorySelect = (category: BattleCategory) => {
-    if (!category.enabled || !selectedSport) return;
-
-    navigation.navigate('AllUpcomingGames', {
-      initialSport: selectedSport,
-      mode: category.id,
-    });
-  };
-
-  const handleBack = () => {
-    if (selectedSport) {
-      setSelectedSport(null);
-    } else {
-      navigation.goBack();
-    }
-  };
+export function StartBattleScreen(props: StartBattleScreenViewProps) {
+  const { selectedSport, onSportSelect, onCategorySelect, onBack, headerTitle } = props;
 
   return (
     <Screen padding={0}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <AppText variant="h4">
-          {selectedSport === 'SKILLS'
-            ? 'Skills Battle'
-            : selectedSport
-              ? 'Select Battle Type'
-              : 'Select a Sport'}
-        </AppText>
+        <AppText variant="h4">{headerTitle}</AppText>
         <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {!selectedSport ? (
+        <If condition={!selectedSport}>
           <View style={styles.sportsGrid}>
             {SPORTS.map((sport) => (
               <TouchableOpacity
                 key={sport.id}
                 style={styles.sportCard}
-                onPress={() => handleSportSelect(sport.id)}
+                onPress={() => onSportSelect(sport.id)}
               >
                 <View style={[styles.sportIconContainer, { backgroundColor: sport.color }]}>
                   <AppText style={styles.sportIcon}>{sport.icon}</AppText>
@@ -67,13 +39,15 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
               </TouchableOpacity>
             ))}
           </View>
-        ) : selectedSport === 'SKILLS' ? (
+        </If>
+
+        <If condition={selectedSport === 'SKILLS'}>
           <View style={styles.skillsContainer}>
             <View style={styles.skillsCard}>
               <View style={styles.skillsBadge}>
                 <Ionicons name="videocam" size={14} color={colors.primary} />
                 <AppText variant="captionSm" color={colors.primary} style={{ fontWeight: '600' }}>
-                  Neutral Attester Verifies
+                  {battlesStrings.startBattle.neutralAttesterBadge}
                 </AppText>
               </View>
 
@@ -82,9 +56,9 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                   <AppText style={styles.skillsIcon}>⚡</AppText>
                 </View>
                 <View style={styles.skillsInfo}>
-                  <AppText variant="h4">Skill Battle</AppText>
+                  <AppText variant="h4">{battlesStrings.startBattle.skillBattleTitle}</AppText>
                   <AppText variant="captionSm" color={colors.textSecondary}>
-                    Showcase Your Skills With Proof
+                    {battlesStrings.startBattle.skillsSubtitle}
                   </AppText>
                 </View>
               </View>
@@ -93,13 +67,13 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                 <View style={styles.skillsFeature}>
                   <Ionicons name="videocam-outline" size={16} color={colors.textSecondary} />
                   <AppText variant="body2" color={colors.textSecondary}>
-                    Video Evidence Needed
+                    {battlesStrings.startBattle.videoEvidence}
                   </AppText>
                 </View>
                 <View style={styles.skillsFeature}>
                   <Ionicons name="people-outline" size={16} color={colors.textSecondary} />
                   <AppText variant="body2" color={colors.textSecondary}>
-                    3 Neutral Attesters
+                    {battlesStrings.startBattle.threeAttesters}
                   </AppText>
                 </View>
               </View>
@@ -108,15 +82,16 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
             <View style={styles.comingSoonCard}>
               <Ionicons name="construct-outline" size={48} color={colors.primary} />
               <AppText variant="h4" style={styles.comingSoonTitle}>
-                Coming Soon
+                {battlesStrings.startBattle.comingSoonTitle}
               </AppText>
               <AppText variant="body2" color={colors.textSecondary} style={styles.comingSoonText}>
-                Skills Battles will let you challenge friends with video proof of your skills.
-                Neutral attesters will verify the winner.
+                {battlesStrings.startBattle.comingSoonBody}
               </AppText>
             </View>
           </View>
-        ) : (
+        </If>
+
+        <If condition={Boolean(selectedSport && selectedSport !== 'SKILLS')}>
           <View style={styles.categoriesContainer}>
             <View style={styles.selectedSportBadge}>
               <AppText style={styles.selectedSportIcon}>
@@ -130,7 +105,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                 <TouchableOpacity
                   key={category.id}
                   style={[styles.categoryCard, !category.enabled && styles.categoryCardDisabled]}
-                  onPress={() => handleCategorySelect(category)}
+                  onPress={() => onCategorySelect(category)}
                   disabled={!category.enabled}
                 >
                   <View
@@ -153,7 +128,9 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
                       {category.name}
                     </AppText>
                     <AppText variant="captionSm" color={colors.textSecondary}>
-                      {category.enabled ? category.description : 'Coming Soon'}
+                      {category.enabled
+                        ? category.description
+                        : battlesStrings.startBattle.categoryComingSoon}
                     </AppText>
                   </View>
                   <Ionicons
@@ -165,7 +142,7 @@ export default function StartBattleScreen({ navigation }: StartBattleScreenProps
               ))}
             </View>
           </View>
-        )}
+        </If>
       </ScrollView>
     </Screen>
   );

@@ -2,13 +2,14 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import type { ScoreDisplayProps } from '@/shared/types';
 
 export function ScoreDisplay({ gameScore, isCompleted }: ScoreDisplayProps) {
   return (
     <View style={styles.scoreCard}>
       <AppText variant="buttonMd" style={styles.scoreSectionTitle}>
-        {isCompleted ? 'Final Score' : 'Live Score'}
+        {isCompleted ? battlesStrings.score.final : battlesStrings.score.live}
       </AppText>
       <View style={styles.scoreDisplay}>
         <View style={styles.teamScore}>
@@ -18,7 +19,7 @@ export function ScoreDisplay({ gameScore, isCompleted }: ScoreDisplayProps) {
           <AppText variant="h2">{gameScore.intHomeScore ?? '-'}</AppText>
         </View>
         <AppText variant="body2" color={colors.textSecondary} style={styles.scoreDivider}>
-          vs
+          {battlesStrings.common.vs}
         </AppText>
         <View style={styles.teamScore}>
           <AppText variant="captionSm" color={colors.textSecondary} style={styles.teamName}>

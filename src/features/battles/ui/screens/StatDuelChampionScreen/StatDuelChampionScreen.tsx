@@ -1,102 +1,50 @@
-import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppText, Screen, ScreenHeader, ProgressBar, Avatar, SearchInput } from '@/shared/ui';
-import { SelectionModal, type SelectionOption } from '@/shared/ui';
+import { SelectionModal } from '@/shared/ui';
 import { colors, spacing, radii, verticalScale } from '@/shared/theme';
 import { getInitials } from '@/shared/utils';
-import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-import type { StatDuelChampionScreenProps, StatDuelPlayer } from '@/shared/types';
-import {
-  MOCK_PLAYERS,
-  DIRECTION_OPTIONS,
-  STAT_CATEGORIES_BY_SPORT,
-  STAKE_OPTIONS,
-} from '@/shared/constants';
+import type { StatDuelPlayer } from '@/shared/types';
+import { DIRECTION_OPTIONS, STAKE_OPTIONS } from '@/shared/constants';
+import { battlesFormatStakeBc, battlesStrings } from '@/features/battles/string';
+import type { StatDuelChampionScreenViewProps } from '../../hooks/useStatDuelChampionScreen';
 
-export default function StatDuelChampionScreen({ navigation, route }: StatDuelChampionScreenProps) {
-  const { visibility, battleMode, sport, game, position, positionName } = route?.params || {};
-
-  const player = useStatDuelStore((s) => s.player);
-  const statCategory = useStatDuelStore((s) => s.statCategory);
-  const stake = useStatDuelStore((s) => s.stake);
-  const direction = useStatDuelStore((s) => s.direction);
-  const showPlayerModal = useStatDuelStore((s) => s.showPlayerModal);
-  const showStatModal = useStatDuelStore((s) => s.showStatModal);
-  const showStakeModal = useStatDuelStore((s) => s.showStakeModal);
-  const showDirectionModal = useStatDuelStore((s) => s.showDirectionModal);
-  const playerSearch = useStatDuelStore((s) => s.playerSearch);
-  const setPlayer = useStatDuelStore((s) => s.setPlayer);
-  const setStatCategory = useStatDuelStore((s) => s.setStatCategory);
-  const setStake = useStatDuelStore((s) => s.setStake);
-  const setDirection = useStatDuelStore((s) => s.setDirection);
-  const setShowPlayerModal = useStatDuelStore((s) => s.setShowPlayerModal);
-  const setShowStatModal = useStatDuelStore((s) => s.setShowStatModal);
-  const setShowStakeModal = useStatDuelStore((s) => s.setShowStakeModal);
-  const setShowDirectionModal = useStatDuelStore((s) => s.setShowDirectionModal);
-  const setPlayerSearch = useStatDuelStore((s) => s.setPlayerSearch);
-
-  const isStandardMode = battleMode === 'STANDARD' || battleMode === 'BOTH_PICKS';
-  const isFantasyMode = battleMode === 'FANTASY';
-
-  const filteredPlayers = MOCK_PLAYERS.filter((p) => {
-    if (sport && p.sport !== sport) return false;
-    if (position && p.positionCode !== position) return false;
-    return (
-      p.name.toLowerCase().includes(playerSearch.toLowerCase()) ||
-      p.team.toLowerCase().includes(playerSearch.toLowerCase())
-    );
-  });
-
-  const statCategories = STAT_CATEGORIES_BY_SPORT[sport ?? 'NFL'] ?? STAT_CATEGORIES_BY_SPORT.NFL;
-  const statOptions: SelectionOption[] = statCategories.map((s: { id: string; name: string }) => ({
-    key: s.id,
-    label: s.name,
-  }));
-  const selectedStatData = statCategories.find(
-    (s: { id: string; name: string }) => s.id === (statCategory?.id ?? ''),
-  );
-  const selectedDirectionData = DIRECTION_OPTIONS.find((d) => d.key === (direction ?? ''));
-
-  const handleContinue = () => {
-    navigation.navigate('StatDuelOpponent', {
-      visibility,
-      battleMode,
-      sport,
-      game,
-      position,
-      positionName,
-      player,
-      statCategory,
-      stake,
-      direction,
-      directionName: selectedDirectionData?.label,
-    });
-  };
-
-  const canContinue = isStandardMode
-    ? player && statCategory && stake && direction
-    : player && statCategory && stake;
-
-  const getStatDescription = () => {
-    if (!statCategory || !player) return '';
-    return `Compare Total ${statCategory.name} For Both Players`;
-  };
-
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      navigation.navigate('StatDuelDetails', { visibility, battleMode });
-    }
-  };
+export function StatDuelChampionScreen(props: StatDuelChampionScreenViewProps) {
+  const {
+    player,
+    statCategory,
+    stake,
+    direction,
+    showPlayerModal,
+    showStatModal,
+    showStakeModal,
+    showDirectionModal,
+    setShowPlayerModal,
+    setShowStatModal,
+    setShowStakeModal,
+    setShowDirectionModal,
+    playerSearch,
+    setPlayerSearch,
+    isStandardMode,
+    filteredPlayers,
+    statOptions,
+    selectedDirectionData,
+    statDescription,
+    canContinue,
+    onContinue,
+    onBack,
+    onSelectPlayer,
+    onSelectStatCategory,
+    onSelectStake,
+    onSelectDirection,
+  } = props;
 
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <ScreenHeader
-          title="Create Battle"
-          onBack={handleBack}
+          title={battlesStrings.common.createBattle}
+          onBack={onBack}
           rightSlot={
             <TouchableOpacity style={styles.notificationButton}>
               <Ionicons name="notifications-outline" size={20} color={colors.primary} />
@@ -106,24 +54,24 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
 
         <View style={styles.progressContainer}>
           <ProgressBar progress={0.66} />
-          <AppText variant="label">4/6</AppText>
+          <AppText variant="label">{battlesStrings.statDuel.progress4of6}</AppText>
         </View>
 
         <View style={styles.titleSection}>
-          <AppText variant="h4">Choose Your Champion And The Dueling Stats</AppText>
+          <AppText variant="h4">{battlesStrings.statDuel.championHeading}</AppText>
           <AppText variant="body2" color={colors.textSecondary}>
-            Choose Stats To Battle On
+            {battlesStrings.statDuel.championSubtitle}
           </AppText>
         </View>
 
         <View style={styles.dropdownContainer}>
           <AppText variant="label" color={colors.textSecondary}>
-            Pick Player *{' '}
+            {battlesStrings.statDuel.pickPlayer}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
           <TouchableOpacity style={styles.dropdown} onPress={() => setShowPlayerModal(true)}>
             <AppText variant="body2" color={player ? colors.text : colors.muted}>
-              {player ? player.name : 'pick players'}
+              {player ? player.name : battlesStrings.statDuel.pickPlayersPlaceholder}
             </AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
@@ -131,12 +79,12 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
 
         <View style={styles.dropdownContainer}>
           <AppText variant="label" color={colors.textSecondary}>
-            Stat Category *{' '}
+            {battlesStrings.statDuel.statCategory}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
           <TouchableOpacity style={styles.dropdown} onPress={() => setShowStatModal(true)}>
             <AppText variant="body2" color={statCategory ? colors.text : colors.muted}>
-              {statCategory?.name || 'Select stat category'}
+              {statCategory?.name || battlesStrings.statDuel.selectStatCategory}
             </AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
@@ -145,12 +93,12 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
         {isStandardMode ? (
           <View style={styles.dropdownContainer}>
             <AppText variant="label" color={colors.textSecondary}>
-              Choose Direction *{' '}
+              {battlesStrings.statDuel.chooseDirection}{' '}
               <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
             </AppText>
             <TouchableOpacity style={styles.dropdown} onPress={() => setShowDirectionModal(true)}>
               <AppText variant="body2" color={direction ? colors.text : colors.muted}>
-                {selectedDirectionData?.label || 'Select direction (Most/Least)'}
+                {selectedDirectionData?.label || battlesStrings.statDuel.selectDirection}
               </AppText>
               <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
@@ -159,29 +107,28 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
 
         <View style={styles.dropdownContainer}>
           <AppText variant="label" color={colors.textSecondary}>
-            Stake BC{' '}
+            {battlesStrings.statDuel.stakeBc}{' '}
             <Ionicons name="information-circle-outline" size={14} color={colors.textSecondary} />
           </AppText>
           <TouchableOpacity style={styles.dropdown} onPress={() => setShowStakeModal(true)}>
-            <AppText variant="body2">{stake} BC</AppText>
+            <AppText variant="body2">{battlesFormatStakeBc(stake)}</AppText>
             <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
 
         {player && statCategory ? (
           <View style={styles.infoCard}>
-            <AppText variant="label">Stat Description</AppText>
+            <AppText variant="label">{battlesStrings.statDuel.statDescription}</AppText>
             <AppText variant="body2" color={colors.textSecondary}>
-              {getStatDescription()}
+              {statDescription}
             </AppText>
           </View>
         ) : null}
 
         <View style={styles.infoCard}>
-          <AppText variant="label">Official Rules</AppText>
+          <AppText variant="label">{battlesStrings.statDuel.officialRules}</AppText>
           <AppText variant="captionSm" color={colors.textSecondary}>
-            Tie Rule: If Both QBs Have Same Passing Yards — Tie.{'\n'}
-            Minimum Attempts: x10 Passes Required For Each QB.
+            {battlesStrings.statDuel.championRulesSnippet}
           </AppText>
         </View>
       </ScrollView>
@@ -189,17 +136,16 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
-          onPress={handleContinue}
+          onPress={onContinue}
           disabled={!canContinue}
         >
           <AppText variant="buttonLg" color={colors.white}>
-            Continue
+            {battlesStrings.common.continue}
           </AppText>
           <AppText variant="body1">⚔</AppText>
         </TouchableOpacity>
       </View>
 
-      {/* Player Selection Modal */}
       <Modal visible={showPlayerModal} transparent animationType="slide">
         <TouchableOpacity
           style={styles.modalOverlay}
@@ -208,7 +154,7 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
         >
           <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
             <View style={styles.modalHeader}>
-              <AppText variant="h5">Search Player/Teams</AppText>
+              <AppText variant="h5">{battlesStrings.statDuel.searchPlayersTitle}</AppText>
               <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
                 <Ionicons name="close" size={24} color={colors.text} />
               </TouchableOpacity>
@@ -217,7 +163,7 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
             <SearchInput
               value={playerSearch}
               onChangeText={setPlayerSearch}
-              placeholder="Search players..."
+              placeholder={battlesStrings.statDuel.searchPlayersPlaceholder}
               style={styles.searchSpacing}
             />
 
@@ -225,47 +171,43 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
               <TouchableOpacity style={[styles.filterTab, styles.filterTabActive]}>
                 <Ionicons name="person-outline" size={16} color={colors.white} />
                 <AppText variant="captionSm" color={colors.white}>
-                  Ps
+                  {battlesStrings.statDuel.filterPs}
                 </AppText>
               </TouchableOpacity>
               <TouchableOpacity style={styles.filterTab}>
                 <Ionicons name="filter-outline" size={16} color={colors.textSecondary} />
                 <AppText variant="captionSm" color={colors.textSecondary}>
-                  Filter
+                  {battlesStrings.statDuel.filterLabel}
                 </AppText>
               </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.playerList}>
-              {filteredPlayers.map((player) => (
+              {filteredPlayers.map((row) => (
                 <TouchableOpacity
-                  key={player.id}
+                  key={row.id}
                   style={styles.playerOption}
-                  onPress={() => {
-                    setPlayer(player as StatDuelPlayer);
-                    setShowPlayerModal(false);
-                    setPlayerSearch('');
-                  }}
+                  onPress={() => onSelectPlayer(row as StatDuelPlayer)}
                 >
                   <Avatar
-                    initials={getInitials(player.name)}
+                    initials={getInitials(row.name)}
                     size="sm"
                     backgroundColor={colors.primary}
                     borderColor={colors.primary}
                     textColor={colors.white}
                   />
                   <View style={styles.playerInfo}>
-                    <AppText variant="label">{player.name}</AppText>
+                    <AppText variant="label">{row.name}</AppText>
                     <AppText variant="captionSm" color={colors.textSecondary}>
-                      {player.position}
+                      {row.position}
                     </AppText>
                   </View>
                   <View style={styles.playerTeamBadge}>
-                    <AppText variant="captionSm">{player.team}</AppText>
+                    <AppText variant="captionSm">{row.team}</AppText>
                     <View style={styles.activeIndicator}>
                       <View style={styles.activeDot} />
                       <AppText variant="captionSm" color={colors.success}>
-                        Active
+                        {battlesStrings.statDuel.playerActive}
                       </AppText>
                     </View>
                   </View>
@@ -278,38 +220,28 @@ export default function StatDuelChampionScreen({ navigation, route }: StatDuelCh
 
       <SelectionModal
         visible={showStatModal}
-        title="Select Stat Category"
+        title={battlesStrings.statDuel.modalStatCategory}
         options={statOptions}
         selectedKey={statCategory?.id ?? undefined}
-        onSelect={(key) => {
-          const cat = statCategories.find((s: { id: string; name: string }) => s.id === key);
-          if (cat) setStatCategory(cat);
-          setShowStatModal(false);
-        }}
+        onSelect={onSelectStatCategory}
         onClose={() => setShowStatModal(false)}
       />
 
       <SelectionModal
         visible={showStakeModal}
-        title="Select Stake"
+        title={battlesStrings.statDuel.modalStake}
         options={STAKE_OPTIONS}
         selectedKey={stake}
-        onSelect={(key) => {
-          setStake(key);
-          setShowStakeModal(false);
-        }}
+        onSelect={onSelectStake}
         onClose={() => setShowStakeModal(false)}
       />
 
       <SelectionModal
         visible={showDirectionModal}
-        title="Select Direction"
+        title={battlesStrings.statDuel.modalDirection}
         options={DIRECTION_OPTIONS}
         selectedKey={direction || undefined}
-        onSelect={(key) => {
-          setDirection(key);
-          setShowDirectionModal(false);
-        }}
+        onSelect={onSelectDirection}
         onClose={() => setShowDirectionModal(false)}
       />
     </Screen>

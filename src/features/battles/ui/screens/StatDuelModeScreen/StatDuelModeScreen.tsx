@@ -1,11 +1,11 @@
-import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii, fontSizes } from '@/shared/theme';
 import { AppText, Screen } from '@/shared/ui';
-import { useStatDuelStore } from '@/features/battles/data/store/statDuel.store';
-import type { StatDuelModeScreenProps, BattleModeOption, BattleMode } from '@/shared/types';
+import type { BattleModeOption, BattleMode } from '@/shared/types';
 import { BATTLE_MODES_RAW } from '@/shared/constants';
+import { battlesStrings } from '@/features/battles/string';
+import type { StatDuelModeScreenViewProps } from '../../hooks/useStatDuelModeScreen';
 
 const BATTLE_MODES: BattleModeOption[] = BATTLE_MODES_RAW.map((m) => ({
   id: m.id,
@@ -18,35 +18,20 @@ const BATTLE_MODES: BattleModeOption[] = BATTLE_MODES_RAW.map((m) => ({
   borderColor: (colors as Record<string, string>)[m.borderColorKey] ?? m.borderColorKey,
 }));
 
-export default function StatDuelModeScreen({ navigation, route }: StatDuelModeScreenProps) {
-  const { visibility } = route?.params || {};
-  const battleMode = useStatDuelStore((s) => s.battleMode);
-  const setBattleMode = useStatDuelStore((s) => s.setBattleMode);
-
-  const handleSelectMode = (mode: BattleMode) => {
-    setBattleMode(mode);
-  };
-
-  const handleContinue = () => {
-    if (battleMode) {
-      navigation.navigate('StatDuelDetails', {
-        visibility,
-        battleMode,
-      });
-    }
-  };
+export function StatDuelModeScreen(props: StatDuelModeScreenViewProps) {
+  const { battleMode, onSelectMode, onContinue, onBack, canContinue } = props;
 
   return (
     <Screen padding={0}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <View style={styles.backButtonInner}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </View>
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <AppText variant="h4">Create Battle</AppText>
+            <AppText variant="h4">{battlesStrings.common.createBattle}</AppText>
             <View style={styles.headerIcon}>
               <Ionicons name="globe-outline" size={18} color={colors.text} />
             </View>
@@ -60,13 +45,13 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: '33%' }]} />
           </View>
-          <AppText variant="label">2/6</AppText>
+          <AppText variant="label">{battlesStrings.statDuel.progress2of6}</AppText>
         </View>
 
         <View style={styles.titleSection}>
-          <AppText variant="h3">Select Battle Mode</AppText>
+          <AppText variant="h3">{battlesStrings.statDuel.selectBattleMode}</AppText>
           <AppText variant="body2" color={colors.textSecondary}>
-            Choose How Your Battle Will Be Resolved
+            {battlesStrings.statDuel.modeSubtitle}
           </AppText>
         </View>
 
@@ -85,7 +70,7 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
                       : colors.inputBorder,
               },
             ]}
-            onPress={() => handleSelectMode(mode.id)}
+            onPress={() => onSelectMode(mode.id as BattleMode)}
           >
             <View style={styles.modeCardHeader}>
               <View style={styles.modeInfo}>
@@ -101,11 +86,11 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
               <View
                 style={[styles.radioButton, battleMode === mode.id && styles.radioButtonSelected]}
               >
-                {battleMode === mode.id && <View style={styles.radioButtonInner} />}
+                {battleMode === mode.id ? <View style={styles.radioButtonInner} /> : null}
               </View>
             </View>
 
-            {mode.features.length > 0 && (
+            {mode.features.length > 0 ? (
               <View style={styles.featuresList}>
                 {mode.features.map((feature, index) => (
                   <View key={index} style={styles.featureItem}>
@@ -116,19 +101,19 @@ export default function StatDuelModeScreen({ navigation, route }: StatDuelModeSc
                   </View>
                 ))}
               </View>
-            )}
+            ) : null}
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.continueButton, !battleMode && styles.continueButtonDisabled]}
-          onPress={handleContinue}
-          disabled={!battleMode}
+          style={[styles.continueButton, !canContinue && styles.continueButtonDisabled]}
+          onPress={onContinue}
+          disabled={!canContinue}
         >
           <AppText variant="buttonLg" color={colors.white}>
-            Continue
+            {battlesStrings.common.continue}
           </AppText>
           <View style={styles.continueIcon}>
             <AppText style={styles.continueIconText}>⚔</AppText>
@@ -282,6 +267,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   continueIconText: {
-    fontSize: 16,
+    fontSize: fontSizes.md,
   },
 });

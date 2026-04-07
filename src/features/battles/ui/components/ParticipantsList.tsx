@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
+import { battlesStrings } from '@/features/battles/string';
 import { formatFullDate } from '@/shared/utils';
 import type { ParticipantsListProps } from '@/shared/types';
 
@@ -10,17 +11,17 @@ export function ParticipantsList({ participants, currentUserId }: ParticipantsLi
   return (
     <View style={styles.section}>
       <AppText variant="buttonMd" style={styles.sectionTitle}>
-        Participants ({participants.length})
+        {battlesStrings.participants.sectionTitle(participants.length)}
       </AppText>
 
       {participants.length === 0 ? (
         <View style={styles.emptyParticipants}>
           <Ionicons name="people-outline" size={32} color={colors.textSecondary} />
           <AppText variant="body2" color={colors.textSecondary} style={styles.emptyText}>
-            No participants yet
+            {battlesStrings.participants.emptyTitle}
           </AppText>
           <AppText variant="captionSm" color={colors.textSecondary} style={styles.emptySubtext}>
-            Be the first to join!
+            {battlesStrings.participants.emptySubtitle}
           </AppText>
         </View>
       ) : (
@@ -33,16 +34,18 @@ export function ParticipantsList({ participants, currentUserId }: ParticipantsLi
                 </View>
                 <View>
                   <AppText variant="label">
-                    {participant.user_id === currentUserId ? 'You' : `Player ${index + 1}`}
+                    {participant.user_id === currentUserId
+                      ? battlesStrings.participants.you
+                      : battlesStrings.participants.playerN(index)}
                   </AppText>
                   <AppText variant="captionSm" color={colors.textSecondary}>
-                    Joined {formatFullDate(participant.joined_at)}
+                    {battlesStrings.participants.joinedAt(formatFullDate(participant.joined_at))}
                   </AppText>
                 </View>
               </View>
               <View style={styles.pickBadge}>
                 <AppText variant="captionSm" color={colors.textSecondary}>
-                  Pick:
+                  {battlesStrings.participants.pick}
                 </AppText>
                 <AppText variant="captionSm">{participant.pick || '-'}</AppText>
               </View>

@@ -4,17 +4,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radii } from '@/shared/theme';
 import { AppText } from '@/shared/ui';
 import { TOP_PLAYERS } from '@/shared/constants';
+import { battlesStrings } from '@/features/battles/string';
 
 export function TopPlayersSection() {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <AppText variant="h4" style={{ marginBottom: spacing[2] }}>
-          Top Players
+          {battlesStrings.explore.topPlayers}
         </AppText>
         <TouchableOpacity style={styles.seeAllButton}>
           <AppText variant="captionSm" color={colors.textSecondary}>
-            See All
+            {battlesStrings.explore.seeAll}
           </AppText>
           <Ionicons name="arrow-forward" size={14} color={colors.textSecondary} />
         </TouchableOpacity>
@@ -29,7 +30,7 @@ export function TopPlayersSection() {
             </View>
             <AppText variant="label">{player.name}</AppText>
             <AppText variant="captionSm" color={colors.textSecondary}>
-              {player.xp} XP
+              {battlesStrings.explore.xp(player.xp)}
             </AppText>
           </View>
         ))}

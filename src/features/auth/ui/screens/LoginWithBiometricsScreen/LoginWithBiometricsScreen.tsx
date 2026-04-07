@@ -1,7 +1,7 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import { Screen, Input, Button, AppText, KeyboardAwareScroll, ActionPromptModal } from '@/shared/ui';
+import { Screen, Input, Button, AppText, KeyboardAwareScroll, AppDialog } from '@/shared/ui';
 import { colors, spacing, sizes } from '@/shared/constants/theme';
 import type { LoginWithBiometricsScreenProps } from '@/shared/types';
 import type { UseLoginWithBiometricsReturn } from '../../hooks/hooks.types';
@@ -118,8 +118,9 @@ export function LoginWithBiometricsScreen({
         </View>
       </KeyboardAwareScroll>
 
-      <ActionPromptModal
+      <AppDialog
         visible={notYouPromptVisible}
+        showActions
         title={s.notYouSignOutTitle}
         message={s.notYouSignOutMessage}
         confirmLabel={s.notYouSignOutConfirm}
